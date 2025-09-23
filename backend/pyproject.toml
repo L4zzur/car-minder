@@ -17,3 +17,8 @@ dev = [
     "black>=25.1.0",
     "isort>=6.0.1",
 ]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+known_first_party = ["core", "utils"]
