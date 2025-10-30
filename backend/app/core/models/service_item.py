@@ -5,9 +5,8 @@ from uuid import UUID
 from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.models.mixins import CreatedAtMixin, IdMixin, UpdatedAtMixin
-
 from .base import Base
+from .mixins import CreatedAtMixin, IdMixin, UpdatedAtMixin
 
 if TYPE_CHECKING:
     from .car import Car
