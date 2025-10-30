@@ -4,9 +4,8 @@ from uuid import UUID
 from sqlalchemy import CheckConstraint, ForeignKey, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.models.mixins import CreatedAtMixin, IdMixin, UpdatedAtMixin
-
 from .base import Base
+from .mixins import CreatedAtMixin, IdMixin, UpdatedAtMixin
 
 if TYPE_CHECKING:
     from .car import Car
@@ -34,7 +33,6 @@ class MileageLog(Base, IdMixin, CreatedAtMixin, UpdatedAtMixin):
             "ix_mileage_logs_car_created_at_desc",
             "car_id",
             "created_at",
-            postgresql_include=None,
         ),
         CheckConstraint("mileage >= 0", name="mileage_non_negative"),
     )
