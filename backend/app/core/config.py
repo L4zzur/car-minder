@@ -1,5 +1,6 @@
 from enum import Enum
 from pathlib import Path
+from typing import ClassVar
 
 from pydantic import BaseModel, FilePath, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -49,16 +50,16 @@ class DatabaseConfig(BaseModel):
 
 
 class Settings(BaseSettings):
-    model_config: SettingsConfigDict = SettingsConfigDict(
+    model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
         env_file=(".env.template", ".env"),
         case_sensitive=False,
         env_nested_delimiter="__",
         env_prefix="APP__",
     )
-    app_mode: int = AppMode.dev
+    mode: AppMode = AppMode.dev
     run: UvicornConfig = UvicornConfig()
     api: ApiPrefix = ApiPrefix()
     db: DatabaseConfig
 
 
-settings = Settings()
+settings = Settings()  # type: ignore
