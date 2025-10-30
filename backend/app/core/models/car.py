@@ -68,13 +68,16 @@ class Car(Base, IdMixin, CreatedAtMixin, UpdatedAtMixin):
     # Python-level derived field
     @hybrid.hybrid_property
     def mileage(self) -> int:
+        """Current mileage of the car (derived from logs or initial value)."""
         if not self.mileage_logs:
             return self.first_mileage
         return max(log.mileage for log in self.mileage_logs)
 
     # SQL-level derived field
-    @mileage.expression
-    def mileage_expr(cls) -> ColumnElement[int]:
+    @mileage.inplace.expression
+    @classmethod
+    def _mileage_expression(cls) -> ColumnElement[int]:
+        """SQL expression to compute current mileage."""
         from .mileage_log import MileageLog
 
         return (
