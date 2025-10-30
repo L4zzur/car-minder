@@ -1,12 +1,11 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import CheckConstraint, ForeignKey, func, select
+from sqlalchemy import CheckConstraint, ColumnElement, ForeignKey, func, select
 from sqlalchemy.ext import hybrid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.models.mixins import CreatedAtMixin, IdMixin, UpdatedAtMixin
-
 from .base import Base
+from .mixins import CreatedAtMixin, IdMixin, UpdatedAtMixin
 
 if TYPE_CHECKING:
     from .mileage_log import MileageLog
@@ -75,7 +74,7 @@ class Car(Base, IdMixin, CreatedAtMixin, UpdatedAtMixin):
 
     # SQL-level derived field
     @mileage.expression
-    def mileage(cls) -> int:
+    def mileage_expr(cls) -> ColumnElement[int]:
         from .mileage_log import MileageLog
 
         return (
@@ -86,7 +85,7 @@ class Car(Base, IdMixin, CreatedAtMixin, UpdatedAtMixin):
 
     __table_args__ = (
         CheckConstraint(
-            "year >= 1930 AND year <= EXTRACT(YEAR FROM NOW())::int",
+            "year >= 1930 AND year <= CAST(strftime('%Y','now') AS INTEGER)",
             name="car_year_valid",
         ),
     )
