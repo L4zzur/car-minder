@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import UUID
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, UniqueConstraint
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
@@ -36,21 +36,23 @@ class ServiceItem(Base, IdMixin, CreatedAtMixin, UpdatedAtMixin):
         comment="Name of the service item",
     )
 
-    last_service_date: Mapped[datetime] = mapped_column(
+    last_service_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
         comment="Date of the last service",
     )
 
-    last_service_mileage: Mapped[int] = mapped_column(
+    last_service_odometer_km: Mapped[int] = mapped_column(
         nullable=False,
-        comment="Mileage of the last service",
+        comment="Odometer reading at the last service",
     )
 
+    # Names are unique only within a single car, not globally
     __table_args__ = (
         UniqueConstraint("car_id", "name", name="uq_service_items_car_name"),
-        Index("ix_service_items_car", "car_id"),
+        CheckConstraint("length(trim(name)) > 0", name="service_item_name_not_blank"),
         CheckConstraint(
-            "last_service_mileage >= 0", name="service_item_mileage_non_negative"
+            "last_service_odometer_km >= 0",
+            name="service_item_odometer_non_negative",
         ),
     )
