@@ -1,12 +1,15 @@
 from uuid import UUID
 
 from core.models import ServiceItem
-from core.schemas.service_item import (
+from core.models.mileage_log import MileageLog
+from core.schemas import (
     ServiceItemCreate,
+    ServiceItemMarkServiced,
     ServiceItemRead,
     ServiceItemUpdate,
 )
-from repositories import CarRepository, ServiceItemRepository
+from repositories import CarRepository, MileageLogRepository, ServiceItemRepository
+from rules.mileage import validate_new_odometer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .exceptions import CarNotFoundError, ServiceItemNotFoundError
@@ -18,10 +21,12 @@ class ServiceItemService:
         session: AsyncSession,
         service_item_repository: ServiceItemRepository,
         car_repository: CarRepository,
+        mileage_log_repository: MileageLogRepository,
     ) -> None:
         self.session = session
         self.service_item_repository = service_item_repository
         self.car_repository = car_repository
+        self.mileage_log_repository = mileage_log_repository
 
     async def add_service_item(
         self,
@@ -77,6 +82,46 @@ class ServiceItemService:
         update_data = update_schema.model_dump(exclude_unset=True)
         for field, value in update_data.items():
             setattr(service_item, field, value)
+
+        await self.session.commit()
+        await self.session.refresh(service_item)
+
+        return ServiceItemRead.model_validate(service_item)
+
+    async def mark_serviced(
+        self,
+        service_item_id: UUID,
+        mark_schema: ServiceItemMarkServiced,
+    ) -> ServiceItemRead:
+        service_item = await self.service_item_repository.get_by_id(service_item_id)
+        if service_item is None:
+            raise ServiceItemNotFoundError(service_item_id)
+
+        car = await self.car_repository.get_by_id(service_item.car_id)
+        if car is None:
+            raise CarNotFoundError(service_item.car_id)
+
+        latest_mileage = await self.mileage_log_repository.get_latest_for_car(
+            service_item.car_id
+        )
+        current_odometer = (
+            latest_mileage.odometer_km if latest_mileage else car.initial_odometer_km
+        )
+
+        validate_new_odometer(
+            current_odometer_km=current_odometer,
+            new_odometer_km=mark_schema.odometer_km,
+        )
+
+        if mark_schema.odometer_km > current_odometer:
+            mileage_log = MileageLog(
+                car_id=car.id,
+                odometer_km=mark_schema.odometer_km,
+            )
+            await self.mileage_log_repository.add(mileage_log)
+
+        service_item.last_service_at = mark_schema.serviced_at
+        service_item.last_service_odometer_km = mark_schema.odometer_km
 
         await self.session.commit()
         await self.session.refresh(service_item)

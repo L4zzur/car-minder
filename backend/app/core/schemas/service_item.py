@@ -19,6 +19,11 @@ class ServiceItemUpdate(BaseModel):
     last_service_odometer_km: int | None = Field(None, ge=0)
 
 
+class ServiceItemMarkServiced(BaseModel):
+    serviced_at: datetime
+    odometer_km: int = Field(..., ge=0)
+
+
 class ServiceItemRead(ORMReadSchema):
     id: UUID
     car_id: UUID
