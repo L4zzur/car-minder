@@ -56,7 +56,7 @@ class Settings(BaseSettings):
         env_nested_delimiter="__",
         env_prefix="APP__",
     )
-    mode: AppMode = AppMode.dev
+    mode: AppMode = AppMode.prod
     run: UvicornConfig = UvicornConfig()
     api: ApiPrefix = ApiPrefix()
     db: DatabaseConfig
