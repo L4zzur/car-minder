@@ -1,9 +1,10 @@
 from uuid import UUID
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from core.models import Car
 from core.schemas import CarCreate, CarRead, CarUpdate
 from repositories import CarRepository, UserRepository
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from .exceptions import CarNotFoundError, UserNotFoundError
 

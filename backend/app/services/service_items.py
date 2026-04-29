@@ -1,5 +1,7 @@
 from uuid import UUID
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from core.models import ServiceItem
 from core.models.mileage_log import MileageLog
 from core.schemas import (
@@ -10,7 +12,6 @@ from core.schemas import (
 )
 from repositories import CarRepository, MileageLogRepository, ServiceItemRepository
 from rules.mileage import validate_new_odometer
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from .exceptions import CarNotFoundError, ServiceItemNotFoundError
 

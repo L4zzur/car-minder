@@ -1,9 +1,10 @@
 from uuid import UUID
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from core.models import User
 from core.schemas.user import UserCreate, UserRead, UserUpdate
 from repositories import UserRepository
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from .exceptions import UsernameAlreadyTakenError, UserNotFoundError
 

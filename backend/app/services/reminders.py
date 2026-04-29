@@ -1,5 +1,7 @@
 from uuid import UUID
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from core.models import Reminder
 from core.schemas import (
     ReminderCreate,
@@ -8,7 +10,6 @@ from core.schemas import (
 )
 from core.validators import ReminderIntervalData, validate_reminder_intervals
 from repositories import ReminderRepository, ServiceItemRepository
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from .exceptions import (
     ReminderIntervalError,

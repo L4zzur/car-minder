@@ -1,10 +1,11 @@
 from uuid import UUID
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from core.models import MileageLog
 from core.schemas import MileageLogCreate, MileageLogRead
 from repositories import CarRepository, MileageLogRepository
 from rules import validate_new_odometer
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from .exceptions import CarNotFoundError, MileageLogNotFoundError
 
