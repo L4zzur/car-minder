@@ -91,6 +91,18 @@ class OdometerRollbackError(BusinessRuleServiceError):
         super().__init__(details=details)
 
 
+class OdometerNotAdvancedError(BusinessRuleServiceError):
+    code = "odometer_not_advanced"
+    message = "Odometer reading must be greater than current known odometer"
+
+    def __init__(self, current_odometer: int, new_odometer: int) -> None:
+        details = {
+            "current_odometer": current_odometer,
+            "new_odometer": new_odometer,
+        }
+        super().__init__(details=details)
+
+
 # Service item
 class ServiceItemNotFoundError(NotFoundServiceError):
     code = "service_item_not_found"

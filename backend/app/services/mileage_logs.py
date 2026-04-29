@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import MileageLog
 from core.schemas import MileageLogCreate, MileageLogRead
 from repositories import CarRepository, MileageLogRepository
-from rules import validate_new_odometer
+from rules import validate_new_mileage_log_odometer
 
 from .exceptions import CarNotFoundError, MileageLogNotFoundError
 
@@ -38,7 +38,7 @@ class MileageLogService:
             if latest_mileage is not None
             else car.initial_odometer_km
         )
-        validate_new_odometer(
+        validate_new_mileage_log_odometer(
             current_odometer_km=current_odometer_km,
             new_odometer_km=create_schema.odometer_km,
         )
