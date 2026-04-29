@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 from typing import ClassVar
 
@@ -6,9 +6,9 @@ from pydantic import BaseModel, FilePath, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class AppMode(Enum):
-    dev = 1
-    prod = 2
+class AppMode(StrEnum):
+    dev = "dev"
+    prod = "prod"
 
 
 class UvicornConfig(BaseModel):
