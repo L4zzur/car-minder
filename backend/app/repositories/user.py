@@ -14,6 +14,10 @@ class UserRepository:
         self.session.add(user)
         await self.session.flush()
 
+    async def delete(self, user: User) -> None:
+        await self.session.delete(user)
+        await self.session.flush()
+
     async def get_by_id(self, user_id: UUID) -> User | None:
         return await self.session.get(User, user_id)
 
