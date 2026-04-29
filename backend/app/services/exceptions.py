@@ -141,7 +141,7 @@ class ReminderIntervalError(BusinessRuleServiceError):
         notify_before_days: int | None = None,
         reason: str | None = None,
     ) -> None:
-        details = {
+        details: dict[str, object] = {
             "interval_km": interval_km,
             "interval_days": interval_days,
             "notify_before_km": notify_before_km,
