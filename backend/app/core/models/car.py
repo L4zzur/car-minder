@@ -72,7 +72,7 @@ class Car(Base, IdMixin, CreatedAtMixin, UpdatedAtMixin):
             name="car_initial_odometer_non_negative",
         ),
         CheckConstraint(
-            "year >= 1930 AND year <= CAST(strftime('%Y','now') AS INTEGER)",
+            "year >= 1930",
             name="car_year_valid",
         ),
     )
