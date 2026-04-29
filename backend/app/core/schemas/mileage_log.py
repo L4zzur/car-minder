@@ -20,4 +20,3 @@ class MileageLogRead(ORMReadSchema):
     car_id: UUID
     odometer_km: int
     created_at: datetime
-    updated_at: datetime
