@@ -20,6 +20,12 @@ class ApiPrefix(BaseModel):
     prefix: str = "/api"
 
 
+class AuthConfig(BaseModel):
+    secret_key: str
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 60 * 24 * 7  # 1 week
+
+
 class DatabaseConfig(BaseModel):
     file_path: FilePath
     echo: bool = False
@@ -59,6 +65,7 @@ class Settings(BaseSettings):
     mode: AppMode = AppMode.prod
     run: UvicornConfig = UvicornConfig()
     api: ApiPrefix = ApiPrefix()
+    auth: AuthConfig
     db: DatabaseConfig
 
 
