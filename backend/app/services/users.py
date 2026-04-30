@@ -39,6 +39,24 @@ class UserService:
 
         return UserRead.model_validate(user)
 
+    async def authenticate_user(
+        self,
+        username: str,
+        password: str,
+    ) -> User | None:
+        user = await self.user_repository.get_by_username(username)
+        if not user:
+            return None
+        if not verify_password(password, user.hashed_password):
+            return None
+        return user
+
+    async def get_user_model_by_id(
+        self,
+        id: str,
+    ) -> User | None:
+        return await self.user_repository.get_by_id(id)
+
     async def get_user(
         self,
         user_id: UUID,
