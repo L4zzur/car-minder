@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import User
 from core.schemas.user import UserCreate, UserRead, UserUpdate
+from core.security import hash_password, verify_password
 from repositories import UserRepository
 
 from .exceptions import UsernameAlreadyTakenError, UserNotFoundError
@@ -29,6 +30,7 @@ class UserService:
         user = User(
             username=create_schema.username,
             name=create_schema.name,
+            hashed_password=hash_password(create_schema.password),
         )
 
         await self.user_repository.add(user)
