@@ -17,6 +17,11 @@ class User(Base, IdMixin, CreatedAtMixin, UpdatedAtMixin):
         comment="User display username",
     )
 
+    hashed_password: Mapped[str] = mapped_column(
+        nullable=False,
+        comment="Password hash",
+    )
+
     name: Mapped[str] = mapped_column(
         nullable=False,
         comment="User display name",
