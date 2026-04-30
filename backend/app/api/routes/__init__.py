@@ -4,8 +4,10 @@ __all__ = [
     "reminders_router",
     "service_items_router",
     "users_router",
+    "auth_router",
 ]
 
+from .auth import router as auth_router
 from .cars import router as cars_router
 from .mileage_logs import router as mileage_logs_router
 from .reminders import router as reminders_router
