@@ -16,8 +16,11 @@ __all__ = [
     "ReminderCreate",
     "ReminderRead",
     "ReminderUpdate",
+    "Token",
+    "TokenData",
 ]
 
+from .auth import Token, TokenData
 from .base import ORMReadSchema
 from .car import CarCreate, CarRead, CarUpdate
 from .mileage_log import MileageLogCreate, MileageLogRead, MileageLogUpdate
