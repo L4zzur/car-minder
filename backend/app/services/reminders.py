@@ -29,14 +29,25 @@ class ReminderService:
         self.reminder_repository = reminder_repository
         self.service_item_repository = service_item_repository
 
+    async def _get_item_with_owner_check(
+        self,
+        reminder_id: UUID,
+        user_id: UUID,
+    ) -> Reminder:
+        reminder = await self.reminder_repository.get_by_id(reminder_id)
+        if reminder is None or reminder.service_item.car.user_id != user_id:
+            raise ReminderNotFoundError(reminder_id)
+        return reminder
+
     async def add_reminder(
         self,
         create_schema: ReminderCreate,
+        user_id: UUID,
     ) -> ReminderRead:
         _service_item = await self.service_item_repository.get_by_id(
             create_schema.service_item_id
         )
-        if _service_item is None:
+        if _service_item is None or _service_item.car.user_id != user_id:
             raise ServiceItemNotFoundError(create_schema.service_item_id)
 
         reminder = Reminder(
@@ -58,16 +69,18 @@ class ReminderService:
     async def get_reminder(
         self,
         reminder_id: UUID,
-    ) -> ReminderRead | None:
-        reminder = await self.reminder_repository.get_by_id(reminder_id)
-        return ReminderRead.model_validate(reminder) if reminder else None
+        user_id: UUID,
+    ) -> ReminderRead:
+        reminder = await self._get_item_with_owner_check(reminder_id, user_id)
+        return ReminderRead.model_validate(reminder)
 
     async def list_by_service_item(
         self,
         service_item_id: UUID,
+        user_id: UUID,
     ) -> list[ReminderRead]:
         _service_item = await self.service_item_repository.get_by_id(service_item_id)
-        if _service_item is None:
+        if _service_item is None or _service_item.car.user_id != user_id:
             raise ServiceItemNotFoundError(service_item_id)
 
         reminders = await self.reminder_repository.list_by_service_item_id(
@@ -78,9 +91,10 @@ class ReminderService:
     async def list_active_by_service_item(
         self,
         service_item_id: UUID,
+        user_id: UUID,
     ) -> list[ReminderRead]:
         _service_item = await self.service_item_repository.get_by_id(service_item_id)
-        if _service_item is None:
+        if _service_item is None or _service_item.car.user_id != user_id:
             raise ServiceItemNotFoundError(service_item_id)
 
         reminders = await self.reminder_repository.list_active_by_service_item_id(
@@ -92,10 +106,9 @@ class ReminderService:
         self,
         reminder_id: UUID,
         update_schema: ReminderUpdate,
+        user_id: UUID,
     ) -> ReminderRead:
-        reminder = await self.reminder_repository.get_by_id(reminder_id)
-        if reminder is None:
-            raise ReminderNotFoundError(reminder_id)
+        reminder = await self._get_item_with_owner_check(reminder_id, user_id)
 
         update_data = update_schema.model_dump(exclude_unset=True)
         try:
@@ -135,10 +148,9 @@ class ReminderService:
     async def delete_reminder(
         self,
         reminder_id: UUID,
+        user_id: UUID,
     ) -> None:
-        reminder = await self.reminder_repository.get_by_id(reminder_id)
-        if reminder is None:
-            raise ReminderNotFoundError(reminder_id)
+        reminder = await self._get_item_with_owner_check(reminder_id, user_id)
 
         await self.reminder_repository.delete(reminder)
         await self.session.commit()

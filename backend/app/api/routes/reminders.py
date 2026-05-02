@@ -2,7 +2,8 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends
 
-from api.deps import get_reminder_service
+from api.deps import get_current_user, get_reminder_service
+from core.models import User
 from core.schemas import (
     ReminderCreate,
     ReminderRead,
@@ -17,9 +18,10 @@ router = APIRouter(prefix="/reminders", tags=["reminders"])
 @router.post("", response_model=ReminderRead, status_code=201)
 async def add_reminder(
     create_schema: ReminderCreate,
+    current_user: User = Depends(get_current_user),
     service: ReminderService = Depends(get_reminder_service),
 ) -> ReminderRead:
-    return await service.add_reminder(create_schema)
+    return await service.add_reminder(create_schema, current_user.id)
 
 
 @router.get(
@@ -29,9 +31,10 @@ async def add_reminder(
 )
 async def list_by_service_item(
     service_item_id: UUID,
+    current_user: User = Depends(get_current_user),
     service: ReminderService = Depends(get_reminder_service),
 ) -> list[ReminderRead]:
-    return await service.list_by_service_item(service_item_id)
+    return await service.list_by_service_item(service_item_id, current_user.id)
 
 
 @router.get(
@@ -41,17 +44,19 @@ async def list_by_service_item(
 )
 async def list_active_by_service_item(
     service_item_id: UUID,
+    current_user: User = Depends(get_current_user),
     service: ReminderService = Depends(get_reminder_service),
 ) -> list[ReminderRead]:
-    return await service.list_active_by_service_item(service_item_id)
+    return await service.list_active_by_service_item(service_item_id, current_user.id)
 
 
 @router.get("/{reminder_id}", response_model=ReminderRead, status_code=200)
 async def get_reminder(
     reminder_id: UUID,
+    current_user: User = Depends(get_current_user),
     service: ReminderService = Depends(get_reminder_service),
 ) -> ReminderRead:
-    reminder = await service.get_reminder(reminder_id)
+    reminder = await service.get_reminder(reminder_id, current_user.id)
     if reminder is None:
         raise ReminderNotFoundError(reminder_id)
     return reminder
@@ -61,14 +66,16 @@ async def get_reminder(
 async def update_reminder(
     reminder_id: UUID,
     update_schema: ReminderUpdate,
+    current_user: User = Depends(get_current_user),
     service: ReminderService = Depends(get_reminder_service),
 ) -> ReminderRead:
-    return await service.update_reminder(reminder_id, update_schema)
+    return await service.update_reminder(reminder_id, update_schema, current_user.id)
 
 
 @router.delete("/{reminder_id}", status_code=204)
 async def delete_reminder(
     reminder_id: UUID,
+    current_user: User = Depends(get_current_user),
     service: ReminderService = Depends(get_reminder_service),
 ) -> None:
-    await service.delete_reminder(reminder_id)
+    await service.delete_reminder(reminder_id, current_user.id)

@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import ServiceItem
@@ -19,7 +20,13 @@ class ServiceItemRepository:
         await self.session.flush()
 
     async def get_by_id(self, service_item_id: UUID) -> ServiceItem | None:
-        return await self.session.get(ServiceItem, service_item_id)
+        stmt = (
+            select(ServiceItem)
+            .where(ServiceItem.id == service_item_id)
+            .options(selectinload(ServiceItem.car))
+        )
+        result = await self.session.execute(stmt)
+        return result.scalars().first()
 
     async def list_by_car_id(self, car_id: UUID) -> list[ServiceItem]:
         stmt = select(ServiceItem).where(

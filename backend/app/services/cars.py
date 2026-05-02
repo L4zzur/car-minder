@@ -23,13 +23,14 @@ class CarService:
     async def add_car(
         self,
         create_schema: CarCreate,
+        user_id: UUID,
     ) -> CarRead:
-        _user = await self.user_repository.get_by_id(create_schema.user_id)
+        _user = await self.user_repository.get_by_id(user_id)
         if _user is None:
-            raise UserNotFoundError(create_schema.user_id)
+            raise UserNotFoundError(user_id)
 
         car = Car(
-            user_id=create_schema.user_id,
+            user_id=user_id,
             brand=create_schema.brand,
             model=create_schema.model,
             year=create_schema.year,
@@ -45,9 +46,12 @@ class CarService:
     async def get_car(
         self,
         car_id: UUID,
-    ) -> CarRead | None:
+        user_id: UUID,
+    ) -> CarRead:
         car = await self.car_repository.get_by_id(car_id)
-        return CarRead.model_validate(car) if car is not None else None
+        if car is None or car.user_id != user_id:
+            raise CarNotFoundError(car_id)
+        return CarRead.model_validate(car)
 
     async def list_user_cars(
         self,
@@ -64,9 +68,10 @@ class CarService:
         self,
         car_id: UUID,
         update_schema: CarUpdate,
+        user_id: UUID,
     ) -> CarRead:
         car = await self.car_repository.get_by_id(car_id)
-        if car is None:
+        if car is None or car.user_id != user_id:
             raise CarNotFoundError(car_id)
 
         update_data = update_schema.model_dump(exclude_unset=True)
@@ -81,9 +86,10 @@ class CarService:
     async def delete_car(
         self,
         car_id: UUID,
+        user_id: UUID,
     ) -> None:
         car = await self.car_repository.get_by_id(car_id)
-        if car is None:
+        if car is None or car.user_id != user_id:
             raise CarNotFoundError(car_id)
 
         await self.car_repository.delete(car)

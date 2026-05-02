@@ -29,12 +29,23 @@ class ServiceItemService:
         self.car_repository = car_repository
         self.mileage_log_repository = mileage_log_repository
 
+    async def _get_item_with_owner_check(
+        self,
+        service_item_id: UUID,
+        user_id: UUID,
+    ) -> ServiceItem:
+        service_item = await self.service_item_repository.get_by_id(service_item_id)
+        if service_item is None or service_item.car.user_id != user_id:
+            raise ServiceItemNotFoundError(service_item_id)
+        return service_item
+
     async def add_service_item(
         self,
         create_schema: ServiceItemCreate,
+        user_id: UUID,
     ) -> ServiceItemRead:
         _car = await self.car_repository.get_by_id(create_schema.car_id)
-        if _car is None:
+        if _car is None or _car.user_id != user_id:
             raise CarNotFoundError(create_schema.car_id)
 
         service_item = ServiceItem(
@@ -53,16 +64,18 @@ class ServiceItemService:
     async def get_service_item(
         self,
         service_item_id: UUID,
-    ) -> ServiceItemRead | None:
-        service_item = await self.service_item_repository.get_by_id(service_item_id)
-        return ServiceItemRead.model_validate(service_item) if service_item else None
+        user_id: UUID,
+    ) -> ServiceItemRead:
+        service_item = await self._get_item_with_owner_check(service_item_id, user_id)
+        return ServiceItemRead.model_validate(service_item)
 
     async def list_by_car(
         self,
         car_id: UUID,
+        user_id: UUID,
     ) -> list[ServiceItemRead]:
         _car = await self.car_repository.get_by_id(car_id)
-        if _car is None:
+        if _car is None or _car.user_id != user_id:
             raise CarNotFoundError(car_id)
 
         service_items = await self.service_item_repository.list_by_car_id(car_id)
@@ -75,10 +88,9 @@ class ServiceItemService:
         self,
         service_item_id: UUID,
         update_schema: ServiceItemUpdate,
+        user_id: UUID,
     ) -> ServiceItemRead:
-        service_item = await self.service_item_repository.get_by_id(service_item_id)
-        if service_item is None:
-            raise ServiceItemNotFoundError(service_item_id)
+        service_item = await self._get_item_with_owner_check(service_item_id, user_id)
 
         update_data = update_schema.model_dump(exclude_unset=True)
         for field, value in update_data.items():
@@ -93,10 +105,9 @@ class ServiceItemService:
         self,
         service_item_id: UUID,
         mark_schema: ServiceItemMarkServiced,
+        user_id: UUID,
     ) -> ServiceItemRead:
-        service_item = await self.service_item_repository.get_by_id(service_item_id)
-        if service_item is None:
-            raise ServiceItemNotFoundError(service_item_id)
+        service_item = await self._get_item_with_owner_check(service_item_id, user_id)
 
         car = await self.car_repository.get_by_id(service_item.car_id)
         if car is None:
@@ -132,10 +143,9 @@ class ServiceItemService:
     async def delete_service_item(
         self,
         service_item_id: UUID,
+        user_id: UUID,
     ) -> None:
-        service_item = await self.service_item_repository.get_by_id(service_item_id)
-        if service_item is None:
-            raise ServiceItemNotFoundError(service_item_id)
+        service_item = await self._get_item_with_owner_check(service_item_id, user_id)
 
         await self.service_item_repository.delete(service_item)
         await self.session.commit()

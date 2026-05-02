@@ -2,8 +2,9 @@ from uuid import UUID
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
-from core.models import Reminder
+from core.models import Reminder, ServiceItem
 
 
 class ReminderRepository:
@@ -19,7 +20,13 @@ class ReminderRepository:
         await self.session.flush()
 
     async def get_by_id(self, reminder_id: UUID) -> Reminder | None:
-        return await self.session.get(Reminder, reminder_id)
+        stmt = (
+            select(Reminder)
+            .where(Reminder.id == reminder_id)
+            .options(selectinload(Reminder.service_item).selectinload(ServiceItem.car))
+        )
+        result = await self.session.execute(stmt)
+        return result.scalars().first()
 
     async def list_by_service_item_id(self, service_item_id: UUID) -> list[Reminder]:
         stmt = select(Reminder).where(

@@ -24,9 +24,10 @@ class MileageLogService:
     async def add_mileage(
         self,
         create_schema: MileageLogCreate,
+        user_id: UUID,
     ) -> MileageLogRead:
         car = await self.car_repository.get_by_id(create_schema.car_id)
-        if car is None:
+        if car is None or car.user_id != user_id:
             raise CarNotFoundError(create_schema.car_id)
 
         # Validating odometer
@@ -57,9 +58,10 @@ class MileageLogService:
     async def list_by_car(
         self,
         car_id: UUID,
+        user_id: UUID,
     ) -> list[MileageLogRead]:
         _car = await self.car_repository.get_by_id(car_id)
-        if _car is None:
+        if _car is None or _car.user_id != user_id:
             raise CarNotFoundError(car_id)
 
         mileage_logs = await self.mileage_log_repository.list_by_car_id(car_id)
@@ -70,10 +72,15 @@ class MileageLogService:
     async def delete_mileage(
         self,
         mileage_id: UUID,
+        user_id: UUID,
     ) -> None:
         mileage_log = await self.mileage_log_repository.get_by_id(mileage_id)
         if mileage_log is None:
             raise MileageLogNotFoundError(mileage_id)
+
+        car = await self.car_repository.get_by_id(mileage_log.car_id)
+        if car is None or car.user_id != user_id:
+            raise CarNotFoundError(mileage_log.car_id)
 
         await self.mileage_log_repository.delete(mileage_log)
         await self.session.commit()

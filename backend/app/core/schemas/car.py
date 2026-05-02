@@ -7,7 +7,6 @@ from .base import ORMReadSchema
 
 
 class CarCreate(BaseModel):
-    user_id: UUID
     brand: str = Field(..., min_length=1, max_length=30)
     model: str = Field(..., min_length=1, max_length=50)
     year: int = Field(..., ge=1930)
