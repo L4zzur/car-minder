@@ -481,12 +481,37 @@ export type LoginApiAuthLoginPostResponses = {
 
 export type LoginApiAuthLoginPostResponse = LoginApiAuthLoginPostResponses[keyof LoginApiAuthLoginPostResponses];
 
+export type LogoutApiAuthLogoutPostData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/auth/logout';
+};
+
+export type LogoutApiAuthLogoutPostResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type LogoutApiAuthLogoutPostResponse = LogoutApiAuthLogoutPostResponses[keyof LogoutApiAuthLogoutPostResponses];
+
 export type GetMeApiAuthMeGetData = {
     body?: never;
     path?: never;
     query?: never;
     url: '/api/auth/me';
 };
+
+export type GetMeApiAuthMeGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetMeApiAuthMeGetError = GetMeApiAuthMeGetErrors[keyof GetMeApiAuthMeGetErrors];
 
 export type GetMeApiAuthMeGetResponses = {
     /**
@@ -648,6 +673,15 @@ export type ListUserCarsApiCarsGetData = {
     query?: never;
     url: '/api/cars';
 };
+
+export type ListUserCarsApiCarsGetErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListUserCarsApiCarsGetError = ListUserCarsApiCarsGetErrors[keyof ListUserCarsApiCarsGetErrors];
 
 export type ListUserCarsApiCarsGetResponses = {
     /**
