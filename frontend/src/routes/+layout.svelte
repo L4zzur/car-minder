@@ -1,13 +1,8 @@
 <script lang="ts">
 	import './layout.css';
+	import '$lib/api-client';
 	import favicon from '$lib/assets/favicon.svg';
 	import { ModeWatcher } from 'mode-watcher';
-
-	import { client } from '$lib/api/client.gen';
-
-	client.setConfig({
-		baseUrl: ''
-	});
 
 	let { children } = $props();
 </script>
