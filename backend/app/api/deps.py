@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Cookie, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,7 +17,10 @@ from repositories.reminder import ReminderRepository
 from services import CarService, MileageLogService, ServiceItemService, UserService
 from services.reminders import ReminderService
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.api.prefix}/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl=f"{settings.api.prefix}/auth/login",
+    auto_error=False,
+)
 
 
 async def get_user_service(
@@ -30,7 +33,8 @@ async def get_user_service(
 
 
 async def get_current_user(
-    token: str = Depends(oauth2_scheme),
+    token: str | None = Depends(oauth2_scheme),
+    cookie_token: str | None = Cookie(default=None, alias="access_token"),
     user_service: UserService = Depends(get_user_service),
 ) -> User:
     credentials_exception = HTTPException(
@@ -39,7 +43,11 @@ async def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
 
-    payload = decode_access_token(token)
+    access_token = token or cookie_token
+    if access_token is None:
+        raise credentials_exception
+
+    payload = decode_access_token(access_token)
     if payload is None:
         raise credentials_exception
 
