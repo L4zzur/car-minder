@@ -1,27 +1,23 @@
 import { Auth } from './api';
-import { client } from './api-client';
+import './api-client';
 
 class AuthStore {
 	user = $state<any>(null);
-	token = $state<string | null>(
-		typeof localStorage !== 'undefined' ? localStorage.getItem('access_token') : null
-	);
+	isReady = $state(false);
 
 	get isAuthenticated() {
-		return !!this.token;
+		return !!this.user;
 	}
 
-	async login(newToken: string) {
-		this.token = newToken;
-		localStorage.setItem('access_token', newToken);
+	init() {
+		this.isReady = true;
+	}
+
+	async login() {
 		await this.fetchUser();
 	}
 
 	async fetchUser() {
-		if (!this.token) {
-			return;
-		}
-
 		try {
 			const response = await Auth.getMeApiAuthMeGet();
 			this.user = response.data;
@@ -32,11 +28,7 @@ class AuthStore {
 	}
 
 	logout() {
-		this.token = null;
 		this.user = null;
-		if (typeof localStorage !== 'undefined') {
-			localStorage.removeItem('access_token');
-		}
 	}
 }
 
