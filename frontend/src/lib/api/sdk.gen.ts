@@ -79,7 +79,11 @@ export class Users {
      * Delete User
      */
     public static deleteUserApiUsersUserIdDelete<ThrowOnError extends boolean = false>(options: Options<DeleteUserApiUsersUserIdDeleteData, ThrowOnError>) {
-        return (options.client ?? client).delete<DeleteUserApiUsersUserIdDeleteResponses, DeleteUserApiUsersUserIdDeleteErrors, ThrowOnError>({ url: '/api/users/{user_id}', ...options });
+        return (options.client ?? client).delete<DeleteUserApiUsersUserIdDeleteResponses, DeleteUserApiUsersUserIdDeleteErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/users/{user_id}',
+            ...options
+        });
     }
     
     /**
@@ -94,6 +98,7 @@ export class Users {
      */
     public static updateUserApiUsersUserIdPatch<ThrowOnError extends boolean = false>(options: Options<UpdateUserApiUsersUserIdPatchData, ThrowOnError>) {
         return (options.client ?? client).patch<UpdateUserApiUsersUserIdPatchResponses, UpdateUserApiUsersUserIdPatchErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
             url: '/api/users/{user_id}',
             ...options,
             headers: {

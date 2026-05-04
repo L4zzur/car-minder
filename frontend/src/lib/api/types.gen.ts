@@ -85,6 +85,10 @@ export type CarRead = {
      */
     initial_odometer_km: number;
     /**
+     * Current Odometer Km
+     */
+    current_odometer_km: number;
+    /**
      * Created At
      */
     created_at: string;
