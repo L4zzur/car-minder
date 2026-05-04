@@ -68,7 +68,7 @@
 	</div>
 
 	{#if isLoading}
-		<div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+		<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 			{#each Array(3) as _}
 				<Card.Root class="animate-pulse">
 					<Card.Header class="h-32 rounded-t-lg bg-muted"></Card.Header>
