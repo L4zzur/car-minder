@@ -26,6 +26,7 @@
 		type ReminderRead,
 		type ServiceItemRead
 	} from '$lib/api';
+	import CarStats from '$lib/components/CarStats.svelte';
 	import AddServiceDialog from '$lib/components/ui/AddServiceDialog.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
@@ -379,38 +380,7 @@
 			</div>
 		</div>
 
-		<div class="grid gap-4 sm:grid-cols-3">
-			<div class="rounded-lg border bg-card p-4">
-				<div class="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
-					<Gauge class="size-4" />
-					<span>пробег</span>
-				</div>
-				<div class="text-2xl font-semibold">{formatOdometer(car.current_odometer_km)} км</div>
-				<p class="mt-1 text-xs text-muted-foreground">
-					+{formatOdometer(drivenKm)} км с добавления
-				</p>
-			</div>
-
-			<div class="rounded-lg border bg-card p-4">
-				<div class="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
-					<Bell class="size-4" />
-					<span>напоминания</span>
-				</div>
-				<div class="text-2xl font-semibold">{dueCount + soonCount}</div>
-				<p class="mt-1 text-xs text-muted-foreground">
-					{soonCount} скоро, {dueCount} просрочено
-				</p>
-			</div>
-
-			<div class="rounded-lg border bg-card p-4">
-				<div class="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
-					<CarFront class="size-4" />
-					<span>стартовый пробег</span>
-				</div>
-				<div class="text-2xl font-semibold">{formatOdometer(car.initial_odometer_km)} км</div>
-				<p class="mt-1 text-xs text-muted-foreground">на момент добавления</p>
-			</div>
-		</div>
+		<CarStats {car} {drivenKm} {dueCount} {soonCount} />
 
 		<div class="grid gap-4 sm:grid-cols-2">
 			<div class="flex flex-col gap-3 rounded-lg border bg-card p-4">
