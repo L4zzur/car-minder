@@ -26,6 +26,13 @@ class AuthConfig(BaseModel):
     access_token_expire_minutes: int = 60 * 24 * 7  # 1 week
 
 
+class CorsConfig(BaseModel):
+    origins: list[str] = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ]
+
+
 class DatabaseConfig(BaseModel):
     file_path: FilePath
     echo: bool = False
@@ -65,6 +72,7 @@ class Settings(BaseSettings):
     mode: AppMode = AppMode.prod
     run: UvicornConfig = UvicornConfig()
     api: ApiPrefix = ApiPrefix()
+    cors: CorsConfig = CorsConfig()
     auth: AuthConfig
     db: DatabaseConfig
 

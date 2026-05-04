@@ -4,11 +4,13 @@ from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from api.errors import register_exception_handlers
 from api.router import api_router
 from core.config import settings
 from core.db_helper import db_helper
+from middleware.csrf import csrf_protect
 
 
 @asynccontextmanager
@@ -24,6 +26,18 @@ app = FastAPI(
     version="0.0.1",
     lifespan=lifespan,
 )
+
+app.middleware("http")(csrf_protect)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors.origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 register_exception_handlers(app)
 app.include_router(api_router)
 
