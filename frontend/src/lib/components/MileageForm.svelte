@@ -1,0 +1,65 @@
+<script lang="ts">
+	import { Gauge } from 'lucide-svelte';
+
+	import { type CarRead } from '$lib/api';
+	import { Button } from '$lib/components/ui/button';
+
+	import Input from './ui/input/input.svelte';
+
+	let {
+		car,
+		initialValue,
+		isSaving,
+		error,
+		onSubmit
+	}: {
+		car: CarRead;
+		initialValue: number | string;
+		isSaving: boolean;
+		error: string;
+		onSubmit: (value: number) => void;
+	} = $props();
+
+	let mileageValue = $state(initialValue);
+	let localError = $state(error);
+
+	$effect(() => {
+		mileageValue = initialValue;
+		localError = error;
+	});
+
+	function handleSubmit(event: Event) {
+		event.preventDefault();
+		localError = '';
+		const val = Number(mileageValue);
+		if (!Number.isFinite(val)) {
+			localError = 'введи корректный пробег';
+			return;
+		}
+		if (val <= car.current_odometer_km) {
+			localError = 'пробег должен быть больше текущего';
+			return;
+		}
+		onSubmit(val);
+	}
+</script>
+
+<div class="flex flex-col gap-3 rounded-lg border bg-card p-4">
+	<div class="flex min-h-5 items-center justify-between gap-3">
+		<h3 class="text-sm font-medium">добавить пробег</h3>
+		{#if localError}
+			<span class="text-right text-xs text-destructive">{localError}</span>
+		{/if}
+	</div>
+	<form class="space-y-3" onsubmit={handleSubmit} novalidate>
+		<div>
+			<label for="odometer" class="mb-1.5 block text-xs text-muted-foreground"> одометр, км </label>
+
+			<Input type="number" bind:value={mileageValue} />
+		</div>
+		<Button type="submit" class="w-full" disabled={isSaving}>
+			<Gauge class="size-3.5" />
+			{isSaving ? 'сохраняем...' : 'сохранить'}
+		</Button>
+	</form>
+</div>

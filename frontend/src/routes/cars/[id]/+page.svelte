@@ -8,8 +8,7 @@
 		Clock,
 		Gauge,
 		Plus,
-		Trash2,
-		Wrench
+		Trash2
 	} from 'lucide-svelte';
 	import { onMount } from 'svelte';
 
@@ -27,10 +26,10 @@
 		type ServiceItemRead
 	} from '$lib/api';
 	import CarStats from '$lib/components/CarStats.svelte';
+	import MileageForm from '$lib/components/MileageForm.svelte';
+	import MileageHistory from '$lib/components/MileageHistory.svelte';
 	import AddServiceDialog from '$lib/components/ui/AddServiceDialog.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 
@@ -384,84 +383,22 @@
 		<CarStats {car} {drivenKm} {dueCount} {soonCount} {serviceItemCount} />
 
 		<div class="grid gap-4 sm:grid-cols-2">
-			<div class="flex flex-col gap-3 rounded-lg border bg-card p-4">
-				<div class="flex min-h-5 items-center justify-between gap-3">
-					<h3 class="text-sm font-medium">добавить пробег</h3>
-					{#if mileageError}
-						<span class="text-right text-xs text-destructive">{mileageError}</span>
-					{/if}
-				</div>
-				<form
-					class="space-y-3"
-					onsubmit={(event) => {
-						event.preventDefault();
-						handleMileageSubmit();
-					}}
-					novalidate
-				>
-					<div>
-						<label for="odometer" class="mb-1.5 block text-xs text-muted-foreground">
-							одометр, км
-						</label>
-						<input
-							id="odometer"
-							type="number"
-							bind:value={mileageValue}
-							class="flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-						/>
-					</div>
-					<Button type="submit" class="w-full" disabled={isSavingMileage}>
-						<Gauge class="size-3.5" />
-						{isSavingMileage ? 'сохраняем...' : 'сохранить'}
-					</Button>
-				</form>
-			</div>
+			<MileageForm
+				{car}
+				initialValue={mileageValue}
+				isSaving={isSavingMileage}
+				error={mileageError}
+				onSubmit={(val) => {
+					mileageValue = val;
+					handleMileageSubmit();
+				}}
+			/>
 
-			<div class="flex flex-col rounded-lg border bg-card p-4">
-				<div class="flex min-w-0 flex-col">
-					<div class="flex items-center justify-between gap-3">
-						<h3 class="text-sm font-medium">история пробега</h3>
-						<span class="shrink-0 text-xs text-muted-foreground">{mileageLogs.length} записи</span>
-					</div>
-					<ScrollArea type="always" class="mt-4 max-h-24 min-h-0 pr-6">
-						{#if mileageLogs.length}
-							<div>
-								{#each mileageLogs as log, i (log.id)}
-									{@const delta = deltas[i]}
-									<div class="flex min-h-6 items-center justify-between gap-4 rounded-md text-sm">
-										<span class="min-w-0 text-xs text-muted-foreground"
-											>{formatDate(log.createdAt)}</span
-										>
-										<div class="flex shrink-0 items-center gap-3 text-right">
-											{#if delta !== null}
-												<span class="text-xs text-muted-foreground">
-													+{formatOdometer(Math.abs(delta))} км
-												</span>
-											{/if}
-											<span class="min-w-20 font-medium">{formatOdometer(log.odometerKm)} км</span>
-											{#if i === 0}
-												<Button
-													variant="ghost"
-													size="icon-xs"
-													aria-label="удалить последнюю запись пробега"
-													disabled={deletingMileageLogId === log.id}
-													onclick={() => handleDeleteMileageLog(log.id)}
-												>
-													<Trash2 class="size-3" />
-												</Button>
-											{:else}
-												<span class="size-6 shrink-0" aria-hidden="true"></span>
-											{/if}
-										</div>
-									</div>
-								{/each}
-							</div>
-						{:else}
-							<p class="text-sm text-muted-foreground">записей пробега пока нет</p>
-						{/if}
-					</ScrollArea>
-				</div>
-			</div>
+			<MileageHistory
+				logs={mileageLogs}
+				deletingId={deletingMileageLogId}
+				onDelete={handleDeleteMileageLog}
+			/>
 		</div>
 
 		<div class="space-y-4">
