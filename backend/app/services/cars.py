@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import Car
 from core.schemas import CarCreate, CarRead, CarUpdate
-from repositories import CarRepository, UserRepository
+from repositories import CarRepository, MileageLogRepository, UserRepository
 
 from .exceptions import CarNotFoundError, UserNotFoundError
 
@@ -14,10 +14,12 @@ class CarService:
         self,
         session: AsyncSession,
         car_repository: CarRepository,
+        mileage_log_repository: MileageLogRepository,
         user_repository: UserRepository,
     ) -> None:
         self.session = session
         self.car_repository = car_repository
+        self.mileage_log_repository = mileage_log_repository
         self.user_repository = user_repository
 
     async def add_car(
@@ -41,7 +43,7 @@ class CarService:
         await self.session.commit()
         await self.session.refresh(car)
 
-        return CarRead.model_validate(car)
+        return await self._to_read_schema(car)
 
     async def get_car(
         self,
@@ -51,7 +53,7 @@ class CarService:
         car = await self.car_repository.get_by_id(car_id)
         if car is None or car.user_id != user_id:
             raise CarNotFoundError(car_id)
-        return CarRead.model_validate(car)
+        return await self._to_read_schema(car)
 
     async def list_user_cars(
         self,
@@ -62,7 +64,7 @@ class CarService:
             raise UserNotFoundError(user_id)
 
         cars = await self.car_repository.list_by_user_id(user_id)
-        return [CarRead.model_validate(car) for car in cars]
+        return [await self._to_read_schema(car) for car in cars]
 
     async def update_car(
         self,
@@ -81,7 +83,7 @@ class CarService:
         await self.session.commit()
         await self.session.refresh(car)
 
-        return CarRead.model_validate(car)
+        return await self._to_read_schema(car)
 
     async def delete_car(
         self,
@@ -94,3 +96,23 @@ class CarService:
 
         await self.car_repository.delete(car)
         await self.session.commit()
+
+    async def _to_read_schema(self, car: Car) -> CarRead:
+        latest_mileage = await self.mileage_log_repository.get_latest_for_car(car.id)
+        current_odometer_km = (
+            latest_mileage.odometer_km
+            if latest_mileage is not None
+            else car.initial_odometer_km
+        )
+
+        return CarRead(
+            id=car.id,
+            user_id=car.user_id,
+            brand=car.brand,
+            model=car.model,
+            year=car.year,
+            initial_odometer_km=car.initial_odometer_km,
+            current_odometer_km=current_odometer_km,
+            created_at=car.created_at,
+            updated_at=car.updated_at,
+        )

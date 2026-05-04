@@ -44,5 +44,6 @@ class CarRead(ORMReadSchema):
     model: str
     year: int
     initial_odometer_km: int
+    current_odometer_km: int
     created_at: datetime
     updated_at: datetime

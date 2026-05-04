@@ -69,6 +69,7 @@ async def get_car_service(
     return CarService(
         session=session,
         car_repository=CarRepository(session),
+        mileage_log_repository=MileageLogRepository(session),
         user_repository=UserRepository(session),
     )
 
