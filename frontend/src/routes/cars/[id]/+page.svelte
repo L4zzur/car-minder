@@ -64,6 +64,7 @@
 
 	const formatOdometer = (value: number) => value.toLocaleString('ru-RU');
 	const drivenKm = $derived(car ? car.current_odometer_km - car.initial_odometer_km : 0);
+	const serviceItemCount = $derived(serviceItems.length);
 	const dueCount = $derived(serviceItems.filter((item) => item.status === 'due').length);
 	const soonCount = $derived(serviceItems.filter((item) => item.status === 'soon').length);
 
@@ -380,7 +381,7 @@
 			</div>
 		</div>
 
-		<CarStats {car} {drivenKm} {dueCount} {soonCount} />
+		<CarStats {car} {drivenKm} {dueCount} {soonCount} {serviceItemCount} />
 
 		<div class="grid gap-4 sm:grid-cols-2">
 			<div class="flex flex-col gap-3 rounded-lg border bg-card p-4">
