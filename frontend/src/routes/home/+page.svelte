@@ -92,7 +92,11 @@
 					добавь свою первую машину, чтобы начать следить за её состоянием.
 				</p>
 			</div>
-			<AddCarDialog onCarAdded={loadCars} />
+			<AddCarDialog onCarAdded={loadCars}>
+				{#snippet child({ props })}
+					<Button {...props}>добавить первую машину</Button>
+				{/snippet}
+			</AddCarDialog>
 		</div>
 	{:else}
 		<div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
