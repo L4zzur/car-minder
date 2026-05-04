@@ -38,25 +38,27 @@
 
 <Card.Root>
 	<Card.Header>
-		<div class="flex items-start justify-between gap-4">
+		<div class="flex items-start justify-between">
 			<div>
-				<Card.Title>{car.brand.toLowerCase()} {car.model.toLowerCase()}</Card.Title>
+				<Card.Title class="text-xl">{car.brand.toLowerCase()} {car.model.toLowerCase()}</Card.Title>
 				<Card.Description>{car.year} год выпуска</Card.Description>
 			</div>
-			<div class="flex size-9 items-center justify-center rounded-lg border bg-background text-muted-foreground">
-				<CarFront class="size-4" />
+			<div
+				class="flex size-10 items-center justify-center rounded-lg border bg-background text-muted-foreground"
+			>
+				<CarFront class="size-5" />
 			</div>
 		</div>
 	</Card.Header>
 
-	<Card.Content class="space-y-4">
+	<Card.Content class="space-y-5">
 		<div class="rounded-lg border bg-background p-3">
-			<div class="mb-2 flex items-center gap-2 text-xs text-muted-foreground">
+			<div class="text-xm mb-2 flex items-center gap-2 text-muted-foreground">
 				<Gauge class="size-3.5" />
 				<span>текущий пробег</span>
 			</div>
 			<div class="text-2xl font-semibold tracking-tight">{formatOdometer(currentOdometer)} км</div>
-			<p class="mt-1 text-xs text-muted-foreground">
+			<p class="text-xm mt-1 text-muted-foreground">
 				{#if hasMileageUpdates}
 					старт: {formatOdometer(car.initial_odometer_km)} км
 				{:else}
@@ -82,7 +84,7 @@
 
 	{#if href}
 		<Card.Footer>
-			<Button variant="ghost" class="w-full" {href}>{actionLabel}</Button>
+			<Button variant="outline" class="w-full" {href}>{actionLabel}</Button>
 		</Card.Footer>
 	{/if}
 </Card.Root>

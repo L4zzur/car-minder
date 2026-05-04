@@ -44,13 +44,13 @@
 <div class="container mx-auto space-y-6 p-6">
 	<div class="flex items-center gap-3">
 		{#if auth.user}
-			<span class="text-sm text-muted-foreground">
+			<span class="primary-foreground text-sm">
 				{auth.user.name ?? auth.user.username}
 			</span>
 		{/if}
 
 		<Button
-			variant="outline"
+			variant="secondary"
 			onclick={async () => {
 				await Auth.logoutApiAuthLogoutPost();
 				auth.logout();
@@ -61,12 +61,12 @@
 		</Button>
 	</div>
 	<div class="flex items-center justify-between">
-		<h1 class="text-3xl font-bold tracking-tight">твой гараж</h1>
+		<h1 class="text-4xl font-bold tracking-tight">твой гараж</h1>
 		<AddCarDialog onCarAdded={loadCars} />
 	</div>
 
 	{#if isLoading}
-		<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+		<div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 			{#each Array(3) as _}
 				<Card.Root class="animate-pulse">
 					<Card.Header class="h-32 rounded-t-lg bg-muted"></Card.Header>
@@ -93,7 +93,7 @@
 			<AddCarDialog onCarAdded={loadCars} />
 		</div>
 	{:else}
-		<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+		<div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 			{#each cars as car}
 				<CarCard {car} href={`/cars/${car.id}`} />
 			{/each}

@@ -6,7 +6,6 @@
 	import { Cars } from '$lib/api';
 	import Plus from '@lucide/svelte/icons/plus';
 
-	// Пропсы Svelte 5
 	let { onCarAdded } = $props<{ onCarAdded: () => void }>();
 
 	let open = $state(false);
