@@ -1,13 +1,15 @@
 <script lang="ts">
+	import CarFront from '@lucide/svelte/icons/car-front';
 	import { onMount } from 'svelte';
+
+	import { goto } from '$app/navigation';
+
 	import { Auth, Cars, type CarRead } from '$lib/api';
 	import { auth } from '$lib/auth.svelte';
+	import CarCard from '$lib/components/CarCard.svelte';
+	import AddCarDialog from '$lib/components/ui/AddCarDialog.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
-	import CarFront from '@lucide/svelte/icons/car-front';
-	import AddCarDialog from '$lib/components/ui/AddCarDialog.svelte';
-	import CarCard from '$lib/components/CarCard.svelte';
-	import { goto } from '$app/navigation';
 
 	let cars = $state<CarRead[]>([]);
 	let isLoading = $state(true);

@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import CarCard from '$lib/components/CarCard.svelte';
-	import GitHubMark from '$lib/components/icons/GitHubMark.svelte';
-	import L4zzurMark from '$lib/components/icons/L4zzurMark.svelte';
 	import {
-		Layers2,
-		Wrench,
-		Server,
-		Gauge,
-		PaintRoller,
-		CodeXml,
-		Database,
-		ExternalLink,
 		Bell,
 		CarFront,
-		LayoutDashboard,
+		CodeXml,
+		Contact,
+		Database,
 		DatabaseZap,
-		Contact
+		ExternalLink,
+		Gauge,
+		Layers2,
+		LayoutDashboard,
+		PaintRoller,
+		Server,
+		Wrench
 	} from 'lucide-svelte';
+
+	import CarCard from '$lib/components/CarCard.svelte';
+	import GitHubMark from '$lib/components/icons/GitHubMark.svelte';
+	import { Button } from '$lib/components/ui/button';
 
 	const demoCar = {
 		brand: 'Volkswagen',

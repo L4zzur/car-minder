@@ -1,10 +1,11 @@
 <script lang="ts">
-	import * as Dialog from '$lib/components/ui/dialog';
+	import Plus from '@lucide/svelte/icons/plus';
+
+	import { Cars } from '$lib/api';
 	import { Button } from '$lib/components/ui/button';
+	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import { Cars } from '$lib/api';
-	import Plus from '@lucide/svelte/icons/plus';
 
 	let { onCarAdded } = $props<{ onCarAdded: () => void }>();
 

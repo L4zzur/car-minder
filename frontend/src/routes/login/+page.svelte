@@ -1,12 +1,14 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
+	import { onMount } from 'svelte';
+
+	import { goto } from '$app/navigation';
+
 	import { Auth } from '$lib/api';
 	import { auth } from '$lib/auth.svelte';
-	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
+	import { Button } from '$lib/components/ui/button';
+	import * as Card from '$lib/components/ui/card';
+	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
 
 	let username = $state('');
 	let password = $state('');
