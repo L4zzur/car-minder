@@ -385,13 +385,10 @@
 		<div class="grid gap-4 sm:grid-cols-2">
 			<MileageForm
 				{car}
-				initialValue={mileageValue}
+				bind:mileageValue
 				isSaving={isSavingMileage}
 				error={mileageError}
-				onSubmit={(val) => {
-					mileageValue = val;
-					handleMileageSubmit();
-				}}
+				onSubmit={handleMileageSubmit}
 			/>
 
 			<MileageHistory

@@ -8,29 +8,28 @@
 
 	let {
 		car,
-		initialValue,
+		mileageValue = $bindable(),
 		isSaving,
 		error,
 		onSubmit
 	}: {
 		car: CarRead;
-		initialValue: number | string;
+		mileageValue: number | string;
 		isSaving: boolean;
 		error: string;
-		onSubmit: (value: number) => void;
+		onSubmit: () => void;
 	} = $props();
 
-	let mileageValue = $state(initialValue);
-	let localError = $state(error);
+	let localError = $state();
 
 	$effect(() => {
-		mileageValue = initialValue;
-		localError = error;
+		if (error) localError = error;
 	});
 
 	function handleSubmit(event: Event) {
 		event.preventDefault();
 		localError = '';
+
 		const val = Number(mileageValue);
 		if (!Number.isFinite(val)) {
 			localError = 'введи корректный пробег';
@@ -40,7 +39,7 @@
 			localError = 'пробег должен быть больше текущего';
 			return;
 		}
-		onSubmit(val);
+		onSubmit();
 	}
 </script>
 
