@@ -78,6 +78,10 @@
 	onMount(() => auth.init());
 </script>
 
+<svelte:head>
+	<title>регистрация // car minder</title>
+</svelte:head>
+
 <div class="flex h-screen items-center justify-center">
 	<Card.Root class="w-[400px]">
 		<Card.Header>

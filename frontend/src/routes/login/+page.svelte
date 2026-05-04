@@ -52,6 +52,10 @@
 	onMount(() => auth.init());
 </script>
 
+<svelte:head>
+	<title>вход // car minder</title>
+</svelte:head>
+
 <div class="flex h-screen items-center justify-center">
 	<Card.Root class="w-[350px]">
 		<Card.Header>
