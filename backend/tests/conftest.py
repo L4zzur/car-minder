@@ -11,6 +11,7 @@ TEST_DB_URL = f"sqlite+aiosqlite:///{TEST_DB_PATH}"
 # Set environment variables for tests before importing the app
 os.environ["APP__DB__FILE_PATH"] = TEST_DB_PATH
 os.environ["APP__AUTH__SECRET_KEY"] = secrets.token_urlsafe(32)
+os.environ["APP__MODE"] = "dev"
 
 
 import asyncio
@@ -92,14 +93,18 @@ async def test_user(client: AsyncClient, user_password: str) -> dict:
 
 @pytest.fixture
 async def user_token(client: AsyncClient, test_user: dict, user_password: str) -> str:
-    response = await client.post(
-        "/api/auth/login",
-        data={
-            "username": test_user["username"],
-            "password": user_password,
-        },
-    )
-    return response.json()["access_token"]
+    async with AsyncClient(
+        transport=ASGITransport(app=app),
+        base_url="http://test",
+    ) as login_client:
+        response = await login_client.post(
+            "/api/auth/login",
+            data={
+                "username": test_user["username"],
+                "password": user_password,
+            },
+        )
+        return response.json()["access_token"]
 
 
 @pytest.fixture
@@ -109,6 +114,26 @@ async def auth_client(client: AsyncClient, user_token: str) -> AsyncGenerator[As
         base_url="http://test",
         headers={"Authorization": f"Bearer {user_token}"}
     ) as ac:
+        yield ac
+
+
+@pytest.fixture
+async def cookie_auth_client(
+    client: AsyncClient,
+    test_user: dict,
+    user_password: str,
+) -> AsyncGenerator[AsyncClient, None]:
+    async with AsyncClient(
+        transport=ASGITransport(app=app),
+        base_url="http://test",
+    ) as ac:
+        await ac.post(
+            "/api/auth/login",
+            data={
+                "username": test_user["username"],
+                "password": user_password,
+            },
+        )
         yield ac
 
 

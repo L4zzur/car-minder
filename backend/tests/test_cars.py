@@ -80,6 +80,33 @@ async def test_list_user_cars(auth_client: AsyncClient):
 
 
 @pytest.mark.asyncio
+async def test_car_current_odometer_uses_latest_mileage(auth_client: AsyncClient):
+    create_resp = await auth_client.post(
+        "/api/cars",
+        json={
+            "brand": "Toyota",
+            "model": "Corolla",
+            "year": 2018,
+            "initial_odometer_km": 60000,
+        },
+    )
+    car_id = create_resp.json()["id"]
+    assert create_resp.json()["current_odometer_km"] == 60000
+
+    await auth_client.post(
+        "/api/mileage-logs",
+        json={
+            "car_id": car_id,
+            "odometer_km": 64200,
+        },
+    )
+
+    response = await auth_client.get(f"/api/cars/{car_id}")
+    assert response.status_code == 200
+    assert response.json()["current_odometer_km"] == 64200
+
+
+@pytest.mark.asyncio
 async def test_update_car(auth_client: AsyncClient):
     create_resp = await auth_client.post(
         "/api/cars",

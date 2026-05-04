@@ -59,48 +59,65 @@ async def test_get_user_by_id(client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_update_user(client: AsyncClient):
-    # Create user
-    create_resp = await client.post(
-        "/api/users",
-        json={
-            "username": "codepandorum",
-            "name": "INHUMAN",
-            "password": "securepassword123",
-        },
-    )
-    user_id = create_resp.json()["id"]
-
+async def test_update_user(auth_client: AsyncClient, test_user: dict):
     # Update name
-    response = await client.patch(
+    user_id = test_user["id"]
+    response = await auth_client.patch(
         f"/api/users/{user_id}",
         json={"name": "Code:Pandorum"},
     )
     assert response.status_code == 200
     assert response.json()["name"] == "Code:Pandorum"
-    assert response.json()["username"] == "codepandorum"
+    assert response.json()["username"] == test_user["username"]
 
 
 @pytest.mark.asyncio
-async def test_delete_user(client: AsyncClient):
-    # Create user
-    create_resp = await client.post(
-        "/api/users",
-        json={
-            "username": "xilent",
-            "name": "Xilent",
-            "password": "securepassword123",
-        },
-    )
-    user_id = create_resp.json()["id"]
-
+async def test_delete_user(auth_client: AsyncClient, client: AsyncClient, test_user: dict):
     # Delete
-    response = await client.delete(f"/api/users/{user_id}")
+    user_id = test_user["id"]
+    response = await auth_client.delete(f"/api/users/{user_id}")
     assert response.status_code == 204
 
     # Verify it's gone
     get_resp = await client.get(f"/api/users/{user_id}")
     assert get_resp.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_update_user_unauthorized(client: AsyncClient, test_user: dict):
+    response = await client.patch(
+        f"/api/users/{test_user['id']}",
+        json={"name": "Nope"},
+    )
+    assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_delete_user_unauthorized(client: AsyncClient, test_user: dict):
+    response = await client.delete(f"/api/users/{test_user['id']}")
+    assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_update_other_user_forbidden(
+    client: AsyncClient,
+    auth_client: AsyncClient,
+):
+    create_resp = await client.post(
+        "/api/users",
+        json={
+            "username": "forbidden_target",
+            "name": "Forbidden Target",
+            "password": "securepassword123",
+        },
+    )
+    user_id = create_resp.json()["id"]
+
+    response = await auth_client.patch(
+        f"/api/users/{user_id}",
+        json={"name": "Nope"},
+    )
+    assert response.status_code == 403
 
 
 @pytest.mark.asyncio
