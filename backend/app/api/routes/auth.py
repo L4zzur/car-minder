@@ -1,3 +1,5 @@
+import secrets
+
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
 
@@ -9,6 +11,13 @@ from core.security import create_access_token
 from services import UserService
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+ACCESS_TOKEN_COOKIE = "access_token"
+CSRF_TOKEN_COOKIE = "csrf_token"
+
+
+def get_cookie_secure_flag() -> bool:
+    return settings.mode == "prod"
 
 
 @router.post("/login", response_model=Token)
@@ -26,11 +35,22 @@ async def login(
         )
 
     access_token = create_access_token(data={"sub": str(user.id)})
+    csrf_token = secrets.token_urlsafe(32)
+    cookie_secure = get_cookie_secure_flag()
     response.set_cookie(
-        key="access_token",
+        key=ACCESS_TOKEN_COOKIE,
         value=access_token,
         httponly=True,
-        secure=False,
+        secure=cookie_secure,
+        samesite="lax",
+        max_age=settings.auth.access_token_expire_minutes * 60,
+        path="/",
+    )
+    response.set_cookie(
+        key=CSRF_TOKEN_COOKIE,
+        value=csrf_token,
+        httponly=False,
+        secure=cookie_secure,
         samesite="lax",
         max_age=settings.auth.access_token_expire_minutes * 60,
         path="/",
@@ -40,7 +60,8 @@ async def login(
 
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 async def logout(response: Response):
-    response.delete_cookie(key="access_token", path="/")
+    response.delete_cookie(key=ACCESS_TOKEN_COOKIE, path="/")
+    response.delete_cookie(key=CSRF_TOKEN_COOKIE, path="/")
 
 
 @router.get("/me", response_model=UserRead)
