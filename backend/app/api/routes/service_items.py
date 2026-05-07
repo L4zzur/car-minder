@@ -8,10 +8,10 @@ from core.schemas import (
     ServiceItemCreate,
     ServiceItemMarkServiced,
     ServiceItemRead,
+    ServiceItemSummary,
     ServiceItemUpdate,
 )
 from services import ServiceItemService
-from services.exceptions import ServiceItemNotFoundError
 
 router = APIRouter(prefix="/service-items", tags=["service-items"])
 
@@ -25,12 +25,12 @@ async def add_service_item(
     return await service.add_service_item(create_schema, current_user.id)
 
 
-@router.get("/car/{car_id}", response_model=list[ServiceItemRead], status_code=200)
+@router.get("/car/{car_id}", response_model=list[ServiceItemSummary], status_code=200)
 async def list_by_car(
     car_id: UUID,
     current_user: User = Depends(get_current_user),
     service: ServiceItemService = Depends(get_service_item_service),
-) -> list[ServiceItemRead]:
+) -> list[ServiceItemSummary]:
     return await service.list_by_car(car_id, current_user.id)
 
 

@@ -1,9 +1,16 @@
 from datetime import datetime
+from enum import StrEnum
 from uuid import UUID
 
 from pydantic import BaseModel, Field
 
 from .base import ORMReadSchema
+
+
+class ServiceItemStatus(StrEnum):
+    OK = "ok"
+    SOON = "soon"
+    DUE = "due"
 
 
 class ServiceItemCreate(BaseModel):
@@ -32,3 +39,9 @@ class ServiceItemRead(ORMReadSchema):
     last_service_odometer_km: int
     created_at: datetime
     updated_at: datetime
+
+
+class ServiceItemSummary(ServiceItemRead):
+    status: ServiceItemStatus = ServiceItemStatus.OK
+    km_until_due: int | None = None
+    days_until_due: int | None = None

@@ -92,6 +92,7 @@ async def get_service_item_service(
         service_item_repository=ServiceItemRepository(session),
         car_repository=CarRepository(session),
         mileage_log_repository=MileageLogRepository(session),
+        reminder_repository=ReminderRepository(session),
     )
 
 

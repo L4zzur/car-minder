@@ -8,9 +8,10 @@ __all__ = [
     "MileageLogUpdate",
     "ServiceItemCreate",
     "ServiceItemRead",
+    "ServiceItemSummary",
     "ServiceItemUpdate",
     "ServiceItemMarkServiced",
-    "UserCreate",
+    "ServiceItemStatus",
     "UserRead",
     "UserUpdate",
     "ReminderCreate",
@@ -29,6 +30,8 @@ from .service_item import (
     ServiceItemCreate,
     ServiceItemMarkServiced,
     ServiceItemRead,
+    ServiceItemStatus,
+    ServiceItemSummary,
     ServiceItemUpdate,
 )
 from .user import UserCreate, UserRead, UserUpdate

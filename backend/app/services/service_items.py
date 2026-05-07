@@ -1,16 +1,25 @@
+from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import ServiceItem
 from core.models.mileage_log import MileageLog
+from core.models.reminder import Reminder
 from core.schemas import (
     ServiceItemCreate,
     ServiceItemMarkServiced,
     ServiceItemRead,
+    ServiceItemStatus,
+    ServiceItemSummary,
     ServiceItemUpdate,
 )
-from repositories import CarRepository, MileageLogRepository, ServiceItemRepository
+from repositories import (
+    CarRepository,
+    MileageLogRepository,
+    ReminderRepository,
+    ServiceItemRepository,
+)
 from rules.mileage import validate_new_odometer
 
 from .exceptions import CarNotFoundError, ServiceItemNotFoundError
@@ -23,11 +32,13 @@ class ServiceItemService:
         service_item_repository: ServiceItemRepository,
         car_repository: CarRepository,
         mileage_log_repository: MileageLogRepository,
+        reminder_repository: ReminderRepository,
     ) -> None:
         self.session = session
         self.service_item_repository = service_item_repository
         self.car_repository = car_repository
         self.mileage_log_repository = mileage_log_repository
+        self.reminder_repository = reminder_repository
 
     async def _get_item_with_owner_check(
         self,
@@ -73,16 +84,113 @@ class ServiceItemService:
         self,
         car_id: UUID,
         user_id: UUID,
-    ) -> list[ServiceItemRead]:
-        _car = await self.car_repository.get_by_id(car_id)
-        if _car is None or _car.user_id != user_id:
+    ) -> list[ServiceItemSummary]:
+        car = await self.car_repository.get_by_id(car_id)
+        if car is None or car.user_id != user_id:
             raise CarNotFoundError(car_id)
 
         service_items = await self.service_item_repository.list_by_car_id(car_id)
-        return [
-            ServiceItemRead.model_validate(service_item)
-            for service_item in service_items
-        ]
+
+        if not service_items:
+            return []
+
+        latest_mileage = await self.mileage_log_repository.get_latest_for_car(car_id)
+        current_odometer = (
+            latest_mileage.odometer_km if latest_mileage else car.initial_odometer_km
+        )
+
+        item_ids = [item.id for item in service_items]
+        reminders = await self.reminder_repository.list_active_by_service_item_ids(
+            item_ids
+        )
+
+        reminders_map: dict[UUID, list[Reminder]] = {}
+        for reminder in reminders:
+            reminders_map.setdefault(reminder.service_item_id, []).append(reminder)
+
+        now = datetime.now(timezone.utc)
+        results = []
+        for item in service_items:
+            item_reminders = reminders_map.get(item.id, [])
+
+            status = ServiceItemStatus.OK
+            km_until_due: int | None = None
+            days_until_due: int | None = None
+
+            if item_reminders:
+                computed_reminders = []
+                for reminder in item_reminders:
+                    if reminder.interval_km:
+                        due_at_km = item.last_service_odometer_km + reminder.interval_km
+                        notify_at_km = due_at_km - (reminder.notify_before_km or 0)
+                        km_left = due_at_km - current_odometer
+                        _status = ServiceItemStatus.OK
+                        if km_left <= 0:
+                            _status = ServiceItemStatus.DUE
+                        elif current_odometer >= notify_at_km:
+                            _status = ServiceItemStatus.SOON
+                        computed_reminders.append((_status, km_left, None))
+                    if reminder.interval_days:
+                        last_service_at = item.last_service_at
+                        if last_service_at.tzinfo is None:
+                            last_service_at = last_service_at.replace(tzinfo=timezone.utc)
+
+                        due_date = last_service_at + timedelta(
+                            days=reminder.interval_days
+                        )
+                        notify_before = reminder.notify_before_days or 0
+                        notify_date = due_date - timedelta(days=notify_before)
+                        days_left = (due_date - now).days
+                        _status = ServiceItemStatus.OK
+                        if days_left <= 0:
+                            _status = ServiceItemStatus.DUE
+                        elif now >= notify_date:
+                            _status = ServiceItemStatus.SOON
+                        computed_reminders.append((_status, None, days_left))
+                
+                if any(rem[0] == ServiceItemStatus.DUE for rem in computed_reminders):
+                    status = ServiceItemStatus.DUE
+                    due_reminder = next(
+                        r for r in computed_reminders if r[0] == ServiceItemStatus.DUE
+                    )
+                    km_until_due = due_reminder[1]
+                    days_until_due = due_reminder[2]
+                elif any(rem[0] == ServiceItemStatus.SOON for rem in computed_reminders):
+                    status = ServiceItemStatus.SOON
+                    soon_reminder = next(
+                        r for r in computed_reminders if r[0] == ServiceItemStatus.SOON
+                    )
+                    km_until_due = soon_reminder[1]
+                    days_until_due = soon_reminder[2]
+                else:
+                    valid = [
+                        r
+                        for r in computed_reminders
+                        if r[1] is not None or r[2] is not None
+                    ]
+                    if valid:
+                        km_until_due = min(
+                            (r[1] for r in valid if r[1] is not None), default=None
+                        )
+                        days_until_due = min(
+                            (r[2] for r in valid if r[2] is not None), default=None
+                        )
+
+            results.append(
+                ServiceItemSummary(
+                    id=item.id,
+                    car_id=car.id,
+                    name=item.name,
+                    last_service_at=item.last_service_at,
+                    last_service_odometer_km=item.last_service_odometer_km,
+                    status=status,
+                    km_until_due=km_until_due,
+                    days_until_due=days_until_due,
+                    created_at=item.created_at,
+                    updated_at=item.updated_at,
+                )
+            )
+        return results
 
     async def update_service_item(
         self,

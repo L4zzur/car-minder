@@ -44,3 +44,16 @@ class ReminderRepository:
         )
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
+
+    async def list_active_by_service_item_ids(
+        self, service_item_ids: list[UUID]
+    ) -> list[Reminder]:
+        """Fetch all active reminders for a list of service items."""
+        if not service_item_ids:
+            return []
+        stmt = select(Reminder).where(
+            Reminder.service_item_id.in_(service_item_ids),
+            Reminder.is_active.is_(True),
+        )
+        result = await self.session.execute(stmt)
+        return list(result.scalars().all())
