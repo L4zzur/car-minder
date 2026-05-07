@@ -343,6 +343,54 @@ export type ServiceItemRead = {
 };
 
 /**
+ * ServiceItemStatus
+ */
+export type ServiceItemStatus = 'ok' | 'soon' | 'due';
+
+/**
+ * ServiceItemSummary
+ */
+export type ServiceItemSummary = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Car Id
+     */
+    car_id: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Last Service At
+     */
+    last_service_at: string;
+    /**
+     * Last Service Odometer Km
+     */
+    last_service_odometer_km: number;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+    status?: ServiceItemStatus;
+    /**
+     * Km Until Due
+     */
+    km_until_due?: number | null;
+    /**
+     * Days Until Due
+     */
+    days_until_due?: number | null;
+};
+
+/**
  * ServiceItemUpdate
  */
 export type ServiceItemUpdate = {
@@ -952,7 +1000,7 @@ export type ListByCarApiServiceItemsCarCarIdGetResponses = {
      *
      * Successful Response
      */
-    200: Array<ServiceItemRead>;
+    200: Array<ServiceItemSummary>;
 };
 
 export type ListByCarApiServiceItemsCarCarIdGetResponse = ListByCarApiServiceItemsCarCarIdGetResponses[keyof ListByCarApiServiceItemsCarCarIdGetResponses];
