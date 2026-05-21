@@ -97,7 +97,7 @@
 			<Dialog.Description>заполни данные о своём железном друге</Dialog.Description>
 		</Dialog.Header>
 		<form
-			class="space-y-4 py-4"
+			class="space-y-4"
 			onsubmit={(e) => {
 				e.preventDefault();
 				handleSubmit();
