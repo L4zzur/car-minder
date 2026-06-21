@@ -206,21 +206,25 @@
 	<title>{car ? `${car.brand} ${car.model}` : 'машина'} // car minder</title>
 </svelte:head>
 
-<div class="container mx-auto space-y-6 p-6">
-	<header class="flex items-center justify-between">
+<div class="container mx-auto space-y-6 p-4 sm:p-6">
+	<header class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 		<a
 			href="/home"
-			class="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+			class="flex items-center gap-2 self-start text-sm text-muted-foreground transition-colors hover:text-foreground"
 		>
 			<ArrowLeft class="size-4" />
 			<span>назад в гараж</span>
 		</a>
 
-		<div class="flex items-center gap-2">
+		<div class="flex w-full items-center gap-2 sm:w-auto">
 			{#if car}
-				<AddServiceDialog {car} onServiceAdded={() => loadCarPage({ showLoading: false })} />
+				<AddServiceDialog
+					{car}
+					onServiceAdded={() => loadCarPage({ showLoading: false })}
+					class="flex-1 sm:flex-initial"
+				/>
 			{/if}
-			<Button size="sm">
+			<Button size="sm" class="flex-1 sm:flex-none">
 				<Bell class="size-3.5" />
 				напоминание
 			</Button>
@@ -258,7 +262,7 @@
 
 		<CarStats {car} {drivenKm} {dueCount} {soonCount} {serviceItemCount} />
 
-		<div class="grid gap-4 sm:grid-cols-2">
+		<div class="grid max-w-4xl grid-cols-1 gap-4 md:grid-cols-2">
 			<MileageForm
 				{car}
 				bind:mileageValue
@@ -292,7 +296,7 @@
 				{/if}
 			</div>
 
-			<div class="grid gap-4 sm:grid-cols-2">
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 				{#if serviceItems.length}
 					{#each serviceItems as item}
 						<ServiceItemCard
