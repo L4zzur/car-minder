@@ -7,10 +7,16 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 
-	let { car, onServiceAdded, child } = $props<{
+	let {
+		car,
+		onServiceAdded,
+		child,
+		class: className
+	} = $props<{
 		car: CarRead;
 		onServiceAdded: () => void;
 		child?: (opts: { props: Record<string, unknown> }) => import('svelte').Snippet;
+		class?: string;
 	}>();
 
 	let open = $state(false);
@@ -69,11 +75,11 @@
 </script>
 
 <Dialog.Root bind:open>
-	<Dialog.Trigger>
+	<Dialog.Trigger class={className}>
 		{#if child}
 			{@render child({ props: {} })}
 		{:else}
-			<Button variant="outline" size="sm">
+			<Button variant="outline" size="sm" class="w-full">
 				<Wrench class="size-3.5" />
 				расходник
 			</Button>
