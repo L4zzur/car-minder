@@ -47,17 +47,17 @@
 	}
 </script>
 
-<div class="flex items-center justify-between gap-4 rounded-lg border bg-card p-4">
+<div class="flex flex-col gap-3 rounded-lg border bg-card p-4">
 	<div class="flex items-start gap-3">
 		{#if item.status === 'due'}
-			<CircleAlert class="mt-0.5 size-5 text-destructive" />
+			<CircleAlert class="mt-0.5 size-5 text-destructive shrink-0" />
 		{:else if item.status === 'soon'}
-			<Clock class="mt-0.5 size-5 text-primary" />
+			<Clock class="mt-0.5 size-5 text-primary shrink-0" />
 		{:else}
-			<CircleCheck class="mt-0.5 size-5 text-muted-foreground" />
+			<CircleCheck class="mt-0.5 size-5 text-muted-foreground shrink-0" />
 		{/if}
 		<div class="space-y-1">
-			<h3 class="font-medium">{item.name}</h3>
+			<h3 class="font-medium text-sm sm:text-base">{item.name}</h3>
 			<div class="flex flex-wrap gap-x-1 text-xs text-muted-foreground">
 				<span>обслужено: {formatDate(item.last_service_at)}</span>
 				<span>//</span>
@@ -66,27 +66,29 @@
 		</div>
 	</div>
 
-	<div class="flex shrink-0 items-center gap-2">
+	<div class="flex items-center justify-between gap-2 border-t border-border/50 pt-3">
 		<span class="rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground">
 			{getNextLabel()}
 		</span>
 
-		<Tooltip.Root>
-			<Tooltip.Trigger>
-				<Button variant="ghost" size="sm" disabled={isSaving} onclick={onMarkServiced}>
-					{isSaving ? 'сохраняем...' : 'обслужено'}
-				</Button>
-			</Tooltip.Trigger>
-			<Tooltip.Content><p>отметить обслуживание</p></Tooltip.Content>
-		</Tooltip.Root>
+		<div class="flex items-center gap-1">
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					<Button variant="ghost" size="sm" disabled={isSaving} onclick={onMarkServiced}>
+						{isSaving ? 'сохраняем...' : 'обслужено'}
+					</Button>
+				</Tooltip.Trigger>
+				<Tooltip.Content><p>отметить обслуживание</p></Tooltip.Content>
+			</Tooltip.Root>
 
-		<Tooltip.Root>
-			<Tooltip.Trigger>
-				<Button variant="ghost" size="icon" disabled={isDeleting} onclick={onDelete}>
-					<Trash2 class="size-4" />
-				</Button>
-			</Tooltip.Trigger>
-			<Tooltip.Content><p>удалить расходник</p></Tooltip.Content>
-		</Tooltip.Root>
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					<Button variant="ghost" size="icon" disabled={isDeleting} onclick={onDelete} class="text-muted-foreground hover:text-destructive">
+						<Trash2 class="size-4" />
+					</Button>
+				</Tooltip.Trigger>
+				<Tooltip.Content><p>удалить расходник</p></Tooltip.Content>
+			</Tooltip.Root>
+		</div>
 	</div>
 </div>
