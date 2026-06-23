@@ -449,6 +449,10 @@ export type UserRead = {
      */
     id: string;
     /**
+     * Telegram Id
+     */
+    telegram_id?: number | null;
+    /**
      * Username
      */
     username: string;
@@ -1303,3 +1307,46 @@ export type UpdateReminderApiRemindersReminderIdPatchResponses = {
 };
 
 export type UpdateReminderApiRemindersReminderIdPatchResponse = UpdateReminderApiRemindersReminderIdPatchResponses[keyof UpdateReminderApiRemindersReminderIdPatchResponses];
+
+export type GetBotWebhookApiTelegramWebhookGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/telegram/webhook';
+};
+
+export type GetBotWebhookApiTelegramWebhookGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type BotWebhookApiTelegramWebhookPostData = {
+    body?: never;
+    headers?: {
+        /**
+         * X-Telegram-Bot-Api-Secret-Token
+         */
+        'X-Telegram-Bot-Api-Secret-Token'?: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/api/telegram/webhook';
+};
+
+export type BotWebhookApiTelegramWebhookPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type BotWebhookApiTelegramWebhookPostError = BotWebhookApiTelegramWebhookPostErrors[keyof BotWebhookApiTelegramWebhookPostErrors];
+
+export type BotWebhookApiTelegramWebhookPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
