@@ -10,3 +10,7 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     id: UUID | None = None
+
+
+class TelegramAuthRequest(BaseModel):
+    init_data_raw: str

@@ -14,7 +14,13 @@ from repositories import (
     UserRepository,
 )
 from repositories.reminder import ReminderRepository
-from services import CarService, MileageLogService, ServiceItemService, UserService
+from services import (
+    CarService,
+    MileageLogService,
+    ServiceItemService,
+    TelegramAuthService,
+    UserService,
+)
 from services.reminders import ReminderService
 
 oauth2_scheme = OAuth2PasswordBearer(
@@ -104,3 +110,9 @@ async def get_reminder_service(
         reminder_repository=ReminderRepository(session),
         service_item_repository=ServiceItemRepository(session),
     )
+
+
+async def get_telegram_auth_service(
+    session: AsyncSession = Depends(db_helper.session_dependency),
+) -> TelegramAuthService:
+    return TelegramAuthService(session=session, user_repository=UserRepository(session))

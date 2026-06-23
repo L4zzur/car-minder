@@ -12,6 +12,7 @@ __all__ = [
     "ServiceItemUpdate",
     "ServiceItemMarkServiced",
     "ServiceItemStatus",
+    "UserCreate",
     "UserRead",
     "UserUpdate",
     "ReminderCreate",
@@ -19,9 +20,10 @@ __all__ = [
     "ReminderUpdate",
     "Token",
     "TokenData",
+    "TelegramAuthRequest",
 ]
 
-from .auth import Token, TokenData
+from .auth import TelegramAuthRequest, Token, TokenData
 from .base import ORMReadSchema
 from .car import CarCreate, CarRead, CarUpdate
 from .mileage_log import MileageLogCreate, MileageLogRead, MileageLogUpdate
