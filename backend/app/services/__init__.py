@@ -20,4 +20,5 @@ from .exceptions import (
 from .mileage_logs import MileageLogService
 from .reminders import ReminderService
 from .service_items import ServiceItemService
+from .telegram_auth import TelegramAuthService
 from .users import UserService
