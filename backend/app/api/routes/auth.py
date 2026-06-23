@@ -3,6 +3,7 @@ import secrets
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
 
+from api.auth import ACCESS_TOKEN_COOKIE, CSRF_TOKEN_COOKIE, get_cookie_secure_flag
 from api.deps import get_current_user, get_user_service
 from core.config import settings
 from core.models import User
@@ -11,13 +12,6 @@ from core.security import create_access_token
 from services import UserService
 
 router = APIRouter(prefix="/auth", tags=["auth"])
-
-ACCESS_TOKEN_COOKIE = "access_token"
-CSRF_TOKEN_COOKIE = "csrf_token"
-
-
-def get_cookie_secure_flag() -> bool:
-    return settings.mode == "prod"
 
 
 @router.post("/login", response_model=Token)
