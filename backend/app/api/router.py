@@ -6,6 +6,7 @@ from api.routes import (
     mileage_logs_router,
     reminders_router,
     service_items_router,
+    telegram_router,
     users_router,
 )
 from core.config import settings
@@ -18,3 +19,4 @@ api_router.include_router(cars_router)
 api_router.include_router(mileage_logs_router)
 api_router.include_router(service_items_router)
 api_router.include_router(reminders_router)
+api_router.include_router(telegram_router)

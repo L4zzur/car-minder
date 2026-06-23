@@ -3,21 +3,33 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 import uvicorn
+from bot import bot, dp
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from middleware.csrf import csrf_protect
 
 from api.errors import register_exception_handlers
 from api.router import api_router
 from core.config import settings
 from core.db_helper import db_helper
-from middleware.csrf import csrf_protect
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    print(f"Setting webhook to: {settings.bot.webhook_url}")
+
+    await bot.delete_webhook(drop_pending_updates=True)
+    await bot.set_webhook(
+        url=settings.bot.webhook_url,
+        allowed_updates=dp.resolve_used_update_types(),
+        secret_token=settings.bot.webhook_secret.get_secret_value(),
+    )
+
+    print("Bot started")
     # startup
     yield
     # shutdown
+    await bot.delete_webhook()
     await db_helper.dispose()
 
 

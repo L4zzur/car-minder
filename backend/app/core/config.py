@@ -2,7 +2,7 @@ from enum import StrEnum
 from pathlib import Path
 from typing import ClassVar
 
-from pydantic import BaseModel, FilePath, field_validator
+from pydantic import BaseModel, FilePath, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -24,6 +24,17 @@ class AuthConfig(BaseModel):
     secret_key: str
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60 * 24 * 7  # 1 week
+
+
+class TelegramBotConfig(BaseModel):
+    token: SecretStr
+    webhook_secret: SecretStr
+
+    @property
+    def webhook_url(self) -> str | None:
+        if not settings.domain:
+            return None
+        return f"https://{settings.domain}{settings.api.prefix}/telegram/webhook"
 
 
 class CorsConfig(BaseModel):
@@ -75,6 +86,8 @@ class Settings(BaseSettings):
     cors: CorsConfig = CorsConfig()
     auth: AuthConfig
     db: DatabaseConfig
+    bot: TelegramBotConfig
+    domain: str | None = None
 
 
 settings = Settings()  # type: ignore
