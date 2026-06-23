@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import CheckConstraint
+from sqlalchemy import BigInteger, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
@@ -11,6 +11,13 @@ if TYPE_CHECKING:
 
 
 class User(Base, IdMixin, CreatedAtMixin, UpdatedAtMixin):
+    telegram_id: Mapped[int | None] = mapped_column(
+        BigInteger,
+        unique=True,
+        nullable=True,
+        comment="User Telegram ID",
+    )
+
     username: Mapped[str] = mapped_column(
         unique=True,
         nullable=False,

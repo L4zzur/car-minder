@@ -19,6 +19,7 @@ class UserUpdate(BaseModel):
 
 class UserRead(ORMReadSchema):
     id: UUID
+    telegram_id: int | None = None
     username: str
     name: str
     created_at: datetime
