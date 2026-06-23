@@ -409,6 +409,16 @@ export type ServiceItemUpdate = {
 };
 
 /**
+ * TelegramAuthRequest
+ */
+export type TelegramAuthRequest = {
+    /**
+     * Init Data Raw
+     */
+    init_data_raw: string;
+};
+
+/**
  * Token
  */
 export type Token = {
@@ -1307,6 +1317,29 @@ export type UpdateReminderApiRemindersReminderIdPatchResponses = {
 };
 
 export type UpdateReminderApiRemindersReminderIdPatchResponse = UpdateReminderApiRemindersReminderIdPatchResponses[keyof UpdateReminderApiRemindersReminderIdPatchResponses];
+
+export type TelegramAuthApiTelegramAuthPostData = {
+    body: TelegramAuthRequest;
+    path?: never;
+    query?: never;
+    url: '/api/telegram/auth';
+};
+
+export type TelegramAuthApiTelegramAuthPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type TelegramAuthApiTelegramAuthPostError = TelegramAuthApiTelegramAuthPostErrors[keyof TelegramAuthApiTelegramAuthPostErrors];
+
+export type TelegramAuthApiTelegramAuthPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type GetBotWebhookApiTelegramWebhookGetData = {
     body?: never;
