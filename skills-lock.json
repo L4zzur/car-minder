@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "pohuy": {
+      "source": "smixs/pohuy",
+      "sourceType": "github",
+      "skillPath": "skills/pohuy/SKILL.md",
+      "computedHash": "76ffc4bb87850e4ca7632855f7d7362205aab50754b334f6155f49658bf6cb31"
+    }
+  }
+}
