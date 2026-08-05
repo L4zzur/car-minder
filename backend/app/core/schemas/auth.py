@@ -14,3 +14,8 @@ class TokenData(BaseModel):
 
 class TelegramAuthRequest(BaseModel):
     init_data_raw: str
+
+
+class TelegramLinkTokenResponse(BaseModel):
+    token: str
+    bot_username: str

@@ -21,9 +21,10 @@ __all__ = [
     "Token",
     "TokenData",
     "TelegramAuthRequest",
+    "TelegramLinkTokenResponse",
 ]
 
-from .auth import TelegramAuthRequest, Token, TokenData
+from .auth import TelegramAuthRequest, TelegramLinkTokenResponse, Token, TokenData
 from .base import ORMReadSchema
 from .car import CarCreate, CarRead, CarUpdate
 from .mileage_log import MileageLogCreate, MileageLogRead, MileageLogUpdate

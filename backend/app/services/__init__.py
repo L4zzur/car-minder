@@ -8,6 +8,7 @@ __all__ = [
     "UserService",
     "ReminderService",
     "ServiceItemService",
+    "TelegramAuthService",
 ]
 
 from .cars import CarService

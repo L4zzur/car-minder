@@ -55,6 +55,34 @@ class UsernameAlreadyTakenError(ConflictServiceError):
         super().__init__(details=details)
 
 
+# Telegram
+class TelegramAlreadyLinkedError(ConflictServiceError):
+    code = "telegram_already_linked"
+    message = "User already has a Telegram account linked"
+
+    def __init__(self, telegram_id: int | None = None) -> None:
+        details = {"telegram_id": telegram_id} if telegram_id is not None else None
+        super().__init__(details=details)
+
+
+class TelegramAlreadyLinkedToAnotherError(ConflictServiceError):
+    code = "telegram_already_linked_to_another"
+    message = "This Telegram account is already linked to another user"
+
+    def __init__(self, telegram_id: int | None = None) -> None:
+        details = {"telegram_id": telegram_id} if telegram_id is not None else None
+        super().__init__(details=details)
+
+
+class TelegramNotLinkedError(BusinessRuleServiceError):
+    code = "telegram_not_linked"
+    message = "User does not have a Telegram account linked"
+
+    def __init__(self, user_id: UUID | None = None) -> None:
+        details = {"user_id": str(user_id)} if user_id is not None else None
+        super().__init__(details=details)
+
+
 # Car
 class CarNotFoundError(NotFoundServiceError):
     code = "car_not_found"
