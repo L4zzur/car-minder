@@ -90,4 +90,4 @@ class Settings(BaseSettings):
     domain: str | None = None
 
 
-settings = Settings()  # type: ignore
+settings = Settings()

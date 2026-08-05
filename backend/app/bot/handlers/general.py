@@ -20,7 +20,9 @@ async def cmd_start(
     message: Message,
     command: CommandObject,
     session: AsyncSession,
-):
+) -> None:
+    if not message.from_user:
+        return
     user_repo = UserRepository(session)
     auth_service = TelegramAuthService(session, user_repo)
     telegram_id = message.from_user.id

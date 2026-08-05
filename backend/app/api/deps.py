@@ -62,6 +62,8 @@ async def get_current_user(
         raise credentials_exception
 
     token_data = TokenData(id=id)
+    if not token_data.id:
+        raise credentials_exception
     user = await user_service.get_user_model_by_id(token_data.id)
 
     if user is None:

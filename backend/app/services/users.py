@@ -53,7 +53,7 @@ class UserService:
 
     async def get_user_model_by_id(
         self,
-        id: str,
+        id: UUID,
     ) -> User | None:
         return await self.user_repository.get_by_id(id)
 

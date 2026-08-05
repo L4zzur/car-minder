@@ -17,11 +17,13 @@ async def lifespan(app: FastAPI):
     print(f"Setting webhook to: {settings.bot.webhook_url}")
 
     await bot.delete_webhook(drop_pending_updates=True)
-    await bot.set_webhook(
-        url=settings.bot.webhook_url,
-        allowed_updates=dp.resolve_used_update_types(),
-        secret_token=settings.bot.webhook_secret.get_secret_value(),
-    )
+    webhook_url = settings.bot.webhook_url
+    if webhook_url:
+        await bot.set_webhook(
+            url=webhook_url,
+            allowed_updates=dp.resolve_used_update_types(),
+            secret_token=settings.bot.webhook_secret.get_secret_value(),
+        )
     bot_info = await bot.get_me()
     app.state.bot_username = bot_info.username
 

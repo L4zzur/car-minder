@@ -32,6 +32,8 @@ class TelegramAuthService:
             init_data=tg_auth_request.init_data_raw,
         )
 
+        if not web_app_data.user:
+            raise UserNotFoundError()
         user = await self.user_repository.get_by_telegram_id(web_app_data.user.id)
         if not user:
             raise UserNotFoundError()
