@@ -18,4 +18,4 @@ class TelegramAuthRequest(BaseModel):
 
 class TelegramLinkTokenResponse(BaseModel):
     token: str
-    bot_username: str
+    bot_username: str | None = None

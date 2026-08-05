@@ -11,6 +11,8 @@ TEST_DB_URL = f"sqlite+aiosqlite:///{TEST_DB_PATH}"
 # Set environment variables for tests before importing the app
 os.environ["APP__DB__FILE_PATH"] = TEST_DB_PATH
 os.environ["APP__AUTH__SECRET_KEY"] = secrets.token_urlsafe(32)
+os.environ["APP__BOT__TOKEN"] = "123456789:ABCdefGHIjklMNOpqrsTUVwxyz"
+os.environ["APP__BOT__WEBHOOK_SECRET"] = secrets.token_hex(32)
 os.environ["APP__MODE"] = "dev"
 
 

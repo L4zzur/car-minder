@@ -3,6 +3,7 @@ from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
 from aiogram.utils.web_app import safe_parse_webapp_init_data
+from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
@@ -27,6 +28,11 @@ class TelegramAuthService:
     async def authenticate_miniapp_user(
         self, tg_auth_request: TelegramAuthRequest
     ) -> UserRead:
+        if not settings.bot.is_active or not settings.bot.token:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Telegram bot is disabled",
+            )
         web_app_data = safe_parse_webapp_init_data(
             token=settings.bot.token.get_secret_value(),
             init_data=tg_auth_request.init_data_raw,

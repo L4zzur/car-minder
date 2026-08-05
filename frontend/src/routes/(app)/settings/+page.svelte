@@ -1,4 +1,5 @@
 <script lang="ts">
+	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import Bell from '@lucide/svelte/icons/bell';
 	import CheckCircle2 from '@lucide/svelte/icons/check-circle-2';
@@ -21,6 +22,7 @@
 
 	let isLoading = $state(false);
 	let isUnlinking = $state(false);
+	let isBotDisabled = $state(false);
 
 	onMount(async () => {
 		auth.init();
@@ -28,6 +30,16 @@
 
 		if (!auth.isAuthenticated) {
 			await goto('/login');
+			return;
+		}
+
+		try {
+			const webhookRes = await Telegram.getBotWebhookApiTelegramWebhookGet();
+			if (webhookRes.data?.status === 'Telegram bot is disabled') {
+				isBotDisabled = true;
+			}
+		} catch {
+			// ignore check failure
 		}
 	});
 
@@ -37,6 +49,10 @@
 			const res = await Telegram.getLinkTokenApiTelegramLinkTokenPost();
 			if (res.data) {
 				const { token, bot_username } = res.data;
+				if (!bot_username) {
+					isBotDisabled = true;
+					return;
+				}
 				const url = `https://t.me/${bot_username}?start=${token}`;
 				window.open(url, '_blank');
 
@@ -49,8 +65,11 @@
 
 				setTimeout(() => clearInterval(checkInterval), 60000);
 			}
-		} catch (err) {
+		} catch (err: any) {
 			console.error('ошибка создания токена привязки:', err);
+			if (err?.status === 503 || err?.response?.status === 503) {
+				isBotDisabled = true;
+			}
 		} finally {
 			isLoading = false;
 		}
@@ -139,6 +158,10 @@
 							<CheckCircle2 data-icon="inline-start" />
 							привязано
 						</Badge>
+					{:else if isBotDisabled}
+						<Badge variant="outline" class="border-destructive/20 bg-destructive/10 text-destructive">
+							отключено
+						</Badge>
 					{:else}
 						<Badge variant="outline" class="border-amber-500/20 bg-amber-500/10 text-amber-500">
 							не привязано
@@ -146,36 +169,50 @@
 					{/if}
 				</Card.Header>
 
-				<Card.Content class="flex flex-col gap-4 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
+				<Card.Content class="border-t pt-4">
 					{#if auth.user?.telegram_id}
-						<div class="text-sm text-muted-foreground">
-							telegram ID: <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground">{auth.user.telegram_id}</code>
+						<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+							<div class="text-sm text-muted-foreground">
+								telegram ID: <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground">{auth.user.telegram_id}</code>
+							</div>
+
+							<Button onclick={unlinkTelegram} disabled={isUnlinking} variant="outline" size="sm" class="text-destructive hover:text-destructive">
+								{#if isUnlinking}
+									<Loader2 data-icon="inline-start" class="animate-spin" />
+									отвязка...
+								{:else}
+									<Unlink data-icon="inline-start" />
+									отвязать
+								{/if}
+							</Button>
 						</div>
-
-						<Button onclick={unlinkTelegram} disabled={isUnlinking} variant="outline" size="sm" class="text-destructive hover:text-destructive">
-							{#if isUnlinking}
-								<Loader2 data-icon="inline-start" class="animate-spin" />
-								отвязка...
-							{:else}
-								<Unlink data-icon="inline-start" />
-								отвязать
-							{/if}
-						</Button>
+					{:else if isBotDisabled}
+						<div class="flex flex-col gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-amber-600 dark:text-amber-400">
+							<div class="flex items-center gap-2 font-medium">
+								<AlertTriangle class="h-4 w-4 shrink-0" />
+								telegram-бот не активирован на сервере
+							</div>
+							<p class="text-xs text-muted-foreground leading-relaxed">
+								для привязки аккаунта необходимо сначала задать токен бота в конфигурации приложения (<code class="rounded bg-muted px-1 py-0.5 font-mono text-[11px] text-foreground">APP__BOT__TOKEN</code>) согласно документации
+							</p>
+						</div>
 					{:else}
-						<p class="text-sm text-muted-foreground">
-							нажми кнопку, чтобы перейти в бота и завершить привязку
-						</p>
+						<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+							<p class="text-sm text-muted-foreground">
+								нажми кнопку, чтобы перейти в бота и завершить привязку
+							</p>
 
-						<Button onclick={linkTelegram} disabled={isLoading} size="sm">
-							{#if isLoading}
-								<Loader2 data-icon="inline-start" class="animate-spin" />
-								генерация...
-							{:else}
-								<Send data-icon="inline-start" />
-								привязать telegram
-								<ExternalLink data-icon="inline-end" />
-							{/if}
-						</Button>
+							<Button onclick={linkTelegram} disabled={isLoading} size="sm">
+								{#if isLoading}
+									<Loader2 data-icon="inline-start" class="animate-spin" />
+									генерация...
+								{:else}
+									<Send data-icon="inline-start" />
+									привязать telegram
+									<ExternalLink data-icon="inline-end" />
+								{/if}
+							</Button>
+						</div>
 					{/if}
 				</Card.Content>
 			</Card.Root>

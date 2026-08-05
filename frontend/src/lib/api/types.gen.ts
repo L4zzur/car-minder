@@ -429,7 +429,7 @@ export type TelegramLinkTokenResponse = {
     /**
      * Bot Username
      */
-    bot_username: string;
+    bot_username?: string | null;
 };
 
 /**

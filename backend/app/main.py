@@ -14,24 +14,40 @@ from middleware.csrf import csrf_protect
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print(f"Setting webhook to: {settings.bot.webhook_url}")
+    if settings.bot.is_active and bot:
+        try:
+            print(f"Setting webhook to: {settings.bot.webhook_url}")
+            await bot.delete_webhook(drop_pending_updates=True)
+            webhook_url = settings.bot.webhook_url
+            if webhook_url:
+                secret_token = (
+                    settings.bot.webhook_secret.get_secret_value()
+                    if settings.bot.webhook_secret
+                    else None
+                )
+                await bot.set_webhook(
+                    url=webhook_url,
+                    allowed_updates=dp.resolve_used_update_types(),
+                    secret_token=secret_token,
+                )
+            bot_info = await bot.get_me()
+            app.state.bot_username = bot_info.username
+            print(f"Bot started: @{bot_info.username}")
+        except Exception as e:
+            print(f"Failed to initialize Telegram Bot: {e}")
+            app.state.bot_username = None
+    else:
+        print("Telegram bot is disabled.")
+        app.state.bot_username = None
 
-    await bot.delete_webhook(drop_pending_updates=True)
-    webhook_url = settings.bot.webhook_url
-    if webhook_url:
-        await bot.set_webhook(
-            url=webhook_url,
-            allowed_updates=dp.resolve_used_update_types(),
-            secret_token=settings.bot.webhook_secret.get_secret_value(),
-        )
-    bot_info = await bot.get_me()
-    app.state.bot_username = bot_info.username
-
-    print("Bot started")
     # startup
     yield
     # shutdown
-    await bot.delete_webhook()
+    if settings.bot.is_active and bot:
+        try:
+            await bot.delete_webhook()
+        except Exception:
+            pass
     await db_helper.dispose()
 
 

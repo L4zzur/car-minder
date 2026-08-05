@@ -27,12 +27,16 @@ class AuthConfig(BaseModel):
 
 
 class TelegramBotConfig(BaseModel):
-    token: SecretStr
-    webhook_secret: SecretStr
+    token: SecretStr | None = None
+    webhook_secret: SecretStr | None = None
+
+    @property
+    def is_active(self) -> bool:
+        return bool(self.token and self.token.get_secret_value())
 
     @property
     def webhook_url(self) -> str | None:
-        if not settings.domain:
+        if not self.is_active or not settings.domain:
             return None
         return f"https://{settings.domain}{settings.api.prefix}/telegram/webhook"
 

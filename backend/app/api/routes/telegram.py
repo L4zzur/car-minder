@@ -58,6 +58,12 @@ async def bot_webhook(
         None, alias="X-Telegram-Bot-Api-Secret-Token"
     ),
 ) -> dict:
+    if not settings.bot.is_active or not settings.bot.webhook_secret or not bot:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Telegram bot is disabled",
+        )
+
     if (
         x_telegram_bot_api_secret_token
         != settings.bot.webhook_secret.get_secret_value()
@@ -82,8 +88,13 @@ async def get_link_token(
     current_user: User = Depends(get_current_user),
     service: TelegramAuthService = Depends(get_telegram_auth_service),
 ) -> TelegramLinkTokenResponse:
+    if not settings.bot.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Telegram bot is disabled",
+        )
     token = service.generate_link_token(current_user.id)
-    bot_username = getattr(request.app.state, "bot_username", "carminder_bot")
+    bot_username = getattr(request.app.state, "bot_username", None)
 
     return TelegramLinkTokenResponse(
         token=token,
@@ -100,7 +111,7 @@ async def unlink_telegram(
 
     await service.unlink_telegram(current_user.id)
 
-    if telegram_id:
+    if telegram_id and settings.bot.is_active and bot:
         try:
             await bot.send_message(
                 chat_id=telegram_id,
@@ -112,4 +123,6 @@ async def unlink_telegram(
 
 @router.get("/webhook")
 async def get_bot_webhook() -> dict:
+    if not settings.bot.is_active:
+        return {"status": "Telegram bot is disabled"}
     return {"status": "Webhook is active"}

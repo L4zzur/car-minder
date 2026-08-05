@@ -7,10 +7,14 @@ from core.config import settings
 
 from .handlers import router as bot_router
 
-bot = Bot(
-    token=settings.bot.token.get_secret_value(),
-    default=DefaultBotProperties(parse_mode=ParseMode.HTML),
-)
+if settings.bot.is_active and settings.bot.token:
+    bot: Bot | None = Bot(
+        token=settings.bot.token.get_secret_value(),
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML),
+    )
+else:
+    bot = None
+
 dp = Dispatcher()
 dp.include_router(bot_router)
 dp.update.middleware(DbSessionMiddleware())
