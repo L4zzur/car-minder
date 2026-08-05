@@ -79,8 +79,8 @@
 		{#if child}
 			{@render child({ props: {} })}
 		{:else}
-			<Button variant="outline" size="sm" class="w-full">
-				<Wrench class="size-3.5" />
+			<Button variant="outline" class="w-full">
+				<Wrench data-icon="inline-start" />
 				расходник
 			</Button>
 		{/if}

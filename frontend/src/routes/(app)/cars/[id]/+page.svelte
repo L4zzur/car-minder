@@ -224,8 +224,8 @@
 					class="flex-1 sm:flex-initial"
 				/>
 			{/if}
-			<Button size="sm" class="flex-1 sm:flex-none">
-				<Bell class="size-3.5" />
+			<Button class="flex-1 sm:flex-none">
+				<Bell data-icon="inline-start" />
 				напоминание
 			</Button>
 		</div>
@@ -287,8 +287,8 @@
 				{#if car}
 					<AddServiceDialog {car} onServiceAdded={loadCarPage}>
 						{#snippet child({ props })}
-							<Button {...props} variant="outline" size="sm">
-								<Plus class="size-4" />
+							<Button {...props} variant="outline">
+								<Plus data-icon="inline-start" />
 								добавить
 							</Button>
 						{/snippet}

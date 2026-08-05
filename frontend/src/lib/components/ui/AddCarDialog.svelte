@@ -87,7 +87,7 @@
 			{@render child({ props: {} })}
 		{:else}
 			<Button variant="outline">
-				<Plus class="mr-2 size-4" /> добавить авто
+				<Plus data-icon="inline-start" /> добавить авто
 			</Button>
 		{/if}
 	</Dialog.Trigger>

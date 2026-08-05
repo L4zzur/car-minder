@@ -53,14 +53,13 @@
 				</span>
 			{/if}
 
-			<Button variant="outline" size="sm" href="/settings" class="gap-2">
-				<Settings class="size-4" />
+			<Button variant="outline" href="/settings">
+				<Settings data-icon="inline-start" />
 				настройки
 			</Button>
 
 			<Button
 				variant="secondary"
-				size="sm"
 				onclick={async () => {
 					await Auth.logoutApiAuthLogoutPost();
 					auth.logout();

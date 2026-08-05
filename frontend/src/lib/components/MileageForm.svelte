@@ -57,7 +57,7 @@
 			<Input type="number" bind:value={mileageValue} />
 		</div>
 		<Button type="submit" class="w-full" disabled={isSaving}>
-			<Gauge class="size-3.5" />
+			<Gauge data-icon="inline-start" />
 			{isSaving ? 'сохраняем...' : 'сохранить'}
 		</Button>
 	</form>

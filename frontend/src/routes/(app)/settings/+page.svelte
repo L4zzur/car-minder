@@ -40,7 +40,6 @@
 				const url = `https://t.me/${bot_username}?start=${token}`;
 				window.open(url, '_blank');
 
-				// Начинаем опрашивать профиль, пока telegram_id не появится
 				const checkInterval = setInterval(async () => {
 					await auth.fetchUser();
 					if (auth.user?.telegram_id) {
@@ -48,7 +47,6 @@
 					}
 				}, 2000);
 
-				// Ограничиваем время опроса (например, 1 минута)
 				setTimeout(() => clearInterval(checkInterval), 60000);
 			}
 		} catch (err) {
@@ -76,7 +74,6 @@
 </svelte:head>
 
 <div class="container mx-auto max-w-4xl space-y-6 p-6">
-	<!-- Верхняя навигация и заголовок -->
 	<div class="space-y-4">
 		<div>
 			<Button variant="ghost" size="sm" href="/home" class="-ml-2 text-muted-foreground hover:text-foreground">
@@ -90,7 +87,6 @@
 		</div>
 	</div>
 
-	<!-- Вкладки shadcn-svelte -->
 	<Tabs.Root value="profile" class="w-full space-y-6">
 		<Tabs.List class="grid w-full grid-cols-3 max-w-md">
 			<Tabs.Trigger value="profile">
@@ -107,9 +103,7 @@
 			</Tabs.Trigger>
 		</Tabs.List>
 
-		<!-- Содержимое вкладки Профиль -->
 		<Tabs.Content value="profile" class="space-y-6">
-			<!-- Карточка основной информации -->
 			<Card.Root>
 				<Card.Header>
 					<Card.Title class="text-lg">основная информация</Card.Title>
@@ -128,7 +122,6 @@
 				</Card.Content>
 			</Card.Root>
 
-			<!-- Карточка интеграции с Telegram -->
 			<Card.Root>
 				<Card.Header class="flex flex-row items-start justify-between space-y-0">
 					<div class="flex flex-col gap-1">
@@ -137,7 +130,7 @@
 							интеграция с telegram
 						</Card.Title>
 						<Card.Description>
-							привяжи аккаунт для входа через Mini App и получения уведомлений от бота.
+							привяжи аккаунт для входа через Mini App и получения уведомлений от бота
 						</Card.Description>
 					</div>
 
@@ -170,7 +163,7 @@
 						</Button>
 					{:else}
 						<p class="text-sm text-muted-foreground">
-							нажми кнопку, чтобы перейти в бота и завершить привязку.
+							нажми кнопку, чтобы перейти в бота и завершить привязку
 						</p>
 
 						<Button onclick={linkTelegram} disabled={isLoading} size="sm">
@@ -188,19 +181,17 @@
 			</Card.Root>
 		</Tabs.Content>
 
-		<!-- Уведомления -->
 		<Tabs.Content value="notifications">
 			<Card.Root>
-				<Card.Content class="pt-6 text-sm text-muted-foreground">
+				<Card.Content class="text-sm text-muted-foreground">
 					раздел уведомлений находится в разработке...
 				</Card.Content>
 			</Card.Root>
 		</Tabs.Content>
 
-		<!-- Безопасность -->
 		<Tabs.Content value="security">
 			<Card.Root>
-				<Card.Content class="pt-6 text-sm text-muted-foreground">
+				<Card.Content class="text-sm text-muted-foreground">
 					раздел безопасности находится в разработке...
 				</Card.Content>
 			</Card.Root>
