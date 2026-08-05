@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from httpx import AsyncClient
@@ -7,7 +7,7 @@ from httpx import AsyncClient
 @pytest.mark.asyncio
 async def test_add_service_item(auth_client: AsyncClient, test_car: dict):
     car_id = test_car["id"]
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
 
     response = await auth_client.post(
         "/api/service-items",
@@ -27,7 +27,7 @@ async def test_add_service_item(auth_client: AsyncClient, test_car: dict):
 @pytest.mark.asyncio
 async def test_list_service_items(auth_client: AsyncClient, test_car: dict):
     car_id = test_car["id"]
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
 
     await auth_client.post(
         "/api/service-items",
@@ -50,7 +50,7 @@ async def test_list_service_items(auth_client: AsyncClient, test_car: dict):
 async def test_mark_serviced_updates_mileage(auth_client: AsyncClient, test_car: dict):
     car_id = test_car["id"]
     initial_mileage = test_car["initial_odometer_km"]
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
 
     # 1. Create service item
     create_resp = await auth_client.post(
@@ -83,7 +83,7 @@ async def test_mark_serviced_updates_mileage(auth_client: AsyncClient, test_car:
 async def test_mark_serviced_rollback_fail(auth_client: AsyncClient, test_car: dict):
     car_id = test_car["id"]
     initial_mileage = test_car["initial_odometer_km"]
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
 
     create_resp = await auth_client.post(
         "/api/service-items",
@@ -108,7 +108,7 @@ async def test_mark_serviced_rollback_fail(auth_client: AsyncClient, test_car: d
 @pytest.mark.asyncio
 async def test_delete_service_item(auth_client: AsyncClient, test_car: dict):
     car_id = test_car["id"]
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
 
     create_resp = await auth_client.post(
         "/api/service-items",
@@ -133,7 +133,7 @@ async def test_delete_service_item(auth_client: AsyncClient, test_car: dict):
 async def test_status_no_reminders(auth_client: AsyncClient, test_car: dict):
     # No reminders, status ok
     car_id = test_car["id"]
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
 
     await auth_client.post(
         "/api/service-items",
@@ -158,7 +158,7 @@ async def test_status_no_reminders(auth_client: AsyncClient, test_car: dict):
 async def test_status_km_due(auth_client: AsyncClient, test_car: dict):
     # Mileage status due
     car_id = test_car["id"]
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
 
     # ServiceIetm: last service at 1000 km
     create_resp = await auth_client.post(
@@ -200,7 +200,7 @@ async def test_status_km_due(auth_client: AsyncClient, test_car: dict):
 async def test_status_priority_due_over_ok(auth_client: AsyncClient, test_car: dict):
     # If one reminder is ok and the other is due -> overall status is due
     car_id = test_car["id"]
-    two_days_ago = (datetime.now(timezone.utc) - timedelta(days=2)).isoformat()
+    two_days_ago = (datetime.now(UTC) - timedelta(days=2)).isoformat()
 
     create_resp = await auth_client.post(
         "/api/service-items",

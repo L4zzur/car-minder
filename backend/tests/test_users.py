@@ -72,7 +72,9 @@ async def test_update_user(auth_client: AsyncClient, test_user: dict):
 
 
 @pytest.mark.asyncio
-async def test_delete_user(auth_client: AsyncClient, client: AsyncClient, test_user: dict):
+async def test_delete_user(
+    auth_client: AsyncClient, client: AsyncClient, test_user: dict
+):
     # Delete
     user_id = test_user["id"]
     response = await auth_client.delete(f"/api/users/{user_id}")

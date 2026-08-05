@@ -1,13 +1,13 @@
 import secrets
 from datetime import UTC, datetime, timedelta
-from secrets import token_urlsafe
 from uuid import UUID
 
 from aiogram.utils.web_app import safe_parse_webapp_init_data
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from core.config import settings
 from core.models import User
 from core.schemas import TelegramAuthRequest, UserRead
-from core.security import hash_password
 from repositories import UserRepository
 from services.exceptions import (
     TelegramAlreadyLinkedError,
@@ -15,7 +15,6 @@ from services.exceptions import (
     TelegramNotLinkedError,
     UserNotFoundError,
 )
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class TelegramAuthService:

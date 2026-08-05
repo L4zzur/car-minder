@@ -15,11 +15,10 @@ os.environ["APP__MODE"] = "dev"
 
 
 import asyncio
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
 import pytest
 from httpx import ASGITransport, AsyncClient
-from main import app
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -28,6 +27,7 @@ from sqlalchemy.ext.asyncio import (
 
 from core.db_helper import db_helper
 from core.models.base import Base
+from main import app
 
 # Create test engine and session factory
 test_engine = create_async_engine(TEST_DB_URL, echo=False)
@@ -39,7 +39,7 @@ test_session_factory = async_sessionmaker(
 )
 
 
-async def override_get_async_session() -> AsyncGenerator[AsyncSession, None]:
+async def override_get_async_session() -> AsyncGenerator[AsyncSession]:
     async with test_session_factory() as session:
         yield session
         await session.close()
@@ -65,7 +65,7 @@ async def setup_db():
 
 
 @pytest.fixture
-async def session() -> AsyncGenerator[AsyncSession, None]:
+async def session() -> AsyncGenerator[AsyncSession]:
     async with test_session_factory() as session:
         yield session
         await session.rollback()
@@ -108,11 +108,13 @@ async def user_token(client: AsyncClient, test_user: dict, user_password: str) -
 
 
 @pytest.fixture
-async def auth_client(client: AsyncClient, user_token: str) -> AsyncGenerator[AsyncClient, None]:
+async def auth_client(
+    client: AsyncClient, user_token: str
+) -> AsyncGenerator[AsyncClient]:
     async with AsyncClient(
-        transport=ASGITransport(app=app), 
+        transport=ASGITransport(app=app),
         base_url="http://test",
-        headers={"Authorization": f"Bearer {user_token}"}
+        headers={"Authorization": f"Bearer {user_token}"},
     ) as ac:
         yield ac
 
@@ -122,7 +124,7 @@ async def cookie_auth_client(
     client: AsyncClient,
     test_user: dict,
     user_password: str,
-) -> AsyncGenerator[AsyncClient, None]:
+) -> AsyncGenerator[AsyncClient]:
     async with AsyncClient(
         transport=ASGITransport(app=app),
         base_url="http://test",
@@ -167,7 +169,7 @@ async def test_service_item(auth_client: AsyncClient, test_car: dict) -> dict:
 
 
 @pytest.fixture
-async def client() -> AsyncGenerator[AsyncClient, None]:
+async def client() -> AsyncGenerator[AsyncClient]:
     app.dependency_overrides[db_helper.session_dependency] = override_get_async_session
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"

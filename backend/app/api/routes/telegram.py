@@ -1,6 +1,8 @@
 import secrets
 
 from aiogram.types import Update
+from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response, status
+
 from api.auth import ACCESS_TOKEN_COOKIE, CSRF_TOKEN_COOKIE, get_cookie_secure_flag
 from api.deps import get_current_user, get_telegram_auth_service
 from bot import bot, dp
@@ -8,7 +10,6 @@ from core.config import settings
 from core.models import User
 from core.schemas import TelegramAuthRequest, TelegramLinkTokenResponse, Token
 from core.security import create_access_token
-from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response, status
 from services.telegram_auth import TelegramAuthService
 
 router = APIRouter(

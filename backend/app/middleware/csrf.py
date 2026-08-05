@@ -10,12 +10,8 @@ CSRF_ERROR_DETAIL = "CSRF token missing or invalid"
 
 
 def is_csrf_exempt(request: Request) -> bool:
-    return (
-        request.url.path == f"{settings.api.prefix}/auth/login"
-        or (
-            request.method == "POST"
-            and request.url.path == f"{settings.api.prefix}/users"
-        )
+    return request.url.path == f"{settings.api.prefix}/auth/login" or (
+        request.method == "POST" and request.url.path == f"{settings.api.prefix}/users"
     )
 
 

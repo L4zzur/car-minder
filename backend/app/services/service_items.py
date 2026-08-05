@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -108,7 +108,7 @@ class ServiceItemService:
         for reminder in reminders:
             reminders_map.setdefault(reminder.service_item_id, []).append(reminder)
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         results = []
         for item in service_items:
             item_reminders = reminders_map.get(item.id, [])
@@ -133,7 +133,7 @@ class ServiceItemService:
                     if reminder.interval_days:
                         last_service_at = item.last_service_at
                         if last_service_at.tzinfo is None:
-                            last_service_at = last_service_at.replace(tzinfo=timezone.utc)
+                            last_service_at = last_service_at.replace(tzinfo=UTC)
 
                         due_date = last_service_at + timedelta(
                             days=reminder.interval_days
@@ -147,7 +147,7 @@ class ServiceItemService:
                         elif now >= notify_date:
                             _status = ServiceItemStatus.SOON
                         computed_reminders.append((_status, None, days_left))
-                
+
                 if any(rem[0] == ServiceItemStatus.DUE for rem in computed_reminders):
                     status = ServiceItemStatus.DUE
                     due_reminder = next(
@@ -155,7 +155,9 @@ class ServiceItemService:
                     )
                     km_until_due = due_reminder[1]
                     days_until_due = due_reminder[2]
-                elif any(rem[0] == ServiceItemStatus.SOON for rem in computed_reminders):
+                elif any(
+                    rem[0] == ServiceItemStatus.SOON for rem in computed_reminders
+                ):
                     status = ServiceItemStatus.SOON
                     soon_reminder = next(
                         r for r in computed_reminders if r[0] == ServiceItemStatus.SOON
