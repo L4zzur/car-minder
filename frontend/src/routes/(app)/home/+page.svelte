@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CarFront from '@lucide/svelte/icons/car-front';
+	import Settings from '@lucide/svelte/icons/settings';
 	import { onMount } from 'svelte';
 
 	import { goto } from '$app/navigation';
@@ -44,23 +45,31 @@
 </svelte:head>
 
 <div class="container mx-auto space-y-6 p-6">
-	<div class="flex items-center gap-3">
-		{#if auth.user}
-			<span class="primary-foreground text-sm">
-				{auth.user.name ?? auth.user.username}
-			</span>
-		{/if}
+	<div class="flex items-center justify-between">
+		<div class="flex items-center gap-3">
+			{#if auth.user}
+				<span class="text-sm font-medium">
+					{auth.user.name ?? auth.user.username}
+				</span>
+			{/if}
 
-		<Button
-			variant="secondary"
-			onclick={async () => {
-				await Auth.logoutApiAuthLogoutPost();
-				auth.logout();
-				await goto('/login');
-			}}
-		>
-			выйти
-		</Button>
+			<Button variant="outline" size="sm" href="/settings" class="gap-2">
+				<Settings class="size-4" />
+				настройки
+			</Button>
+
+			<Button
+				variant="secondary"
+				size="sm"
+				onclick={async () => {
+					await Auth.logoutApiAuthLogoutPost();
+					auth.logout();
+					await goto('/login');
+				}}
+			>
+				выйти
+			</Button>
+		</div>
 	</div>
 	<div class="flex items-center justify-between">
 		<h1 class="text-4xl font-bold tracking-tight">твой гараж</h1>
