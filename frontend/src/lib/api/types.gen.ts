@@ -419,6 +419,20 @@ export type TelegramAuthRequest = {
 };
 
 /**
+ * TelegramLinkTokenResponse
+ */
+export type TelegramLinkTokenResponse = {
+    /**
+     * Token
+     */
+    token: string;
+    /**
+     * Bot Username
+     */
+    bot_username: string;
+};
+
+/**
  * Token
  */
 export type Token = {
@@ -1338,8 +1352,10 @@ export type TelegramAuthApiTelegramAuthPostResponses = {
     /**
      * Successful Response
      */
-    200: unknown;
+    200: Token;
 };
+
+export type TelegramAuthApiTelegramAuthPostResponse = TelegramAuthApiTelegramAuthPostResponses[keyof TelegramAuthApiTelegramAuthPostResponses];
 
 export type GetBotWebhookApiTelegramWebhookGetData = {
     body?: never;
@@ -1350,10 +1366,16 @@ export type GetBotWebhookApiTelegramWebhookGetData = {
 
 export type GetBotWebhookApiTelegramWebhookGetResponses = {
     /**
+     * Response Get Bot Webhook Api Telegram Webhook Get
+     *
      * Successful Response
      */
-    200: unknown;
+    200: {
+        [key: string]: unknown;
+    };
 };
+
+export type GetBotWebhookApiTelegramWebhookGetResponse = GetBotWebhookApiTelegramWebhookGetResponses[keyof GetBotWebhookApiTelegramWebhookGetResponses];
 
 export type BotWebhookApiTelegramWebhookPostData = {
     body?: never;
@@ -1379,7 +1401,63 @@ export type BotWebhookApiTelegramWebhookPostError = BotWebhookApiTelegramWebhook
 
 export type BotWebhookApiTelegramWebhookPostResponses = {
     /**
+     * Response Bot Webhook Api Telegram Webhook Post
+     *
      * Successful Response
      */
-    200: unknown;
+    200: {
+        [key: string]: unknown;
+    };
 };
+
+export type BotWebhookApiTelegramWebhookPostResponse = BotWebhookApiTelegramWebhookPostResponses[keyof BotWebhookApiTelegramWebhookPostResponses];
+
+export type GetLinkTokenApiTelegramLinkTokenPostData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/telegram/link-token';
+};
+
+export type GetLinkTokenApiTelegramLinkTokenPostErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetLinkTokenApiTelegramLinkTokenPostError = GetLinkTokenApiTelegramLinkTokenPostErrors[keyof GetLinkTokenApiTelegramLinkTokenPostErrors];
+
+export type GetLinkTokenApiTelegramLinkTokenPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: TelegramLinkTokenResponse;
+};
+
+export type GetLinkTokenApiTelegramLinkTokenPostResponse = GetLinkTokenApiTelegramLinkTokenPostResponses[keyof GetLinkTokenApiTelegramLinkTokenPostResponses];
+
+export type UnlinkTelegramApiTelegramLinkDeleteData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/telegram/link';
+};
+
+export type UnlinkTelegramApiTelegramLinkDeleteErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UnlinkTelegramApiTelegramLinkDeleteError = UnlinkTelegramApiTelegramLinkDeleteErrors[keyof UnlinkTelegramApiTelegramLinkDeleteErrors];
+
+export type UnlinkTelegramApiTelegramLinkDeleteResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type UnlinkTelegramApiTelegramLinkDeleteResponse = UnlinkTelegramApiTelegramLinkDeleteResponses[keyof UnlinkTelegramApiTelegramLinkDeleteResponses];
