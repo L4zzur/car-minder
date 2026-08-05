@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "fastapi": {
+      "source": "fastapi/fastapi",
+      "sourceType": "github",
+      "skillPath": "fastapi/.agents/skills/fastapi/SKILL.md",
+      "computedHash": "187b2e06c41cdb6c6beeab15e6db4aeb1bf62f57735974646ad5646af8aacc66"
+    },
     "pohuy": {
       "source": "smixs/pohuy",
       "sourceType": "github",
