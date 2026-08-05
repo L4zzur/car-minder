@@ -1,17 +1,15 @@
-import sys
 from contextlib import asynccontextmanager
-from pathlib import Path
 
 import uvicorn
-from bot import bot, dp
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from middleware.csrf import csrf_protect
 
 from api.errors import register_exception_handlers
 from api.router import api_router
+from bot import bot, dp
 from core.config import settings
 from core.db_helper import db_helper
+from middleware.csrf import csrf_protect
 
 
 @asynccontextmanager
@@ -24,6 +22,8 @@ async def lifespan(app: FastAPI):
         allowed_updates=dp.resolve_used_update_types(),
         secret_token=settings.bot.webhook_secret.get_secret_value(),
     )
+    bot_info = await bot.get_me()
+    app.state.bot_username = bot_info.username
 
     print("Bot started")
     # startup
