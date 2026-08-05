@@ -19,10 +19,11 @@
 
 ## Разработка и тестирование
 
-- black + isort + ruff
-- mypy
+- ruff (linter + formatter)
+- ty (type checker)
 - pre-commit
 - pytest
+
 
 ## Telegram бот
 
