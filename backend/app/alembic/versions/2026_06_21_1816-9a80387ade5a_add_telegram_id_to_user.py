@@ -21,19 +21,20 @@ depends_on: str | Sequence[str] | None = None
 
 def upgrade() -> None:
     """Upgrade schema."""
-    op.add_column(
-        "users",
-        sa.Column(
-            "telegram_id",
-            sa.BigInteger(),
-            nullable=True,
-            comment="User Telegram ID",
-        ),
-    )
-    op.create_unique_constraint(op.f("uq_users_telegram_id"), "users", ["telegram_id"])
+    with op.batch_alter_table("users") as batch_op:
+        batch_op.add_column(
+            sa.Column(
+                "telegram_id",
+                sa.BigInteger(),
+                nullable=True,
+                comment="User Telegram ID",
+            )
+        )
+        batch_op.create_unique_constraint(op.f("uq_users_telegram_id"), ["telegram_id"])
 
 
 def downgrade() -> None:
     """Downgrade schema."""
-    op.drop_constraint(op.f("uq_users_telegram_id"), "users", type_="unique")
-    op.drop_column("users", "telegram_id")
+    with op.batch_alter_table("users") as batch_op:
+        batch_op.drop_constraint(op.f("uq_users_telegram_id"), type_="unique")
+        batch_op.drop_column("telegram_id")
