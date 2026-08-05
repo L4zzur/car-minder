@@ -6,7 +6,8 @@ from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response
 from api.auth import ACCESS_TOKEN_COOKIE, CSRF_TOKEN_COOKIE, get_cookie_secure_flag
 from api.deps import get_current_user, get_telegram_auth_service
 from bot import bot, dp
-from core.config import settings
+from core.config import AppMode, settings
+from core.logger import logger
 from core.models import User
 from core.schemas import TelegramAuthRequest, TelegramLinkTokenResponse, Token
 from core.security import create_access_token
@@ -77,7 +78,10 @@ async def bot_webhook(
         update = Update.model_validate(update_data, context={"bot": bot})
         await dp.feed_update(bot, update)
     except Exception as e:
-        print(f"Update error: {e}")
+        logger.error(
+            f"Update error: {e}",
+            exc_info=settings.mode == AppMode.dev,
+        )
 
     return {"ok": True}
 
@@ -118,7 +122,10 @@ async def unlink_telegram(
                 text="⚠️ <b>Твой Telegram-аккаунт был отвязан от аккаунта приложения!</b>\n\nЕсли это сделал не ты, свяжитесь с поддержкой и смени пароль.",
             )
         except Exception as e:
-            print(f"Failed to send unlink notification: {e}")
+            logger.error(
+                f"Failed to send unlink notification: {e}",
+                exc_info=settings.mode == AppMode.dev,
+            )
 
 
 @router.get("/webhook")

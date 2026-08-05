@@ -7,16 +7,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from api.errors import register_exception_handlers
 from api.router import api_router
 from bot import bot, dp
-from core.config import settings
+from core.config import AppMode, settings
 from core.db_helper import db_helper
+from core.logger import logger, setup_logging
 from middleware.csrf import csrf_protect
+
+setup_logging()
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     if settings.bot.is_active and bot:
         try:
-            print(f"Setting webhook to: {settings.bot.webhook_url}")
+            logger.info(f"Setting webhook to: {settings.bot.webhook_url}")
             await bot.delete_webhook(drop_pending_updates=True)
             webhook_url = settings.bot.webhook_url
             if webhook_url:
@@ -32,12 +35,15 @@ async def lifespan(app: FastAPI):
                 )
             bot_info = await bot.get_me()
             app.state.bot_username = bot_info.username
-            print(f"Bot started: @{bot_info.username}")
+            logger.info(f"Bot started: @{bot_info.username}")
         except Exception as e:
-            print(f"Failed to initialize Telegram Bot: {e}")
+            logger.error(
+                f"Failed to initialize Telegram Bot: {e}",
+                exc_info=settings.mode == AppMode.dev,
+            )
             app.state.bot_username = None
     else:
-        print("Telegram bot is disabled.")
+        logger.info("Telegram bot is disabled.")
         app.state.bot_username = None
 
     # startup
