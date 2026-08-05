@@ -52,11 +52,15 @@ def setup_logging() -> None:
     root_logger.handlers = [handler]
 
     # Intercept Uvicorn loggers
-    for uvicorn_logger_name in ("uvicorn", "uvicorn.error", "uvicorn.access"):
+    for uvicorn_logger_name in ("uvicorn", "uvicorn.error"):
         u_logger = logging.getLogger(uvicorn_logger_name)
         u_logger.handlers = [handler]
         u_logger.propagate = False
         u_logger.setLevel(logging.INFO)
+
+    # Disable default uvicorn.access logger in favor of custom API access middleware
+    uvicorn_access = logging.getLogger("uvicorn.access")
+    uvicorn_access.disabled = True
 
     # Mute noisy internal loggers that spam DEBUG logs
     for noisy_logger_name in ("asyncio", "aiosqlite", "sqlalchemy", "aiogram"):
