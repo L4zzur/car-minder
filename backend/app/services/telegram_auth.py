@@ -33,10 +33,16 @@ class TelegramAuthService:
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
                 detail="Telegram bot is disabled",
             )
-        web_app_data = safe_parse_webapp_init_data(
-            token=settings.bot.token.get_secret_value(),
-            init_data=tg_auth_request.init_data_raw,
-        )
+        try:
+            web_app_data = safe_parse_webapp_init_data(
+                token=settings.bot.token.get_secret_value(),
+                init_data=tg_auth_request.init_data_raw,
+            )
+        except ValueError as e:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail=str(e),
+            )
 
         if not web_app_data.user:
             raise UserNotFoundError()
