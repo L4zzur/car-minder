@@ -8,5 +8,7 @@
 		"pathPattern": "./messages/{locale}.json"
 	},
 	"baseLocale": "ru",
-	"locales": ["ru", "en"]
+	"locales": ["ru", "en"],
+	"sourceLanguageTag": "ru",
+	"languageTags": ["ru", "en"]
 }
