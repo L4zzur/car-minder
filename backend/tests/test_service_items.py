@@ -240,3 +240,94 @@ async def test_status_priority_due_over_ok(auth_client: AsyncClient, test_car: d
     assert item["status"] == "due"
     assert item["days_until_due"] is not None
     assert item["days_until_due"] <= 0
+
+
+@pytest.mark.asyncio
+async def test_status_soon_km(auth_client: AsyncClient, test_car: dict):
+    # Service item: last service at 1000 km, initial car km = 1000
+    car_id = test_car["id"]
+    now = datetime.now(UTC).isoformat()
+
+    create_resp = await auth_client.post(
+        "/api/service-items",
+        json={
+            "car_id": car_id,
+            "name": "Soon KM Item",
+            "last_service_at": now,
+            "last_service_odometer_km": 1000,
+        },
+    )
+    item_id = create_resp.json()["id"]
+
+    # Interval: 5000 km (due at 6000 km). Notify before: 1000 km (notify at 5000 km).
+    await auth_client.post(
+        "/api/reminders",
+        json={
+            "service_item_id": item_id,
+            "interval_km": 5000,
+            "notify_before_km": 1000,
+        },
+    )
+
+    # Set odometer to 5200 (between 5000 and 6000) -> status should be "soon"
+    await auth_client.post(
+        "/api/mileage-logs",
+        json={"car_id": car_id, "odometer_km": 5200},
+    )
+
+    response = await auth_client.get(f"/api/service-items/car/{car_id}")
+    items = response.json()
+    item = next(i for i in items if i["name"] == "Soon KM Item")
+
+    assert item["status"] == "soon"
+    assert item["km_until_due"] == 800
+
+
+@pytest.mark.asyncio
+async def test_status_soon_days(auth_client: AsyncClient, test_car: dict):
+    # Service item: serviced 25 days ago (plus 1 hour buffer so fractional seconds don't drop .days to 4)
+    car_id = test_car["id"]
+    twenty_five_days_ago = (
+        datetime.now(UTC) - timedelta(days=25) + timedelta(hours=1)
+    ).isoformat()
+
+    create_resp = await auth_client.post(
+        "/api/service-items",
+        json={
+            "car_id": car_id,
+            "name": "Soon Days Item",
+            "last_service_at": twenty_five_days_ago,
+            "last_service_odometer_km": 1000,
+        },
+    )
+    item_id = create_resp.json()["id"]
+
+    # Interval: 30 days (due in 5 days). Notify before: 10 days (notify starting 20 days after service)
+    await auth_client.post(
+        "/api/reminders",
+        json={
+            "service_item_id": item_id,
+            "interval_days": 30,
+            "notify_before_days": 10,
+        },
+    )
+
+    response = await auth_client.get(f"/api/service-items/car/{car_id}")
+    items = response.json()
+    item = next(i for i in items if i["name"] == "Soon Days Item")
+
+    assert item["status"] == "soon"
+    assert item["days_until_due"] == 5
+
+
+@pytest.mark.asyncio
+async def test_service_item_not_found(auth_client: AsyncClient):
+    import uuid
+
+    fake_id = str(uuid.uuid4())
+    resp = await auth_client.get(f"/api/service-items/{fake_id}")
+    assert resp.status_code == 404
+
+    resp = await auth_client.delete(f"/api/service-items/{fake_id}")
+    assert resp.status_code == 404
+
