@@ -7,17 +7,27 @@
 	import { auth } from '$lib/auth.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
+	import * as Field from '$lib/components/ui/field';
 	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
 
 	let username = $state('');
 	let name = $state('');
 	let password = $state('');
+	let confirmPassword = $state('');
 	let isLoading = $state(false);
 	let isRedirecting = $state(false);
 	let error = $state('');
 
+	let passwordMismatch = $derived(
+		confirmPassword.length > 0 && password !== confirmPassword
+	);
+
 	async function handleSubmit() {
+		if (passwordMismatch) {
+			error = 'пароли не совпадают';
+			return;
+		}
+
 		isLoading = true;
 		error = '';
 
@@ -84,11 +94,11 @@
 	<title>регистрация // car minder</title>
 </svelte:head>
 
-<div class="flex h-screen items-center justify-center">
+<div class="flex min-h-screen items-center justify-center py-8">
 	<Card.Root class="w-[400px]">
 		<Card.Header>
-			<Card.Title>регистрация в car minder</Card.Title>
-			<Card.Description>создай аккаунт, чтобы начать следить за авто</Card.Description>
+			<Card.Title class="text-2xl">регистрация в car minder</Card.Title>
+			<Card.Description>заполни данные, чтобы начать следить за авто</Card.Description>
 		</Card.Header>
 		<Card.Content>
 			<form
@@ -96,39 +106,73 @@
 					e.preventDefault();
 					handleSubmit();
 				}}
-				class="space-y-4"
 			>
-				<div class="space-y-2">
-					<Label for="username">логин (хотя бы 4 символа)</Label>
-					<Input
-						id="username"
-						bind:value={username}
-						placeholder="acloudyskye"
-						minlength={4}
-						required
-					/>
-				</div>
-				<div class="space-y-2">
-					<Label for="name">твоё имя</Label>
-					<Input id="name" bind:value={name} placeholder="skye" required />
-				</div>
-				<div class="space-y-2">
-					<Label for="password">пароль (минимум 8 символов)</Label>
-					<Input id="password" type="password" bind:value={password} minlength={8} required />
-				</div>
+				<Field.Group>
+					<Field.Field data-invalid={error && error.includes('логин') ? true : undefined}>
+						<Field.Label for="username">логин</Field.Label>
+						<Input
+							id="username"
+							bind:value={username}
+							placeholder="acloudyskye"
+							minlength={4}
+							aria-invalid={error && error.includes('логин') ? true : undefined}
+							required
+						/>
+						<Field.Description>минимум 4 символа</Field.Description>
+					</Field.Field>
 
-				{#if error}
-					<p class="text-sm text-destructive">{error}</p>
-				{/if}
+					<Field.Field>
+						<Field.Label for="name">твоё имя</Field.Label>
+						<Input id="name" bind:value={name} placeholder="skye" required />
+						<Field.Description>как к тебе обращаться в приложении</Field.Description>
+					</Field.Field>
 
-				<Button type="submit" class="w-full" disabled={isLoading}>
-					{isLoading ? 'создаем...' : 'создать аккаунт'}
-				</Button>
+					<Field.Field data-invalid={passwordMismatch || (error && error.includes('пароль')) ? true : undefined}>
+						<Field.Label for="password">пароль</Field.Label>
+						<Input
+							id="password"
+							type="password"
+							bind:value={password}
+							minlength={8}
+							aria-invalid={passwordMismatch || (error && error.includes('пароль')) ? true : undefined}
+							required
+						/>
+						<Field.Description>должен быть не менее 8 символов</Field.Description>
+					</Field.Field>
+
+					<Field.Field data-invalid={passwordMismatch ? true : undefined}>
+						<Field.Label for="confirm-password">повтори пароль</Field.Label>
+						<Input
+							id="confirm-password"
+							type="password"
+							bind:value={confirmPassword}
+							aria-invalid={passwordMismatch}
+							required
+						/>
+						{#if passwordMismatch}
+							<Field.Error>пароли не совпадают</Field.Error>
+						{:else}
+							<Field.Description>подтверди свой пароль</Field.Description>
+						{/if}
+					</Field.Field>
+
+					{#if error && !passwordMismatch}
+						<Field.Field data-invalid>
+							<Field.Error>{error}</Field.Error>
+						</Field.Field>
+					{/if}
+
+					<Field.Field>
+						<Button type="submit" class="w-full" disabled={isLoading || passwordMismatch}>
+							{isLoading ? 'создаем...' : 'создать аккаунт'}
+						</Button>
+						<Field.Description class="text-center">
+							уже есть аккаунт?
+							<a href="/login" class="text-sidebar-primary hover:underline">войти</a>
+						</Field.Description>
+					</Field.Field>
+				</Field.Group>
 			</form>
-			<div class="mt-4 text-center text-sm">
-				уже есть аккаунт?
-				<a href="/login" class="text-sidebar-primary hover:underline">войти</a>
-			</div>
 		</Card.Content>
 	</Card.Root>
 </div>

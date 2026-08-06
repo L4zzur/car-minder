@@ -7,8 +7,8 @@
 	import { auth } from '$lib/auth.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
+	import * as Field from '$lib/components/ui/field';
 	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
 
 	let username = $state('');
 	let password = $state('');
@@ -61,7 +61,7 @@
 <div class="flex h-screen items-center justify-center">
 	<Card.Root class="w-[350px]">
 		<Card.Header>
-			<Card.Title>вход в car minder</Card.Title>
+			<Card.Title class="text-2xl">вход в car minder</Card.Title>
 			<Card.Description>введи свои данные для доступа к гаражу</Card.Description>
 		</Card.Header>
 		<Card.Content>
@@ -70,27 +70,44 @@
 					e.preventDefault();
 					handleSubmit();
 				}}
-				class="space-y-4"
 			>
-				<div class="space-y-2">
-					<Label for="username">логин</Label>
-					<Input id="username" bind:value={username} placeholder="acloudyskye" required />
-				</div>
-				<div class="space-y-2">
-					<Label for="password">пароль</Label>
-					<Input id="password" type="password" bind:value={password} required />
-				</div>
-				{#if error}
-					<p class="text-sm text-destructive">{error}</p>
-				{/if}
-				<Button type="submit" class="w-full" disabled={isLoading}>
-					{isLoading ? 'входим...' : 'войти'}
-				</Button>
+				<Field.Group>
+					<Field.Field data-invalid={error ? true : undefined}>
+						<Field.Label for="username">логин</Field.Label>
+						<Input
+							id="username"
+							bind:value={username}
+							placeholder="acloudyskye"
+							aria-invalid={!!error}
+							required
+						/>
+					</Field.Field>
+
+					<Field.Field data-invalid={error ? true : undefined}>
+						<Field.Label for="password">пароль</Field.Label>
+						<Input
+							id="password"
+							type="password"
+							bind:value={password}
+							aria-invalid={!!error}
+							required
+						/>
+						{#if error}
+							<Field.Error>{error}</Field.Error>
+						{/if}
+					</Field.Field>
+
+					<Field.Field>
+						<Button type="submit" class="w-full" disabled={isLoading}>
+							{isLoading ? 'входим...' : 'войти'}
+						</Button>
+						<Field.Description class="text-center">
+							ещё нет аккаунта?
+							<a href="/register" class="text-sidebar-primary hover:underline">создать</a>
+						</Field.Description>
+					</Field.Field>
+				</Field.Group>
 			</form>
-			<div class="mt-4 text-center text-sm">
-				ещё нет аккаунта?
-				<a href="/register" class="text-sidebar-primary hover:underline">создать</a>
-			</div>
 		</Card.Content>
 	</Card.Root>
 </div>
