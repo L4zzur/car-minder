@@ -1,0 +1,26 @@
+# Git
+.git
+.gitignore
+
+# Python / Backend
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+.venv
+.pytest_cache
+.ruff_cache
+backend/data/*.db
+backend/data/*.sqlite3
+
+# Node / Frontend
+**/node_modules
+**/build
+frontend/.svelte-kit
+frontend/dist
+
+# IDE & OS
+.vscode
+.idea
+.DS_Store
+*.log
