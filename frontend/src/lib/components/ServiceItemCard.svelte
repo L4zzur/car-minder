@@ -4,6 +4,8 @@
 	import type { ServiceItemSummary } from '$lib/api';
 	import { Button } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
+	import * as m from '$lib/paraglide/messages.js';
+	import { getLocale } from '$lib/paraglide/runtime';
 
 	let {
 		item,
@@ -19,31 +21,31 @@
 		onDelete: () => void;
 	} = $props();
 
-	const formatOdometer = (val: number) => val.toLocaleString('ru-RU');
+	const formatOdometer = (val: number) => val.toLocaleString(getLocale());
 	const formatDate = (str: string) =>
-		new Date(str).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' });
+		new Date(str).toLocaleDateString(getLocale(), { day: 'numeric', month: 'short', year: 'numeric' });
 
 	function getNextLabel() {
 		if (!item.status || item.status === 'ok') {
-			return 'без напоминания';
+			return m.service_card_no_reminder();
 		}
 
 		const parts: string[] = [];
 		if (item.km_until_due != null) {
 			if (item.km_until_due <= 0) {
-				parts.push(`просрочено на ${formatOdometer(Math.abs(item.km_until_due))} км`);
+				parts.push(m.service_card_due_km({ km: formatOdometer(Math.abs(item.km_until_due)) }));
 			} else {
-				parts.push(`через ${formatOdometer(item.km_until_due)} км`);
+				parts.push(m.service_card_until_km({ km: formatOdometer(item.km_until_due) }));
 			}
 		}
 		if (item.days_until_due != null) {
 			if (item.days_until_due <= 0) {
-				parts.push(`просрочено на ${Math.abs(item.days_until_due)} дн.`);
+				parts.push(m.service_card_due_days({ days: Math.abs(item.days_until_due) }));
 			} else {
-				parts.push(`через ${item.days_until_due} дн.`);
+				parts.push(m.service_card_until_days({ days: item.days_until_due }));
 			}
 		}
-		return parts.length > 0 ? parts[0] : 'в норме';
+		return parts.length > 0 ? parts[0] : m.service_card_ok();
 	}
 </script>
 
@@ -59,9 +61,9 @@
 		<div class="space-y-1">
 			<h3 class="font-medium text-sm sm:text-base">{item.name}</h3>
 			<div class="flex flex-wrap gap-x-1 text-xs text-muted-foreground">
-				<span>обслужено: {formatDate(item.last_service_at)}</span>
+				<span>{m.service_card_serviced_at({ date: formatDate(item.last_service_at) })}</span>
 				<span>//</span>
-				<span>{formatOdometer(item.last_service_odometer_km)} км</span>
+				<span>{formatOdometer(item.last_service_odometer_km)} {m.car_card_current_odometer_km()}</span>
 			</div>
 		</div>
 	</div>
@@ -75,10 +77,10 @@
 			<Tooltip.Root>
 				<Tooltip.Trigger>
 					<Button variant="ghost" size="sm" disabled={isSaving} onclick={onMarkServiced}>
-						{isSaving ? 'сохраняем...' : 'обслужено'}
+						{isSaving ? m.service_card_btn_servicing() : m.service_card_btn_serviced()}
 					</Button>
 				</Tooltip.Trigger>
-				<Tooltip.Content><p>отметить обслуживание</p></Tooltip.Content>
+				<Tooltip.Content><p>{m.service_card_tooltip_mark()}</p></Tooltip.Content>
 			</Tooltip.Root>
 
 			<Tooltip.Root>
@@ -87,7 +89,7 @@
 						<Trash2 class="size-4" />
 					</Button>
 				</Tooltip.Trigger>
-				<Tooltip.Content><p>удалить расходник</p></Tooltip.Content>
+				<Tooltip.Content><p>{m.service_card_tooltip_delete()}</p></Tooltip.Content>
 			</Tooltip.Root>
 		</div>
 	</div>

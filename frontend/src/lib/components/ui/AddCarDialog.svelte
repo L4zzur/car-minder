@@ -7,6 +7,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
+	import * as m from '$lib/paraglide/messages.js';
 
 	let { onCarAdded, child } = $props<{
 		onCarAdded: () => void;
@@ -29,22 +30,22 @@
 		error = '';
 
 		if (!brand.trim()) {
-			error = 'марка обязательна';
+			error = m.add_car_err_brand_required();
 			return;
 		}
 
 		if (!model.trim()) {
-			error = 'модель обязательна';
+			error = m.add_car_err_model_required();
 			return;
 		}
 
 		if (year < 1900 || year > getCurrentYear()) {
-			error = 'некорректный год выпуска';
+			error = m.add_car_err_year_invalid();
 			return;
 		}
 
 		if (odometer < 0) {
-			error = 'пробег не может быть отрицательным';
+			error = m.add_car_err_odometer_negative();
 			return;
 		}
 
@@ -61,7 +62,7 @@
 			});
 
 			if (response.error) {
-				error = 'не удалось добавить машину';
+				error = m.add_car_err_failed();
 				return;
 			}
 
@@ -74,7 +75,7 @@
 			onCarAdded();
 		} catch (e) {
 			console.error('ошибка при добавлении машины:', e);
-			error = 'не удалось добавить машину';
+			error = m.add_car_err_failed();
 		} finally {
 			isLoading = false;
 		}
@@ -87,14 +88,14 @@
 			{@render child({ props: {} })}
 		{:else}
 			<Button variant="outline">
-				<Plus data-icon="inline-start" /> добавить авто
+				<Plus data-icon="inline-start" /> {m.add_car_btn()}
 			</Button>
 		{/if}
 	</Dialog.Trigger>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
-			<Dialog.Title>новая машина</Dialog.Title>
-			<Dialog.Description>заполни данные о своём железном друге</Dialog.Description>
+			<Dialog.Title>{m.add_car_dialog_title()}</Dialog.Title>
+			<Dialog.Description>{m.add_car_dialog_desc()}</Dialog.Description>
 		</Dialog.Header>
 		<form
 			class="space-y-4"
@@ -104,16 +105,16 @@
 			}}
 		>
 			<div class="space-y-2">
-				<Label for="brand">марка</Label>
-				<Input id="brand" bind:value={brand} placeholder="bmw" required />
+				<Label for="brand">{m.add_car_brand_label()}</Label>
+				<Input id="brand" bind:value={brand} placeholder={m.add_car_brand_placeholder()} required />
 			</div>
 			<div class="space-y-2">
-				<Label for="model">модель</Label>
-				<Input id="model" bind:value={model} placeholder="m5" required />
+				<Label for="model">{m.add_car_model_label()}</Label>
+				<Input id="model" bind:value={model} placeholder={m.add_car_model_placeholder()} required />
 			</div>
 			<div class="grid grid-cols-2 gap-4">
 				<div class="space-y-2">
-					<Label for="year">год выпуска</Label>
+					<Label for="year">{m.add_car_year_label()}</Label>
 					<Input
 						id="year"
 						type="number"
@@ -124,7 +125,7 @@
 					/>
 				</div>
 				<div class="space-y-2">
-					<Label for="odometer">пробег (км)</Label>
+					<Label for="odometer">{m.add_car_odometer_label()}</Label>
 					<Input id="odometer" type="number" bind:value={odometer} min="0" required />
 				</div>
 			</div>
@@ -133,7 +134,7 @@
 			{/if}
 			<Dialog.Footer>
 				<Button type="submit" class="w-full" disabled={isLoading}>
-					{isLoading ? 'сохраняем...' : 'добавить машину'}
+					{isLoading ? m.add_car_btn_submitting() : m.add_car_btn_submit()}
 				</Button>
 			</Dialog.Footer>
 		</form>

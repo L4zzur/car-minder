@@ -3,6 +3,7 @@
 
 	import { type CarRead } from '$lib/api';
 	import { Button } from '$lib/components/ui/button';
+	import * as m from '$lib/paraglide/messages.js';
 
 	import Input from './ui/input/input.svelte';
 
@@ -32,11 +33,11 @@
 
 		const val = Number(mileageValue);
 		if (!Number.isFinite(val)) {
-			localError = 'введи корректный пробег';
+			localError = m.mileage_form_err_invalid();
 			return;
 		}
 		if (val <= car.current_odometer_km) {
-			localError = 'пробег должен быть больше текущего';
+			localError = m.mileage_form_err_must_be_greater();
 			return;
 		}
 		onSubmit();
@@ -45,20 +46,20 @@
 
 <div class="flex flex-col gap-3 rounded-lg border bg-card p-4">
 	<div class="flex min-h-5 items-center justify-between gap-3">
-		<h3 class="text-sm font-medium">добавить пробег</h3>
+		<h3 class="text-sm font-medium">{m.mileage_form_title()}</h3>
 		{#if localError}
 			<span class="text-right text-xs text-destructive">{localError}</span>
 		{/if}
 	</div>
 	<form class="space-y-3" onsubmit={handleSubmit} novalidate>
 		<div>
-			<label for="odometer" class="mb-1.5 block text-xs text-muted-foreground"> одометр, км </label>
+			<label for="odometer" class="mb-1.5 block text-xs text-muted-foreground"> {m.mileage_form_label()} </label>
 
 			<Input type="number" bind:value={mileageValue} />
 		</div>
 		<Button type="submit" class="w-full" disabled={isSaving}>
 			<Gauge data-icon="inline-start" />
-			{isSaving ? 'сохраняем...' : 'сохранить'}
+			{isSaving ? m.mileage_form_btn_submitting() : m.mileage_form_btn_submit()}
 		</Button>
 	</form>
 </div>

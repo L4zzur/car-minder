@@ -19,6 +19,7 @@
 	import ServiceItemCard from '$lib/components/ServiceItemCard.svelte';
 	import AddServiceDialog from '$lib/components/ui/AddServiceDialog.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import * as m from '$lib/paraglide/messages.js';
 
 	type MileageLogView = {
 		id: string;
@@ -66,7 +67,7 @@
 			]);
 
 			if (carResponse.error || !carResponse.data) {
-				error = 'машина не найдена';
+				error = m.car_detail_not_found();
 				return;
 			}
 
@@ -81,7 +82,7 @@
 			serviceItems = serviceResponse.data ?? [];
 		} catch (e) {
 			console.error('failed to load car page:', e);
-			error = 'не удалось загрузить машину';
+			error = m.car_detail_err_load_failed();
 		} finally {
 			isLoading = false;
 		}
@@ -94,12 +95,12 @@
 		mileageError = '';
 
 		if (!Number.isFinite(odometer)) {
-			mileageError = 'введи корректный пробег';
+			mileageError = m.mileage_form_err_invalid();
 			return;
 		}
 
 		if (odometer <= car.current_odometer_km) {
-			mileageError = 'пробег должен быть больше текущего';
+			mileageError = m.mileage_form_err_must_be_greater();
 			return;
 		}
 
@@ -114,14 +115,14 @@
 			});
 
 			if (response.error) {
-				mileageError = 'не удалось сохранить пробег';
+				mileageError = m.car_detail_err_save_mileage_failed();
 				return;
 			}
 
 			await loadCarPage({ showLoading: false });
 		} catch (e) {
 			console.error('failed to save mileage:', e);
-			mileageError = 'не удалось сохранить пробег';
+			mileageError = m.car_detail_err_save_mileage_failed();
 		} finally {
 			isSavingMileage = false;
 		}
@@ -137,14 +138,14 @@
 			});
 
 			if (response.error) {
-				mileageError = 'не удалось удалить запись';
+				mileageError = m.car_detail_err_delete_mileage_failed();
 				return;
 			}
 
 			await loadCarPage({ showLoading: false });
 		} catch (e) {
 			console.error('failed to delete mileage log:', e);
-			mileageError = 'не удалось удалить запись';
+			mileageError = m.car_detail_err_delete_mileage_failed();
 		} finally {
 			deletingMileageLogId = null;
 		}
@@ -160,14 +161,14 @@
 			});
 
 			if (response.error) {
-				serviceItemError = 'не удалось удалить расходник';
+				serviceItemError = m.car_detail_err_delete_service_failed();
 				return;
 			}
 
 			await loadCarPage({ showLoading: false });
 		} catch (e) {
 			console.error('failed to delete service item:', e);
-			serviceItemError = 'не удалось удалить расходник';
+			serviceItemError = m.car_detail_err_delete_service_failed();
 		} finally {
 			deletingServiceItemId = null;
 		}
@@ -203,7 +204,7 @@
 </script>
 
 <svelte:head>
-	<title>{car ? `${car.brand} ${car.model}` : 'машина'} // car minder</title>
+	<title>{car ? `${car.brand} ${car.model}` : m.add_car_dialog_title()} // car minder</title>
 </svelte:head>
 
 <div class="container mx-auto space-y-6 p-4 sm:p-6">
@@ -213,7 +214,7 @@
 			class="flex items-center gap-2 self-start text-sm text-muted-foreground transition-colors hover:text-foreground"
 		>
 			<ArrowLeft class="size-4" />
-			<span>назад в гараж</span>
+			<span>{m.car_detail_back()}</span>
 		</a>
 
 		<div class="flex w-full items-center gap-2 sm:w-auto">
@@ -226,19 +227,19 @@
 			{/if}
 			<Button class="flex-1 sm:flex-none">
 				<Bell data-icon="inline-start" />
-				напоминание
+				{m.car_detail_reminder()}
 			</Button>
 		</div>
 	</header>
 
 	{#if isLoading}
 		<div class="rounded-lg border bg-card p-6 text-sm text-muted-foreground">
-			загружаем машину...
+			{m.car_detail_loading()}
 		</div>
 	{:else if error || !car}
 		<div class="space-y-4 rounded-lg border bg-card p-6">
-			<p class="text-sm text-muted-foreground">{error || 'машина не найдена'}</p>
-			<Button onclick={() => goto('/home')}>вернуться в гараж</Button>
+			<p class="text-sm text-muted-foreground">{error || m.car_detail_not_found()}</p>
+			<Button onclick={() => goto('/home')}>{m.car_detail_return_to_garage()}</Button>
 		</div>
 	{:else}
 		<div class="space-y-4">
@@ -255,7 +256,7 @@
 						<span class="rounded-md border px-2 py-1 text-xs text-muted-foreground">{car.year}</span
 						>
 					</div>
-					<p class="text-sm text-muted-foreground">карточка обслуживания и пробега</p>
+					<p class="text-sm text-muted-foreground">{m.car_detail_subtitle()}</p>
 				</div>
 			</div>
 		</div>
@@ -281,15 +282,15 @@
 		<div class="space-y-4">
 			<div class="flex items-center justify-between">
 				<div>
-					<h2 class="text-lg font-medium">расходники</h2>
-					<p class="text-sm text-muted-foreground">обслуживание по пробегу или времени</p>
+					<h2 class="text-lg font-medium">{m.car_detail_service_items_heading()}</h2>
+					<p class="text-sm text-muted-foreground">{m.car_detail_service_items_sub()}</p>
 				</div>
 				{#if car}
 					<AddServiceDialog {car} onServiceAdded={loadCarPage}>
 						{#snippet child({ props })}
 							<Button {...props} variant="outline">
 								<Plus data-icon="inline-start" />
-								добавить
+								{m.car_detail_add_btn()}
 							</Button>
 						{/snippet}
 					</AddServiceDialog>
@@ -309,7 +310,7 @@
 					{/each}
 				{:else}
 					<div class="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
-						расходники пока не добавлены
+						{m.car_detail_empty_service_items()}
 					</div>
 				{/if}
 			</div>

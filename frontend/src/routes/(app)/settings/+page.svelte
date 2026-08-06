@@ -15,10 +15,12 @@
 
 	import { Telegram } from '$lib/api';
 	import { auth } from '$lib/auth.svelte';
+	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import * as Tabs from '$lib/components/ui/tabs';
+	import * as m from '$lib/paraglide/messages.js';
 
 	let isLoading = $state(false);
 	let isUnlinking = $state(false);
@@ -89,7 +91,7 @@
 </script>
 
 <svelte:head>
-	<title>настройки // car minder</title>
+	<title>{m.settings_title()} // car minder</title>
 </svelte:head>
 
 <div class="container mx-auto max-w-4xl space-y-6 p-6">
@@ -97,12 +99,13 @@
 		<div>
 			<Button variant="ghost" size="sm" href="/home" class="-ml-2 text-muted-foreground hover:text-foreground">
 				<ArrowLeft data-icon="inline-start" />
-				назад в гараж
+				{m.settings_back()}
 			</Button>
 		</div>
 
 		<div class="flex items-center justify-between">
-			<h1 class="text-4xl font-bold tracking-tight">настройки</h1>
+			<h1 class="text-4xl font-bold tracking-tight">{m.settings_title()}</h1>
+			<LanguageSwitcher />
 		</div>
 	</div>
 
@@ -110,31 +113,31 @@
 		<Tabs.List class="grid w-full grid-cols-3 max-w-md">
 			<Tabs.Trigger value="profile">
 				<UserIcon data-icon="inline-start" />
-				профиль
+				{m.settings_tabs_profile()}
 			</Tabs.Trigger>
 			<Tabs.Trigger value="notifications">
 				<Bell data-icon="inline-start" />
-				уведомления
+				{m.settings_tabs_notifications()}
 			</Tabs.Trigger>
 			<Tabs.Trigger value="security">
 				<Shield data-icon="inline-start" />
-				безопасность
+				{m.settings_tabs_security()}
 			</Tabs.Trigger>
 		</Tabs.List>
 
 		<Tabs.Content value="profile" class="space-y-6">
 			<Card.Root>
 				<Card.Header>
-					<Card.Title class="text-lg">основная информация</Card.Title>
+					<Card.Title class="text-lg">{m.settings_profile_main_info()}</Card.Title>
 				</Card.Header>
 				<Card.Content>
 					<div class="grid gap-4 sm:grid-cols-2">
 						<div class="flex flex-col gap-1">
-							<span class="text-xs text-muted-foreground">имя</span>
+							<span class="text-xs text-muted-foreground">{m.settings_profile_name()}</span>
 							<p class="font-medium">{auth.user?.name ?? '—'}</p>
 						</div>
 						<div class="flex flex-col gap-1">
-							<span class="text-xs text-muted-foreground">логин</span>
+							<span class="text-xs text-muted-foreground">{m.settings_profile_username()}</span>
 							<p class="font-medium">{auth.user?.username ?? '—'}</p>
 						</div>
 					</div>
@@ -146,25 +149,25 @@
 					<div class="flex flex-col gap-1">
 						<Card.Title class="flex items-center gap-2 text-lg">
 							<Send class="text-sky-500" />
-							интеграция с telegram
+							{m.settings_telegram_title()}
 						</Card.Title>
 						<Card.Description>
-							привяжи аккаунт для входа через Mini App и получения уведомлений от бота
+							{m.settings_telegram_desc()}
 						</Card.Description>
 					</div>
 
 					{#if auth.user?.telegram_id}
 						<Badge variant="secondary" class="border-emerald-500/20 bg-emerald-500/10 text-emerald-500">
 							<CheckCircle2 data-icon="inline-start" />
-							привязано
+							{m.settings_telegram_linked()}
 						</Badge>
 					{:else if isBotDisabled}
 						<Badge variant="outline" class="border-destructive/20 bg-destructive/10 text-destructive">
-							отключено
+							{m.settings_telegram_disabled()}
 						</Badge>
 					{:else}
 						<Badge variant="outline" class="border-amber-500/20 bg-amber-500/10 text-amber-500">
-							не привязано
+							{m.settings_telegram_unlinked()}
 						</Badge>
 					{/if}
 				</Card.Header>
@@ -179,10 +182,10 @@
 							<Button onclick={unlinkTelegram} disabled={isUnlinking} variant="outline" size="sm" class="text-destructive hover:text-destructive">
 								{#if isUnlinking}
 									<Loader2 data-icon="inline-start" class="animate-spin" />
-									отвязка...
+									{m.settings_telegram_unlinking()}
 								{:else}
 									<Unlink data-icon="inline-start" />
-									отвязать
+									{m.settings_telegram_unlink()}
 								{/if}
 							</Button>
 						</div>
@@ -190,7 +193,7 @@
 						<div class="flex flex-col gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-amber-600 dark:text-amber-400">
 							<div class="flex items-center gap-2 font-medium">
 								<AlertTriangle class="h-4 w-4 shrink-0" />
-								telegram-бот не активирован на сервере
+								{m.settings_telegram_bot_disabled()}
 							</div>
 							<p class="text-xs text-muted-foreground leading-relaxed">
 								для привязки аккаунта необходимо сначала задать токен бота в конфигурации приложения (<code class="rounded bg-muted px-1 py-0.5 font-mono text-[11px] text-foreground">APP__BOT__TOKEN</code>) согласно документации
@@ -199,16 +202,16 @@
 					{:else}
 						<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 							<p class="text-sm text-muted-foreground">
-								нажми кнопку, чтобы перейти в бота и завершить привязку
+								{m.settings_telegram_instruction()}
 							</p>
 
 							<Button onclick={linkTelegram} disabled={isLoading} size="sm">
 								{#if isLoading}
 									<Loader2 data-icon="inline-start" class="animate-spin" />
-									генерация...
+									{m.settings_telegram_linking()}
 								{:else}
 									<Send data-icon="inline-start" />
-									привязать telegram
+									{m.settings_telegram_link()}
 									<ExternalLink data-icon="inline-end" />
 								{/if}
 							</Button>
@@ -221,7 +224,7 @@
 		<Tabs.Content value="notifications">
 			<Card.Root>
 				<Card.Content class="text-sm text-muted-foreground">
-					раздел уведомлений находится в разработке...
+					{m.common_in_development()}
 				</Card.Content>
 			</Card.Root>
 		</Tabs.Content>
@@ -229,11 +232,9 @@
 		<Tabs.Content value="security">
 			<Card.Root>
 				<Card.Content class="text-sm text-muted-foreground">
-					раздел безопасности находится в разработке...
+					{m.common_in_development()}
 				</Card.Content>
 			</Card.Root>
 		</Tabs.Content>
 	</Tabs.Root>
 </div>
-
-

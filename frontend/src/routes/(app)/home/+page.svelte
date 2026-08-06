@@ -11,6 +11,7 @@
 	import AddCarDialog from '$lib/components/ui/AddCarDialog.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
+	import * as m from '$lib/paraglide/messages.js';
 
 	let cars = $state<CarRead[]>([]);
 	let isLoading = $state(true);
@@ -41,7 +42,7 @@
 </script>
 
 <svelte:head>
-	<title>гараж // car minder</title>
+	<title>{m.garage_head_title()} // car minder</title>
 </svelte:head>
 
 <div class="container mx-auto space-y-6 p-6">
@@ -55,7 +56,7 @@
 
 			<Button variant="outline" href="/settings">
 				<Settings data-icon="inline-start" />
-				настройки
+				{m.settings_button()}
 			</Button>
 
 			<Button
@@ -66,12 +67,12 @@
 					await goto('/login');
 				}}
 			>
-				выйти
+				{m.garage_logout()}
 			</Button>
 		</div>
 	</div>
 	<div class="flex items-center justify-between">
-		<h1 class="text-4xl font-bold tracking-tight">твой гараж</h1>
+		<h1 class="text-4xl font-bold tracking-tight">{m.garage_title()}</h1>
 		<AddCarDialog onCarAdded={loadCars} />
 	</div>
 
@@ -95,14 +96,14 @@
 				<CarFront class="h-8 w-8 text-muted-foreground" />
 			</div>
 			<div class="space-y-1">
-				<h3 class="text-lg font-semibold">у тебя пока нет машин</h3>
+				<h3 class="text-lg font-semibold">{m.garage_has_no_car_title()}</h3>
 				<p class="text-sm text-muted-foreground">
-					добавь свою первую машину, чтобы начать следить за её состоянием.
+					{m.garage_has_no_car_desc()}
 				</p>
 			</div>
 			<AddCarDialog onCarAdded={loadCars}>
 				{#snippet child({ props })}
-					<Button {...props}>добавить первую машину</Button>
+					<Button {...props}>{m.garage_add_first_car()}</Button>
 				{/snippet}
 			</AddCarDialog>
 		</div>

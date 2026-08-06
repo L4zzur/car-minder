@@ -6,6 +6,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
+	import * as m from '$lib/paraglide/messages.js';
 
 	let {
 		car,
@@ -34,12 +35,12 @@
 		error = '';
 
 		if (!name.trim()) {
-			error = 'название обязательно';
+			error = m.add_service_err_name_required();
 			return;
 		}
 
 		if (!Number.isFinite(lastOdometerKm) || lastOdometerKm < 0) {
-			error = 'пробег должен быть положительным числом';
+			error = m.add_service_err_odometer_positive();
 			return;
 		}
 
@@ -56,7 +57,7 @@
 			});
 
 			if (response.error) {
-				error = 'не удалось добавить расходник';
+				error = m.add_service_err_failed();
 				return;
 			}
 
@@ -67,7 +68,7 @@
 			onServiceAdded();
 		} catch (e) {
 			console.error('failed to add service item:', e);
-			error = 'не удалось добавить расходник';
+			error = m.add_service_err_failed();
 		} finally {
 			isLoading = false;
 		}
@@ -81,14 +82,14 @@
 		{:else}
 			<Button variant="outline" class="w-full">
 				<Wrench data-icon="inline-start" />
-				расходник
+				{m.add_service_btn()}
 			</Button>
 		{/if}
 	</Dialog.Trigger>
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
-			<Dialog.Title>новый расходник</Dialog.Title>
-			<Dialog.Description>добавь элемент обслуживания для этой машины</Dialog.Description>
+			<Dialog.Title>{m.add_service_title()}</Dialog.Title>
+			<Dialog.Description>{m.add_service_desc()}</Dialog.Description>
 		</Dialog.Header>
 		<form
 			class="space-y-4"
@@ -98,16 +99,16 @@
 			}}
 		>
 			<div class="space-y-2">
-				<Label for="service-name">название</Label>
-				<Input id="service-name" bind:value={name} placeholder="масло двигателя" required />
+				<Label for="service-name">{m.add_service_name_label()}</Label>
+				<Input id="service-name" bind:value={name} placeholder={m.add_service_name_placeholder()} required />
 			</div>
 			<div class="grid grid-cols-2 gap-4">
 				<div class="space-y-2">
-					<Label for="service-date">дата замены</Label>
+					<Label for="service-date">{m.add_service_date_label()}</Label>
 					<Input id="service-date" type="date" bind:value={lastServiceAt} required />
 				</div>
 				<div class="space-y-2">
-					<Label for="service-odometer">пробег, км</Label>
+					<Label for="service-odometer">{m.add_service_odometer_label()}</Label>
 					<Input id="service-odometer" type="number" min="0" bind:value={lastOdometerKm} required />
 				</div>
 			</div>
@@ -116,7 +117,7 @@
 			{/if}
 			<Dialog.Footer>
 				<Button type="submit" class="w-full" disabled={isLoading}>
-					{isLoading ? 'добавляем...' : 'добавить расходник'}
+					{isLoading ? m.add_service_btn_submitting() : m.add_service_btn_submit()}
 				</Button>
 			</Dialog.Footer>
 		</form>

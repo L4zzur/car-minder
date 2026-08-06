@@ -9,6 +9,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import * as Field from '$lib/components/ui/field';
 	import { Input } from '$lib/components/ui/input';
+	import * as m from '$lib/paraglide/messages.js';
 
 	let username = $state('');
 	let name = $state('');
@@ -24,7 +25,7 @@
 
 	async function handleSubmit() {
 		if (passwordMismatch) {
-			error = 'пароли не совпадают';
+			error = m.register_error_password_mismatch();
 			return;
 		}
 
@@ -53,7 +54,7 @@
 			});
 
 			if (loginResp.error) {
-				error = 'аккаунт создан, но не удалось войти автоматически';
+				error = m.register_error_auto_login_failed();
 				return;
 			}
 
@@ -64,10 +65,10 @@
 				return;
 			}
 
-			error = 'аккаунт создан, но не удалось войти автоматически';
+			error = m.register_error_auto_login_failed();
 		} catch (e) {
 			console.error('registration error:', e);
-			error = 'не удалось создать аккаунт. попробуй ещё раз';
+			error = m.register_error_generic();
 		} finally {
 			if (!isRedirecting) {
 				isLoading = false;
@@ -77,10 +78,10 @@
 
 	function getRegisterError(apiError: unknown) {
 		if (isApiError(apiError) && apiError.code === 'username_already_taken') {
-			return 'логин уже занят';
+			return m.register_error_username_taken();
 		}
 
-		return 'не удалось создать аккаунт. проверь данные и попробуй ещё раз';
+		return m.register_error_generic();
 	}
 
 	function isApiError(value: unknown): value is { code?: string } {
@@ -91,14 +92,14 @@
 </script>
 
 <svelte:head>
-	<title>регистрация // car minder</title>
+	<title>{m.register_title()} // car minder</title>
 </svelte:head>
 
 <div class="flex min-h-screen items-center justify-center py-8">
 	<Card.Root class="w-[400px]">
 		<Card.Header>
-			<Card.Title class="text-2xl">регистрация в car minder</Card.Title>
-			<Card.Description>заполни данные, чтобы начать следить за авто</Card.Description>
+			<Card.Title class="text-2xl">{m.register_heading()}</Card.Title>
+			<Card.Description>{m.register_description()}</Card.Description>
 		</Card.Header>
 		<Card.Content>
 			<form
@@ -109,7 +110,7 @@
 			>
 				<Field.Group>
 					<Field.Field data-invalid={error && error.includes('логин') ? true : undefined}>
-						<Field.Label for="username">логин</Field.Label>
+						<Field.Label for="username">{m.auth_username()}</Field.Label>
 						<Input
 							id="username"
 							bind:value={username}
@@ -118,17 +119,17 @@
 							aria-invalid={error && error.includes('логин') ? true : undefined}
 							required
 						/>
-						<Field.Description>минимум 4 символа</Field.Description>
+						<Field.Description>{m.register_username_hint()}</Field.Description>
 					</Field.Field>
 
 					<Field.Field>
-						<Field.Label for="name">твоё имя</Field.Label>
+						<Field.Label for="name">{m.register_name_label()}</Field.Label>
 						<Input id="name" bind:value={name} placeholder="skye" required />
-						<Field.Description>как к тебе обращаться в приложении</Field.Description>
+						<Field.Description>{m.register_name_hint()}</Field.Description>
 					</Field.Field>
 
 					<Field.Field data-invalid={passwordMismatch || (error && error.includes('пароль')) ? true : undefined}>
-						<Field.Label for="password">пароль</Field.Label>
+						<Field.Label for="password">{m.auth_password()}</Field.Label>
 						<Input
 							id="password"
 							type="password"
@@ -137,11 +138,11 @@
 							aria-invalid={passwordMismatch || (error && error.includes('пароль')) ? true : undefined}
 							required
 						/>
-						<Field.Description>должен быть не менее 8 символов</Field.Description>
+						<Field.Description>{m.register_password_hint()}</Field.Description>
 					</Field.Field>
 
 					<Field.Field data-invalid={passwordMismatch ? true : undefined}>
-						<Field.Label for="confirm-password">повтори пароль</Field.Label>
+						<Field.Label for="confirm-password">{m.register_confirm_password_label()}</Field.Label>
 						<Input
 							id="confirm-password"
 							type="password"
@@ -150,9 +151,9 @@
 							required
 						/>
 						{#if passwordMismatch}
-							<Field.Error>пароли не совпадают</Field.Error>
+							<Field.Error>{m.register_error_password_mismatch()}</Field.Error>
 						{:else}
-							<Field.Description>подтверди свой пароль</Field.Description>
+							<Field.Description>{m.register_confirm_password_hint()}</Field.Description>
 						{/if}
 					</Field.Field>
 
@@ -164,11 +165,11 @@
 
 					<Field.Field>
 						<Button type="submit" class="w-full" disabled={isLoading || passwordMismatch}>
-							{isLoading ? 'создаем...' : 'создать аккаунт'}
+							{isLoading ? m.register_btn_submitting() : m.register_btn_submit()}
 						</Button>
 						<Field.Description class="text-center">
-							уже есть аккаунт?
-							<a href="/login" class="text-sidebar-primary hover:underline">войти</a>
+							{m.register_has_account()}
+							<a href="/login" class="text-sidebar-primary hover:underline">{m.register_link_login()}</a>
 						</Field.Description>
 					</Field.Field>
 				</Field.Group>

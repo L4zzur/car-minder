@@ -9,6 +9,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import * as Field from '$lib/components/ui/field';
 	import { Input } from '$lib/components/ui/input';
+	import * as m from '$lib/paraglide/messages.js';
 
 	let username = $state('');
 	let password = $state('');
@@ -29,7 +30,7 @@
 			});
 
 			if (response.error) {
-				error = 'неверный логин или пароль';
+				error = m.auth_error_invalid_credentials();
 				return;
 			}
 
@@ -40,10 +41,10 @@
 				return;
 			}
 
-			error = 'неверный логин или пароль';
+			error = m.auth_error_invalid_credentials();
 		} catch (e) {
 			console.error('login error:', e);
-			error = 'не удалось войти. попробуй ещё раз';
+			error = m.auth_error_login_failed();
 		} finally {
 			if (!isRedirecting) {
 				isLoading = false;
@@ -55,14 +56,14 @@
 </script>
 
 <svelte:head>
-	<title>вход // car minder</title>
+	<title>{m.login_title()} // car minder</title>
 </svelte:head>
 
 <div class="flex h-screen items-center justify-center">
 	<Card.Root class="w-[350px]">
 		<Card.Header>
-			<Card.Title class="text-2xl">вход в car minder</Card.Title>
-			<Card.Description>введи свои данные для доступа к гаражу</Card.Description>
+			<Card.Title class="text-2xl">{m.login_heading()}</Card.Title>
+			<Card.Description>{m.login_description()}</Card.Description>
 		</Card.Header>
 		<Card.Content>
 			<form
@@ -73,7 +74,7 @@
 			>
 				<Field.Group>
 					<Field.Field data-invalid={error ? true : undefined}>
-						<Field.Label for="username">логин</Field.Label>
+						<Field.Label for="username">{m.auth_username()}</Field.Label>
 						<Input
 							id="username"
 							bind:value={username}
@@ -84,7 +85,7 @@
 					</Field.Field>
 
 					<Field.Field data-invalid={error ? true : undefined}>
-						<Field.Label for="password">пароль</Field.Label>
+						<Field.Label for="password">{m.auth_password()}</Field.Label>
 						<Input
 							id="password"
 							type="password"
@@ -99,11 +100,11 @@
 
 					<Field.Field>
 						<Button type="submit" class="w-full" disabled={isLoading}>
-							{isLoading ? 'входим...' : 'войти'}
+							{isLoading ? m.login_btn_submitting() : m.login_btn_submit()}
 						</Button>
 						<Field.Description class="text-center">
-							ещё нет аккаунта?
-							<a href="/register" class="text-sidebar-primary hover:underline">создать</a>
+							{m.login_no_account()}
+							<a href="/register" class="text-sidebar-primary hover:underline">{m.login_link_register()}</a>
 						</Field.Description>
 					</Field.Field>
 				</Field.Group>
