@@ -5,6 +5,7 @@ __all__ = [
     "reminders_router",
     "service_items_router",
     "users_router",
+    "user_settings_router",
     "auth_router",
     "telegram_router",
 ]
@@ -16,4 +17,5 @@ from .mileage_logs import router as mileage_logs_router
 from .reminders import router as reminders_router
 from .service_items import router as service_items_router
 from .telegram import router as telegram_router
+from .user_settings import router as user_settings_router
 from .users import router as users_router

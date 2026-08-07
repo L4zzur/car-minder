@@ -10,18 +10,20 @@ from core.security import decode_access_token
 from repositories import (
     CarRepository,
     MileageLogRepository,
+    ReminderRepository,
     ServiceItemRepository,
     UserRepository,
+    UserSettingsRepository,
 )
-from repositories.reminder import ReminderRepository
 from services import (
     CarService,
     MileageLogService,
+    ReminderService,
     ServiceItemService,
     TelegramAuthService,
     UserService,
+    UserSettingsService,
 )
-from services.reminders import ReminderService
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl=f"{settings.api.prefix}/auth/login",
@@ -118,3 +120,12 @@ async def get_telegram_auth_service(
     session: AsyncSession = Depends(db_helper.session_dependency),
 ) -> TelegramAuthService:
     return TelegramAuthService(session=session, user_repository=UserRepository(session))
+
+
+async def get_user_settings_service(
+    session: AsyncSession = Depends(db_helper.session_dependency),
+) -> UserSettingsService:
+    return UserSettingsService(
+        session=session,
+        settings_repository=UserSettingsRepository(session),
+    )
