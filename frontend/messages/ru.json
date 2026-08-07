@@ -70,6 +70,18 @@
 	"add_car_err_odometer_negative": "пробег не может быть отрицательным",
 	"add_car_err_failed": "не удалось добавить машину",
 
+	"edit_car_title": "редактирование машины",
+	"edit_car_desc": "обнови марку, модель или год авто",
+	"edit_car_edit_btn": "редактировать",
+	"edit_car_saving": "сохранение...",
+	"edit_car_delete_btn": "удалить",
+	"edit_car_deleting": "удаление...",
+	"edit_car_delete_confirm_title": "удалить машину из гаража?",
+	"edit_car_delete_confirm_desc": "все связанные записи о пробеге, обслуживании и напоминалки будут удалены навсегда.",
+	"edit_car_delete_confirm_btn": "подтвердить удаление",
+	"edit_car_err_update_failed": "не удалось обновить данные машины",
+	"edit_car_err_delete_failed": "не удалось удалить машину",
+
 	"car_stats_mileage": "пробег",
 	"car_stats_driven_since_added": "+{km} км с добавления",
 	"car_stats_start_odometer": "стартовый пробег",
@@ -182,7 +194,7 @@
 	"settings_notifications_save_error": "не удалось сохранить настройки",
 
 	"settings_security_email_title": "электронная почта",
-	"settings_security_email_desc": "ваш адрес электронной почты для связи и восстановления доступа",
+	"settings_security_email_desc": "твоя электронная почта для связи и восстановления доступа",
 	"settings_security_email_label": "email адрес",
 	"settings_security_email_save": "сохранить email",
 	"settings_security_email_saving": "сохранение...",

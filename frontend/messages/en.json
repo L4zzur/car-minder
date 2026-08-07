@@ -70,6 +70,18 @@
 	"add_car_err_odometer_negative": "mileage cannot be negative",
 	"add_car_err_failed": "failed to add car",
 
+	"edit_car_title": "edit car",
+	"edit_car_desc": "update the brand, model, or year",
+	"edit_car_edit_btn": "edit",
+	"edit_car_saving": "saving...",
+	"edit_car_delete_btn": "delete",
+	"edit_car_deleting": "deleting...",
+	"edit_car_delete_confirm_title": "remove this car from your garage?",
+	"edit_car_delete_confirm_desc": "all related mileage, service, and reminder records will be permanently deleted.",
+	"edit_car_delete_confirm_btn": "confirm delete",
+	"edit_car_err_update_failed": "failed to update the car",
+	"edit_car_err_delete_failed": "failed to delete the car",
+
 	"car_stats_mileage": "mileage",
 	"car_stats_driven_since_added": "+{km} km since added",
 	"car_stats_start_odometer": "initial mileage",
