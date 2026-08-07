@@ -2,7 +2,7 @@
 
 import { type Client, type Options as Options2, type TDataShape, urlSearchParamsBodySerializer } from './client';
 import { client } from './client.gen';
-import type { AddCarApiCarsPostData, AddCarApiCarsPostErrors, AddCarApiCarsPostResponses, AddMileageLogApiMileageLogsPostData, AddMileageLogApiMileageLogsPostErrors, AddMileageLogApiMileageLogsPostResponses, AddReminderApiRemindersPostData, AddReminderApiRemindersPostErrors, AddReminderApiRemindersPostResponses, AddServiceItemApiServiceItemsPostData, AddServiceItemApiServiceItemsPostErrors, AddServiceItemApiServiceItemsPostResponses, BotWebhookApiTelegramWebhookPostData, BotWebhookApiTelegramWebhookPostErrors, BotWebhookApiTelegramWebhookPostResponses, DeleteCarApiCarsCarIdDeleteData, DeleteCarApiCarsCarIdDeleteErrors, DeleteCarApiCarsCarIdDeleteResponses, DeleteMileageLogApiMileageLogsMileageLogIdDeleteData, DeleteMileageLogApiMileageLogsMileageLogIdDeleteErrors, DeleteMileageLogApiMileageLogsMileageLogIdDeleteResponses, DeleteReminderApiRemindersReminderIdDeleteData, DeleteReminderApiRemindersReminderIdDeleteErrors, DeleteReminderApiRemindersReminderIdDeleteResponses, DeleteServiceItemApiServiceItemsServiceItemIdDeleteData, DeleteServiceItemApiServiceItemsServiceItemIdDeleteErrors, DeleteServiceItemApiServiceItemsServiceItemIdDeleteResponses, DeleteUserApiUsersUserIdDeleteData, DeleteUserApiUsersUserIdDeleteErrors, DeleteUserApiUsersUserIdDeleteResponses, GetBotWebhookApiTelegramWebhookGetData, GetBotWebhookApiTelegramWebhookGetResponses, GetCarApiCarsCarIdGetData, GetCarApiCarsCarIdGetErrors, GetCarApiCarsCarIdGetResponses, GetLinkTokenApiTelegramLinkTokenPostData, GetLinkTokenApiTelegramLinkTokenPostErrors, GetLinkTokenApiTelegramLinkTokenPostResponses, GetMeApiAuthMeGetData, GetMeApiAuthMeGetErrors, GetMeApiAuthMeGetResponses, GetReminderApiRemindersReminderIdGetData, GetReminderApiRemindersReminderIdGetErrors, GetReminderApiRemindersReminderIdGetResponses, GetServiceItemApiServiceItemsServiceItemIdGetData, GetServiceItemApiServiceItemsServiceItemIdGetErrors, GetServiceItemApiServiceItemsServiceItemIdGetResponses, GetUserApiUsersUserIdGetData, GetUserApiUsersUserIdGetErrors, GetUserApiUsersUserIdGetResponses, GetUserByUsernameApiUsersUusernameGetData, GetUserByUsernameApiUsersUusernameGetErrors, GetUserByUsernameApiUsersUusernameGetResponses, ListActiveByServiceItemApiRemindersServiceItemServiceItemIdActiveGetData, ListActiveByServiceItemApiRemindersServiceItemServiceItemIdActiveGetErrors, ListActiveByServiceItemApiRemindersServiceItemServiceItemIdActiveGetResponses, ListByCarApiMileageLogsCarCarIdGetData, ListByCarApiMileageLogsCarCarIdGetErrors, ListByCarApiMileageLogsCarCarIdGetResponses, ListByCarApiServiceItemsCarCarIdGetData, ListByCarApiServiceItemsCarCarIdGetErrors, ListByCarApiServiceItemsCarCarIdGetResponses, ListByServiceItemApiRemindersServiceItemServiceItemIdGetData, ListByServiceItemApiRemindersServiceItemServiceItemIdGetErrors, ListByServiceItemApiRemindersServiceItemServiceItemIdGetResponses, ListUserCarsApiCarsGetData, ListUserCarsApiCarsGetErrors, ListUserCarsApiCarsGetResponses, LoginApiAuthLoginPostData, LoginApiAuthLoginPostErrors, LoginApiAuthLoginPostResponses, LogoutApiAuthLogoutPostData, LogoutApiAuthLogoutPostResponses, MarkServicedApiServiceItemsServiceItemIdMarkServicedPostData, MarkServicedApiServiceItemsServiceItemIdMarkServicedPostErrors, MarkServicedApiServiceItemsServiceItemIdMarkServicedPostResponses, RegisterUserApiUsersPostData, RegisterUserApiUsersPostErrors, RegisterUserApiUsersPostResponses, TelegramAuthApiTelegramAuthPostData, TelegramAuthApiTelegramAuthPostErrors, TelegramAuthApiTelegramAuthPostResponses, UnlinkTelegramApiTelegramLinkDeleteData, UnlinkTelegramApiTelegramLinkDeleteErrors, UnlinkTelegramApiTelegramLinkDeleteResponses, UpdateCarApiCarsCarIdPatchData, UpdateCarApiCarsCarIdPatchErrors, UpdateCarApiCarsCarIdPatchResponses, UpdateReminderApiRemindersReminderIdPatchData, UpdateReminderApiRemindersReminderIdPatchErrors, UpdateReminderApiRemindersReminderIdPatchResponses, UpdateServiceItemApiServiceItemsServiceItemIdPatchData, UpdateServiceItemApiServiceItemsServiceItemIdPatchErrors, UpdateServiceItemApiServiceItemsServiceItemIdPatchResponses, UpdateUserApiUsersUserIdPatchData, UpdateUserApiUsersUserIdPatchErrors, UpdateUserApiUsersUserIdPatchResponses } from './types.gen';
+import type { AddCarApiCarsPostData, AddCarApiCarsPostErrors, AddCarApiCarsPostResponses, AddMileageLogApiMileageLogsPostData, AddMileageLogApiMileageLogsPostErrors, AddMileageLogApiMileageLogsPostResponses, AddReminderApiRemindersPostData, AddReminderApiRemindersPostErrors, AddReminderApiRemindersPostResponses, AddServiceItemApiServiceItemsPostData, AddServiceItemApiServiceItemsPostErrors, AddServiceItemApiServiceItemsPostResponses, BotWebhookApiTelegramWebhookPostData, BotWebhookApiTelegramWebhookPostErrors, BotWebhookApiTelegramWebhookPostResponses, ChangePasswordApiAuthChangePasswordPostData, ChangePasswordApiAuthChangePasswordPostErrors, ChangePasswordApiAuthChangePasswordPostResponses, DeleteCarApiCarsCarIdDeleteData, DeleteCarApiCarsCarIdDeleteErrors, DeleteCarApiCarsCarIdDeleteResponses, DeleteMileageLogApiMileageLogsMileageLogIdDeleteData, DeleteMileageLogApiMileageLogsMileageLogIdDeleteErrors, DeleteMileageLogApiMileageLogsMileageLogIdDeleteResponses, DeleteReminderApiRemindersReminderIdDeleteData, DeleteReminderApiRemindersReminderIdDeleteErrors, DeleteReminderApiRemindersReminderIdDeleteResponses, DeleteServiceItemApiServiceItemsServiceItemIdDeleteData, DeleteServiceItemApiServiceItemsServiceItemIdDeleteErrors, DeleteServiceItemApiServiceItemsServiceItemIdDeleteResponses, DeleteUserApiUsersUserIdDeleteData, DeleteUserApiUsersUserIdDeleteErrors, DeleteUserApiUsersUserIdDeleteResponses, GetBotWebhookApiTelegramWebhookGetData, GetBotWebhookApiTelegramWebhookGetResponses, GetCarApiCarsCarIdGetData, GetCarApiCarsCarIdGetErrors, GetCarApiCarsCarIdGetResponses, GetLinkTokenApiTelegramLinkTokenPostData, GetLinkTokenApiTelegramLinkTokenPostErrors, GetLinkTokenApiTelegramLinkTokenPostResponses, GetMeApiAuthMeGetData, GetMeApiAuthMeGetErrors, GetMeApiAuthMeGetResponses, GetMySettingsApiUsersMeSettingsGetData, GetMySettingsApiUsersMeSettingsGetErrors, GetMySettingsApiUsersMeSettingsGetResponses, GetReminderApiRemindersReminderIdGetData, GetReminderApiRemindersReminderIdGetErrors, GetReminderApiRemindersReminderIdGetResponses, GetServiceItemApiServiceItemsServiceItemIdGetData, GetServiceItemApiServiceItemsServiceItemIdGetErrors, GetServiceItemApiServiceItemsServiceItemIdGetResponses, GetUserApiUsersUserIdGetData, GetUserApiUsersUserIdGetErrors, GetUserApiUsersUserIdGetResponses, GetUserByUsernameApiUsersUusernameGetData, GetUserByUsernameApiUsersUusernameGetErrors, GetUserByUsernameApiUsersUusernameGetResponses, ListByCarApiMileageLogsGetData, ListByCarApiMileageLogsGetErrors, ListByCarApiMileageLogsGetResponses, ListByCarApiServiceItemsGetData, ListByCarApiServiceItemsGetErrors, ListByCarApiServiceItemsGetResponses, ListRemindersApiRemindersGetData, ListRemindersApiRemindersGetErrors, ListRemindersApiRemindersGetResponses, ListUserCarsApiCarsGetData, ListUserCarsApiCarsGetErrors, ListUserCarsApiCarsGetResponses, LoginApiAuthLoginPostData, LoginApiAuthLoginPostErrors, LoginApiAuthLoginPostResponses, LogoutApiAuthLogoutPostData, LogoutApiAuthLogoutPostResponses, MarkServicedApiServiceItemsServiceItemIdMarkServicedPostData, MarkServicedApiServiceItemsServiceItemIdMarkServicedPostErrors, MarkServicedApiServiceItemsServiceItemIdMarkServicedPostResponses, RegisterUserApiUsersPostData, RegisterUserApiUsersPostErrors, RegisterUserApiUsersPostResponses, TelegramAuthApiTelegramAuthPostData, TelegramAuthApiTelegramAuthPostErrors, TelegramAuthApiTelegramAuthPostResponses, UnlinkTelegramApiTelegramLinkDeleteData, UnlinkTelegramApiTelegramLinkDeleteErrors, UnlinkTelegramApiTelegramLinkDeleteResponses, UpdateCarApiCarsCarIdPatchData, UpdateCarApiCarsCarIdPatchErrors, UpdateCarApiCarsCarIdPatchResponses, UpdateMySettingsApiUsersMeSettingsPatchData, UpdateMySettingsApiUsersMeSettingsPatchErrors, UpdateMySettingsApiUsersMeSettingsPatchResponses, UpdateReminderApiRemindersReminderIdPatchData, UpdateReminderApiRemindersReminderIdPatchErrors, UpdateReminderApiRemindersReminderIdPatchResponses, UpdateServiceItemApiServiceItemsServiceItemIdPatchData, UpdateServiceItemApiServiceItemsServiceItemIdPatchErrors, UpdateServiceItemApiServiceItemsServiceItemIdPatchResponses, UpdateUserApiUsersUserIdPatchData, UpdateUserApiUsersUserIdPatchErrors, UpdateUserApiUsersUserIdPatchResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -49,6 +49,21 @@ export class Auth {
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/api/auth/me',
             ...options
+        });
+    }
+    
+    /**
+     * Change Password
+     */
+    public static changePasswordApiAuthChangePasswordPost<ThrowOnError extends boolean = false>(options: Options<ChangePasswordApiAuthChangePasswordPostData, ThrowOnError>) {
+        return (options.client ?? client).post<ChangePasswordApiAuthChangePasswordPostResponses, ChangePasswordApiAuthChangePasswordPostErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/auth/change-password',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
         });
     }
 }
@@ -100,6 +115,34 @@ export class Users {
         return (options.client ?? client).patch<UpdateUserApiUsersUserIdPatchResponses, UpdateUserApiUsersUserIdPatchErrors, ThrowOnError>({
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/api/users/{user_id}',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+}
+
+export class UserSettings {
+    /**
+     * Get My Settings
+     */
+    public static getMySettingsApiUsersMeSettingsGet<ThrowOnError extends boolean = false>(options?: Options<GetMySettingsApiUsersMeSettingsGetData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetMySettingsApiUsersMeSettingsGetResponses, GetMySettingsApiUsersMeSettingsGetErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/users/me/settings',
+            ...options
+        });
+    }
+    
+    /**
+     * Update My Settings
+     */
+    public static updateMySettingsApiUsersMeSettingsPatch<ThrowOnError extends boolean = false>(options: Options<UpdateMySettingsApiUsersMeSettingsPatchData, ThrowOnError>) {
+        return (options.client ?? client).patch<UpdateMySettingsApiUsersMeSettingsPatchResponses, UpdateMySettingsApiUsersMeSettingsPatchErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/users/me/settings',
             ...options,
             headers: {
                 'Content-Type': 'application/json',
@@ -176,6 +219,17 @@ export class Cars {
 
 export class MileageLogs {
     /**
+     * List By Car
+     */
+    public static listByCarApiMileageLogsGet<ThrowOnError extends boolean = false>(options: Options<ListByCarApiMileageLogsGetData, ThrowOnError>) {
+        return (options.client ?? client).get<ListByCarApiMileageLogsGetResponses, ListByCarApiMileageLogsGetErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/mileage-logs',
+            ...options
+        });
+    }
+    
+    /**
      * Add Mileage Log
      */
     public static addMileageLogApiMileageLogsPost<ThrowOnError extends boolean = false>(options: Options<AddMileageLogApiMileageLogsPostData, ThrowOnError>) {
@@ -187,17 +241,6 @@ export class MileageLogs {
                 'Content-Type': 'application/json',
                 ...options.headers
             }
-        });
-    }
-    
-    /**
-     * List By Car
-     */
-    public static listByCarApiMileageLogsCarCarIdGet<ThrowOnError extends boolean = false>(options: Options<ListByCarApiMileageLogsCarCarIdGetData, ThrowOnError>) {
-        return (options.client ?? client).get<ListByCarApiMileageLogsCarCarIdGetResponses, ListByCarApiMileageLogsCarCarIdGetErrors, ThrowOnError>({
-            security: [{ scheme: 'bearer', type: 'http' }],
-            url: '/api/mileage-logs/car/{car_id}',
-            ...options
         });
     }
     
@@ -215,6 +258,17 @@ export class MileageLogs {
 
 export class ServiceItems {
     /**
+     * List By Car
+     */
+    public static listByCarApiServiceItemsGet<ThrowOnError extends boolean = false>(options: Options<ListByCarApiServiceItemsGetData, ThrowOnError>) {
+        return (options.client ?? client).get<ListByCarApiServiceItemsGetResponses, ListByCarApiServiceItemsGetErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/service-items',
+            ...options
+        });
+    }
+    
+    /**
      * Add Service Item
      */
     public static addServiceItemApiServiceItemsPost<ThrowOnError extends boolean = false>(options: Options<AddServiceItemApiServiceItemsPostData, ThrowOnError>) {
@@ -226,17 +280,6 @@ export class ServiceItems {
                 'Content-Type': 'application/json',
                 ...options.headers
             }
-        });
-    }
-    
-    /**
-     * List By Car
-     */
-    public static listByCarApiServiceItemsCarCarIdGet<ThrowOnError extends boolean = false>(options: Options<ListByCarApiServiceItemsCarCarIdGetData, ThrowOnError>) {
-        return (options.client ?? client).get<ListByCarApiServiceItemsCarCarIdGetResponses, ListByCarApiServiceItemsCarCarIdGetErrors, ThrowOnError>({
-            security: [{ scheme: 'bearer', type: 'http' }],
-            url: '/api/service-items/car/{car_id}',
-            ...options
         });
     }
     
@@ -295,6 +338,17 @@ export class ServiceItems {
 
 export class Reminders {
     /**
+     * List Reminders
+     */
+    public static listRemindersApiRemindersGet<ThrowOnError extends boolean = false>(options?: Options<ListRemindersApiRemindersGetData, ThrowOnError>) {
+        return (options?.client ?? client).get<ListRemindersApiRemindersGetResponses, ListRemindersApiRemindersGetErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/reminders',
+            ...options
+        });
+    }
+    
+    /**
      * Add Reminder
      */
     public static addReminderApiRemindersPost<ThrowOnError extends boolean = false>(options: Options<AddReminderApiRemindersPostData, ThrowOnError>) {
@@ -306,28 +360,6 @@ export class Reminders {
                 'Content-Type': 'application/json',
                 ...options.headers
             }
-        });
-    }
-    
-    /**
-     * List By Service Item
-     */
-    public static listByServiceItemApiRemindersServiceItemServiceItemIdGet<ThrowOnError extends boolean = false>(options: Options<ListByServiceItemApiRemindersServiceItemServiceItemIdGetData, ThrowOnError>) {
-        return (options.client ?? client).get<ListByServiceItemApiRemindersServiceItemServiceItemIdGetResponses, ListByServiceItemApiRemindersServiceItemServiceItemIdGetErrors, ThrowOnError>({
-            security: [{ scheme: 'bearer', type: 'http' }],
-            url: '/api/reminders/service-item/{service_item_id}',
-            ...options
-        });
-    }
-    
-    /**
-     * List Active By Service Item
-     */
-    public static listActiveByServiceItemApiRemindersServiceItemServiceItemIdActiveGet<ThrowOnError extends boolean = false>(options: Options<ListActiveByServiceItemApiRemindersServiceItemServiceItemIdActiveGetData, ThrowOnError>) {
-        return (options.client ?? client).get<ListActiveByServiceItemApiRemindersServiceItemServiceItemIdActiveGetResponses, ListActiveByServiceItemApiRemindersServiceItemServiceItemIdActiveGetErrors, ThrowOnError>({
-            security: [{ scheme: 'bearer', type: 'http' }],
-            url: '/api/reminders/service-item/{service_item_id}/active',
-            ...options
         });
     }
     
