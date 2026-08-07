@@ -21,7 +21,7 @@
 		"@hey-api/openapi-ts": "^0.97.0",
 		"@inlang/paraglide-js": "^2.18.2",
 		"@internationalized/date": "^3.12.1",
-		"@lucide/svelte": "^1.28.0",
+		"@lucide/svelte": "^1.29.0",
 		"@sveltejs/adapter-auto": "^7.0.1",
 		"@sveltejs/adapter-static": "^3.0.10",
 		"@sveltejs/kit": "^2.57.0",
