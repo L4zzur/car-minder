@@ -1,13 +1,7 @@
 <script lang="ts">
-	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import Bell from '@lucide/svelte/icons/bell';
-	import CheckCircle2 from '@lucide/svelte/icons/check-circle-2';
-	import ExternalLink from '@lucide/svelte/icons/external-link';
-	import Loader2 from '@lucide/svelte/icons/loader-2';
-	import Send from '@lucide/svelte/icons/send';
 	import Shield from '@lucide/svelte/icons/shield';
-	import Unlink from '@lucide/svelte/icons/unlink';
 	import UserIcon from '@lucide/svelte/icons/user';
 	import { onMount } from 'svelte';
 
@@ -16,14 +10,14 @@
 	import { Telegram } from '$lib/api';
 	import { auth } from '$lib/auth.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
-	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as m from '$lib/paraglide/messages.js';
 
-	let isLoading = $state(false);
-	let isUnlinking = $state(false);
+	import NotificationsTab from './components/NotificationsTab.svelte';
+	import ProfileTab from './components/ProfileTab.svelte';
+	import SecurityTab from './components/SecurityTab.svelte';
+
 	let isBotDisabled = $state(false);
 
 	onMount(async () => {
@@ -44,197 +38,53 @@
 			// ignore check failure
 		}
 	});
-
-	async function linkTelegram() {
-		try {
-			isLoading = true;
-			const res = await Telegram.getLinkTokenApiTelegramLinkTokenPost();
-			if (res.data) {
-				const { token, bot_username } = res.data;
-				if (!bot_username) {
-					isBotDisabled = true;
-					return;
-				}
-				const url = `https://t.me/${bot_username}?start=${token}`;
-				window.open(url, '_blank');
-
-				const checkInterval = setInterval(async () => {
-					await auth.fetchUser();
-					if (auth.user?.telegram_id) {
-						clearInterval(checkInterval);
-					}
-				}, 2000);
-
-				setTimeout(() => clearInterval(checkInterval), 60000);
-			}
-		} catch (err: any) {
-			console.error('ошибка создания токена привязки:', err);
-			if (err?.status === 503 || err?.response?.status === 503) {
-				isBotDisabled = true;
-			}
-		} finally {
-			isLoading = false;
-		}
-	}
-
-	async function unlinkTelegram() {
-		try {
-			isUnlinking = true;
-			await Telegram.unlinkTelegramApiTelegramLinkDelete();
-			await auth.fetchUser();
-		} catch (err) {
-			console.error('ошибка отвязки telegram:', err);
-		} finally {
-			isUnlinking = false;
-		}
-	}
 </script>
 
 <svelte:head>
 	<title>{m.settings_title()} // car minder</title>
 </svelte:head>
 
-<div class="container mx-auto max-w-4xl space-y-6 p-6">
+<div class="container mx-auto max-w-3xl space-y-6 p-4 sm:p-6">
 	<div class="space-y-4">
 		<div>
-			<Button variant="ghost" size="sm" href="/home" class="-ml-2 text-muted-foreground hover:text-foreground">
+			<Button variant="ghost" size="sm" href="/home" class="-ml-2 text-muted-foreground hover:text-foreground lowercase">
 				<ArrowLeft data-icon="inline-start" />
 				{m.settings_back()}
 			</Button>
 		</div>
 
 		<div class="flex items-center justify-between">
-			<h1 class="text-4xl font-bold tracking-tight">{m.settings_title()}</h1>
+			<h1 class="text-3xl font-bold tracking-tight lowercase">{m.settings_title()}</h1>
 			<LanguageSwitcher />
 		</div>
 	</div>
 
 	<Tabs.Root value="profile" class="w-full space-y-6">
 		<Tabs.List class="grid w-full grid-cols-3 max-w-md">
-			<Tabs.Trigger value="profile">
+			<Tabs.Trigger value="profile" class="lowercase">
 				<UserIcon data-icon="inline-start" />
 				{m.settings_tabs_profile()}
 			</Tabs.Trigger>
-			<Tabs.Trigger value="notifications">
+			<Tabs.Trigger value="notifications" class="lowercase">
 				<Bell data-icon="inline-start" />
 				{m.settings_tabs_notifications()}
 			</Tabs.Trigger>
-			<Tabs.Trigger value="security">
+			<Tabs.Trigger value="security" class="lowercase">
 				<Shield data-icon="inline-start" />
 				{m.settings_tabs_security()}
 			</Tabs.Trigger>
 		</Tabs.List>
 
-		<Tabs.Content value="profile" class="space-y-6">
-			<Card.Root>
-				<Card.Header>
-					<Card.Title class="text-lg">{m.settings_profile_main_info()}</Card.Title>
-				</Card.Header>
-				<Card.Content>
-					<div class="grid gap-4 sm:grid-cols-2">
-						<div class="flex flex-col gap-1">
-							<span class="text-xs text-muted-foreground">{m.settings_profile_name()}</span>
-							<p class="font-medium">{auth.user?.name ?? '—'}</p>
-						</div>
-						<div class="flex flex-col gap-1">
-							<span class="text-xs text-muted-foreground">{m.settings_profile_username()}</span>
-							<p class="font-medium">{auth.user?.username ?? '—'}</p>
-						</div>
-					</div>
-				</Card.Content>
-			</Card.Root>
-
-			<Card.Root>
-				<Card.Header class="flex flex-row items-start justify-between space-y-0">
-					<div class="flex flex-col gap-1">
-						<Card.Title class="flex items-center gap-2 text-lg">
-							<Send class="text-sky-500" />
-							{m.settings_telegram_title()}
-						</Card.Title>
-						<Card.Description>
-							{m.settings_telegram_desc()}
-						</Card.Description>
-					</div>
-
-					{#if auth.user?.telegram_id}
-						<Badge variant="secondary" class="border-emerald-500/20 bg-emerald-500/10 text-emerald-500">
-							<CheckCircle2 data-icon="inline-start" />
-							{m.settings_telegram_linked()}
-						</Badge>
-					{:else if isBotDisabled}
-						<Badge variant="outline" class="border-destructive/20 bg-destructive/10 text-destructive">
-							{m.settings_telegram_disabled()}
-						</Badge>
-					{:else}
-						<Badge variant="outline" class="border-amber-500/20 bg-amber-500/10 text-amber-500">
-							{m.settings_telegram_unlinked()}
-						</Badge>
-					{/if}
-				</Card.Header>
-
-				<Card.Content class="border-t pt-4">
-					{#if auth.user?.telegram_id}
-						<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-							<div class="text-sm text-muted-foreground">
-								telegram ID: <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground">{auth.user.telegram_id}</code>
-							</div>
-
-							<Button onclick={unlinkTelegram} disabled={isUnlinking} variant="outline" size="sm" class="text-destructive hover:text-destructive">
-								{#if isUnlinking}
-									<Loader2 data-icon="inline-start" class="animate-spin" />
-									{m.settings_telegram_unlinking()}
-								{:else}
-									<Unlink data-icon="inline-start" />
-									{m.settings_telegram_unlink()}
-								{/if}
-							</Button>
-						</div>
-					{:else if isBotDisabled}
-						<div class="flex flex-col gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-amber-600 dark:text-amber-400">
-							<div class="flex items-center gap-2 font-medium">
-								<AlertTriangle class="h-4 w-4 shrink-0" />
-								{m.settings_telegram_bot_disabled()}
-							</div>
-							<p class="text-xs text-muted-foreground leading-relaxed">
-								для привязки аккаунта необходимо сначала задать токен бота в конфигурации приложения (<code class="rounded bg-muted px-1 py-0.5 font-mono text-[11px] text-foreground">APP__BOT__TOKEN</code>) согласно документации
-							</p>
-						</div>
-					{:else}
-						<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-							<p class="text-sm text-muted-foreground">
-								{m.settings_telegram_instruction()}
-							</p>
-
-							<Button onclick={linkTelegram} disabled={isLoading} size="sm">
-								{#if isLoading}
-									<Loader2 data-icon="inline-start" class="animate-spin" />
-									{m.settings_telegram_linking()}
-								{:else}
-									<Send data-icon="inline-start" />
-									{m.settings_telegram_link()}
-									<ExternalLink data-icon="inline-end" />
-								{/if}
-							</Button>
-						</div>
-					{/if}
-				</Card.Content>
-			</Card.Root>
+		<Tabs.Content value="profile">
+			<ProfileTab {isBotDisabled} />
 		</Tabs.Content>
 
 		<Tabs.Content value="notifications">
-			<Card.Root>
-				<Card.Content class="text-sm text-muted-foreground">
-					{m.common_in_development()}
-				</Card.Content>
-			</Card.Root>
+			<NotificationsTab />
 		</Tabs.Content>
 
 		<Tabs.Content value="security">
-			<Card.Root>
-				<Card.Content class="text-sm text-muted-foreground">
-					{m.common_in_development()}
-				</Card.Content>
-			</Card.Root>
+			<SecurityTab />
 		</Tabs.Content>
 	</Tabs.Root>
 </div>

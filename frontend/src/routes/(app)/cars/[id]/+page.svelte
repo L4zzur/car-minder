@@ -62,8 +62,8 @@
 		try {
 			const [carResponse, mileageResponse, serviceResponse] = await Promise.all([
 				Cars.getCarApiCarsCarIdGet({ path: { car_id: carId } }),
-				MileageLogs.listByCarApiMileageLogsCarCarIdGet({ path: { car_id: carId } }),
-				ServiceItems.listByCarApiServiceItemsCarCarIdGet({ path: { car_id: carId } })
+				MileageLogs.listByCarApiMileageLogsGet({ query: { car_id: carId } }),
+				ServiceItems.listByCarApiServiceItemsGet({ query: { car_id: carId } })
 			]);
 
 			if (carResponse.error || !carResponse.data) {
@@ -71,8 +71,9 @@
 				return;
 			}
 
-			car = carResponse.data;
-			mileageValue = car.current_odometer_km;
+			const loadedCar = carResponse.data;
+			car = loadedCar;
+			mileageValue = loadedCar.current_odometer_km;
 			mileageLogs = sortMileageLogs(mileageResponse.data ?? []).map((log) => ({
 				id: log.id,
 				odometerKm: log.odometer_km,
