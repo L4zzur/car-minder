@@ -58,12 +58,18 @@ class ReminderRepository:
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
 
-    async def list_by_car_id(self, car_id: UUID) -> list[Reminder]:
+    async def list_by_car_id(
+        self, car_id: UUID, user_id: UUID | None = None
+    ) -> list[Reminder]:
         stmt = (
             select(Reminder)
             .join(Reminder.service_item)
+            .join(ServiceItem.car)
             .where(ServiceItem.car_id == car_id)
         )
+        if user_id is not None:
+            stmt = stmt.where(Car.user_id == user_id)
+
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
 

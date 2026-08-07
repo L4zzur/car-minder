@@ -70,6 +70,12 @@ async def test_list_reminders(auth_client: AsyncClient, test_service_item: dict)
     assert all_resp.status_code == 200
     assert len(all_resp.json()) >= 1
 
+    # Test listing reminders by car_id (which tests service.list_by_car)
+    car_id = test_service_item["car_id"]
+    car_resp = await auth_client.get(f"/api/reminders?car_id={car_id}")
+    assert car_resp.status_code == 200
+    assert len(car_resp.json()) >= 1
+
 
 @pytest.mark.asyncio
 async def test_update_reminder(auth_client: AsyncClient, test_service_item: dict):
