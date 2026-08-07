@@ -24,9 +24,7 @@ def test_validate_new_odometer_rollback_raises_error():
 
 def test_validate_new_mileage_log_odometer_valid():
     """Strictly higher odometer reading for a new log should pass validation."""
-    validate_new_mileage_log_odometer(
-        current_odometer_km=50000, new_odometer_km=50100
-    )
+    validate_new_mileage_log_odometer(current_odometer_km=50000, new_odometer_km=50100)
 
 
 def test_validate_new_mileage_log_odometer_equal_raises_error():

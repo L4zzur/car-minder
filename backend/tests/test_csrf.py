@@ -1,7 +1,7 @@
 import pytest
 from httpx import ASGITransport, AsyncClient
 
-from api.routes.auth import ACCESS_TOKEN_COOKIE, CSRF_TOKEN_COOKIE
+from api.routes.auth import CSRF_TOKEN_COOKIE
 from main import app
 
 

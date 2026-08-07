@@ -42,7 +42,7 @@ class TelegramAuthService:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail=str(e),
-            )
+            ) from e
 
         if not web_app_data.user:
             raise UserNotFoundError()

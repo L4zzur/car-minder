@@ -111,6 +111,7 @@ async def test_telegram_auth_miniapp_valid_init_data(
 ):
     """MiniApp auth with valid HMAC signature authenticates user and sets cookies."""
     from uuid import UUID
+
     from repositories import UserRepository
 
     tg_id = 888777666

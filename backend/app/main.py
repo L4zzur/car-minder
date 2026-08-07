@@ -3,14 +3,15 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 import uvicorn
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+
 from api.errors import register_exception_handlers
 from api.router import api_router
 from bot import bot, dp
 from core.config import AppMode, settings
 from core.db_helper import db_helper
 from core.logger import logger, setup_logging
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
 from middleware.csrf import csrf_protect
 
 setup_logging()

@@ -330,4 +330,3 @@ async def test_service_item_not_found(auth_client: AsyncClient):
 
     resp = await auth_client.delete(f"/api/service-items/{fake_id}")
     assert resp.status_code == 404
-
