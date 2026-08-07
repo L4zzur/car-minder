@@ -65,7 +65,7 @@ async def test_list_mileage_logs(auth_client: AsyncClient, test_car: dict):
         json={"car_id": car_id, "odometer_km": initial_mileage + 200},
     )
 
-    response = await auth_client.get(f"/api/mileage-logs/car/{car_id}")
+    response = await auth_client.get(f"/api/mileage-logs?car_id={car_id}")
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 2
@@ -88,6 +88,6 @@ async def test_delete_mileage_log(auth_client: AsyncClient, test_car: dict):
     assert response.status_code == 204
 
     # Verify deletion
-    list_resp = await auth_client.get(f"/api/mileage-logs/car/{car_id}")
+    list_resp = await auth_client.get(f"/api/mileage-logs?car_id={car_id}")
     data = list_resp.json()
     assert all(log["id"] != log_id for log in data)

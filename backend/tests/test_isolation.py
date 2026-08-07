@@ -90,7 +90,7 @@ async def test_user_cannot_add_mileage_log_to_other_user_car(
     assert resp.json()["code"] == "car_not_found"
 
     # List logs for User A's car
-    resp = await second_auth_client.get(f"/api/mileage-logs/car/{car_id}")
+    resp = await second_auth_client.get(f"/api/mileage-logs?car_id={car_id}")
     assert resp.status_code == 404
 
 

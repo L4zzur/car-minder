@@ -39,7 +39,7 @@ async def test_list_service_items(auth_client: AsyncClient, test_car: dict):
         },
     )
 
-    response = await auth_client.get(f"/api/service-items/car/{car_id}")
+    response = await auth_client.get(f"/api/service-items?car_id={car_id}")
     assert response.status_code == 200
     data = response.json()
     assert len(data) >= 1
@@ -74,7 +74,7 @@ async def test_mark_serviced_updates_mileage(auth_client: AsyncClient, test_car:
     assert mark_resp.json()["last_service_odometer_km"] == new_mileage
 
     # 3. Verify that a mileage log was automatically created
-    mileage_resp = await auth_client.get(f"/api/mileage-logs/car/{car_id}")
+    mileage_resp = await auth_client.get(f"/api/mileage-logs?car_id={car_id}")
     mileage_data = mileage_resp.json()
     assert any(log["odometer_km"] == new_mileage for log in mileage_data)
 
@@ -145,7 +145,7 @@ async def test_status_no_reminders(auth_client: AsyncClient, test_car: dict):
         },
     )
 
-    response = await auth_client.get(f"/api/service-items/car/{car_id}")
+    response = await auth_client.get(f"/api/service-items?car_id={car_id}")
     items = response.json()
     item = next(i for i in items if i["name"] == "No Reminder Item")
 
@@ -188,7 +188,7 @@ async def test_status_km_due(auth_client: AsyncClient, test_car: dict):
         json={"car_id": car_id, "odometer_km": 6500},
     )
 
-    response = await auth_client.get(f"/api/service-items/car/{car_id}")
+    response = await auth_client.get(f"/api/service-items?car_id={car_id}")
     items = response.json()
     item = next(i for i in items if i["name"] == "Oil Due")
 
@@ -233,7 +233,7 @@ async def test_status_priority_due_over_ok(auth_client: AsyncClient, test_car: d
         },
     )
 
-    response = await auth_client.get(f"/api/service-items/car/{car_id}")
+    response = await auth_client.get(f"/api/service-items?car_id={car_id}")
     items = response.json()
     item = next(i for i in items if i["name"] == "Multi Reminder")
 
@@ -275,7 +275,7 @@ async def test_status_soon_km(auth_client: AsyncClient, test_car: dict):
         json={"car_id": car_id, "odometer_km": 5200},
     )
 
-    response = await auth_client.get(f"/api/service-items/car/{car_id}")
+    response = await auth_client.get(f"/api/service-items?car_id={car_id}")
     items = response.json()
     item = next(i for i in items if i["name"] == "Soon KM Item")
 
@@ -312,7 +312,7 @@ async def test_status_soon_days(auth_client: AsyncClient, test_car: dict):
         },
     )
 
-    response = await auth_client.get(f"/api/service-items/car/{car_id}")
+    response = await auth_client.get(f"/api/service-items?car_id={car_id}")
     items = response.json()
     item = next(i for i in items if i["name"] == "Soon Days Item")
 
