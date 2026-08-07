@@ -55,6 +55,15 @@ class UsernameAlreadyTakenError(ConflictServiceError):
         super().__init__(details=details)
 
 
+class EmailAlreadyTakenError(ConflictServiceError):
+    code = "email_already_taken"
+    message = "Email address is already taken"
+
+    def __init__(self, email: str | None = None) -> None:
+        details = {"email": str(email)} if email is not None else None
+        super().__init__(details=details)
+
+
 # Telegram
 class TelegramAlreadyLinkedError(ConflictServiceError):
     code = "telegram_already_linked"

@@ -7,7 +7,11 @@ from core.schemas.user import UserCreate, UserRead, UserUpdate
 from core.security import hash_password, verify_password
 from repositories import UserRepository
 
-from .exceptions import UsernameAlreadyTakenError, UserNotFoundError
+from .exceptions import (
+    EmailAlreadyTakenError,
+    UsernameAlreadyTakenError,
+    UserNotFoundError,
+)
 
 
 class UserService:
@@ -27,9 +31,15 @@ class UserService:
         if _user:
             raise UsernameAlreadyTakenError(create_schema.username)
 
+        if create_schema.email:
+            _email_user = await self.user_repository.get_by_email(create_schema.email)
+            if _email_user:
+                raise EmailAlreadyTakenError(create_schema.email)
+
         user = User(
             username=create_schema.username,
             name=create_schema.name,
+            email=create_schema.email,
             hashed_password=hash_password(create_schema.password),
         )
 
@@ -79,6 +89,11 @@ class UserService:
         user = await self.user_repository.get_by_id(user_id)
         if user is None:
             raise UserNotFoundError(user_id)
+
+        if update_schema.email and update_schema.email != user.email:
+            existing = await self.user_repository.get_by_email(update_schema.email)
+            if existing and existing.id != user_id:
+                raise EmailAlreadyTakenError(update_schema.email)
 
         update_data = update_schema.model_dump(exclude_unset=True)
         for field, value in update_data.items():

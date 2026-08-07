@@ -32,3 +32,8 @@ class UserRepository:
         stmt = select(User).where(User.telegram_id == telegram_id)
         result = await self.session.execute(stmt)
         return result.scalars().first()
+
+    async def get_by_email(self, email: str) -> User | None:
+        stmt = select(User).where(User.email == email)
+        result = await self.session.execute(stmt)
+        return result.scalars().first()

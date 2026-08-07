@@ -130,3 +130,66 @@ async def test_create_user_invalid_data(client: AsyncClient):
         json={"username": "jd", "name": "Jane Doe", "password": "short"},
     )
     assert response.status_code == 422  # Pydantic validation error
+
+
+@pytest.mark.asyncio
+async def test_create_user_duplicate_email(client: AsyncClient):
+    await client.post(
+        "/api/users",
+        json={
+            "username": "emailuser1",
+            "name": "Email User 1",
+            "email": "duplicate@example.com",
+            "password": "password123",
+        },
+    )
+    response = await client.post(
+        "/api/users",
+        json={
+            "username": "emailuser2",
+            "name": "Email User 2",
+            "email": "duplicate@example.com",
+            "password": "password123",
+        },
+    )
+    assert response.status_code == 409
+    assert response.json()["code"] == "email_already_taken"
+
+
+@pytest.mark.asyncio
+async def test_update_user_email(auth_client: AsyncClient, test_user: dict):
+    user_id = test_user["id"]
+    response = await auth_client.patch(
+        f"/api/users/{user_id}",
+        json={"email": "my_new_email@example.com"},
+    )
+    assert response.status_code == 200
+    assert response.json()["email"] == "my_new_email@example.com"
+
+
+@pytest.mark.asyncio
+async def test_update_user_duplicate_email(
+    client: AsyncClient,
+    auth_client: AsyncClient,
+    test_user: dict,
+):
+    # Create another user with an email
+    await client.post(
+        "/api/users",
+        json={
+            "username": "other_user_email",
+            "name": "Other User",
+            "email": "taken_by_other@example.com",
+            "password": "password123",
+        },
+    )
+
+    # Try to update test_user email to taken_by_other@example.com
+    user_id = test_user["id"]
+    response = await auth_client.patch(
+        f"/api/users/{user_id}",
+        json={"email": "taken_by_other@example.com"},
+    )
+    assert response.status_code == 409
+    assert response.json()["code"] == "email_already_taken"
+
