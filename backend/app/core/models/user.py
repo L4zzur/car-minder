@@ -8,6 +8,7 @@ from .mixins import CreatedAtMixin, IdMixin, UpdatedAtMixin
 
 if TYPE_CHECKING:
     from .car import Car
+    from .user_settings import UserSettings
 
 
 class User(Base, IdMixin, CreatedAtMixin, UpdatedAtMixin):
@@ -44,6 +45,12 @@ class User(Base, IdMixin, CreatedAtMixin, UpdatedAtMixin):
         back_populates="user",
         cascade="all, delete-orphan",
         passive_deletes=True,
+    )
+
+    settings: Mapped["UserSettings"] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+        uselist=False,
     )
 
     __table_args__ = (
