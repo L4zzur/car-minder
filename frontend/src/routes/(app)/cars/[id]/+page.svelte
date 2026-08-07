@@ -18,6 +18,7 @@
 	import MileageHistory from '$lib/components/MileageHistory.svelte';
 	import ServiceItemCard from '$lib/components/ServiceItemCard.svelte';
 	import AddServiceDialog from '$lib/components/ui/AddServiceDialog.svelte';
+	import EditCarDialog from '$lib/components/ui/EditCarDialog.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as m from '$lib/paraglide/messages.js';
 
@@ -254,8 +255,12 @@
 							{car.brand.toLowerCase()}
 							{car.model.toLowerCase()}
 						</h1>
-						<span class="rounded-md border px-2 py-1 text-xs text-muted-foreground">{car.year}</span
-						>
+						<span class="rounded-md border px-2 py-1 text-xs text-muted-foreground">{car.year}</span>
+						<EditCarDialog
+							{car}
+							onCarUpdated={() => loadCarPage({ showLoading: false })}
+							onCarDeleted={() => goto('/home')}
+						/>
 					</div>
 					<p class="text-sm text-muted-foreground">{m.car_detail_subtitle()}</p>
 				</div>
