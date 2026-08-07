@@ -71,7 +71,7 @@
 			emailSuccessMsg = m.settings_security_email_saved();
 			setTimeout(() => (emailSuccessMsg = ''), 3000);
 		} catch (err: any) {
-			console.error('ошибка обновления email:', err);
+			console.error('failed to update email:', err);
 			emailErrorMsg = m.settings_security_email_error();
 		} finally {
 			isSavingEmail = false;
@@ -119,7 +119,7 @@
 			confirmPassword = '';
 			setTimeout(() => (passwordSuccessMsg = ''), 3000);
 		} catch (err: any) {
-			console.error('ошибка смены пароля:', err);
+			console.error('failed to change password:', err);
 			passwordErrorMsg = m.settings_security_password_error();
 		} finally {
 			isChangingPassword = false;

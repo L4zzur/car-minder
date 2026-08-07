@@ -74,7 +74,7 @@
 
 			onCarAdded();
 		} catch (e) {
-			console.error('ошибка при добавлении машины:', e);
+			console.error('failed to add car:', e);
 			error = m.add_car_err_failed();
 		} finally {
 			isLoading = false;

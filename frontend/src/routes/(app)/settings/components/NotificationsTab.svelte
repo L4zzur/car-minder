@@ -31,7 +31,7 @@
 				errorMsg = m.settings_notifications_load_error();
 			}
 		} catch (err: any) {
-			console.error('ошибка загрузки настроек:', err);
+			console.error('failed to load settings:', err);
 			errorMsg = m.settings_notifications_load_error();
 		} finally {
 			isLoading = false;
@@ -69,7 +69,7 @@
 				errorMsg = m.settings_notifications_save_error();
 			}
 		} catch (err: any) {
-			console.error('ошибка сохранения настроек:', err);
+			console.error('failed to save settings:', err);
 			errorMsg = err?.body?.detail || m.settings_notifications_save_error();
 		} finally {
 			isSaving = false;

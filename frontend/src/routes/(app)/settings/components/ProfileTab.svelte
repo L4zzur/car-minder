@@ -47,7 +47,7 @@
 
 			setTimeout(() => clearInterval(checkInterval), 60000);
 		} catch (err: any) {
-			console.error('ошибка создания токена привязки:', err);
+			console.error('failed to create telegram link token:', err);
 			errorMsg = m.settings_telegram_link_error();
 		} finally {
 			isLoading = false;
@@ -67,7 +67,7 @@
 
 			await auth.fetchUser();
 		} catch (err) {
-			console.error('ошибка отвязки telegram:', err);
+			console.error('failed to unlink telegram:', err);
 			errorMsg = m.settings_telegram_unlink_error();
 		} finally {
 			isUnlinking = false;
