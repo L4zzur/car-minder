@@ -3,6 +3,7 @@ __all__ = [
     "MileageLogRepository",
     "ReminderRepository",
     "UserRepository",
+    "UserSettingsRepository",
     "ServiceItemRepository",
 ]
 
@@ -11,3 +12,4 @@ from .mileage_log import MileageLogRepository
 from .reminder import ReminderRepository
 from .service_item import ServiceItemRepository
 from .user import UserRepository
+from .user_settings import UserSettingsRepository

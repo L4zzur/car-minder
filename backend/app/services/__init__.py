@@ -6,6 +6,7 @@ __all__ = [
     "NotFoundServiceError",
     "ServiceError",
     "UserService",
+    "UserSettingsService",
     "ReminderService",
     "ServiceItemService",
     "TelegramAuthService",
@@ -22,4 +23,5 @@ from .mileage_logs import MileageLogService
 from .reminders import ReminderService
 from .service_items import ServiceItemService
 from .telegram_auth import TelegramAuthService
+from .user_settings import UserSettingsService
 from .users import UserService

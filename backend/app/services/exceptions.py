@@ -69,6 +69,15 @@ class InvalidCurrentPasswordError(BusinessRuleServiceError):
     message = "Invalid current password"
 
 
+class UserSettingsNotFoundError(NotFoundServiceError):
+    code = "user_settings_not_found"
+    message = "User settings not found"
+
+    def __init__(self, user_id: UUID | None = None) -> None:
+        details = {"user_id": str(user_id)} if user_id is not None else None
+        super().__init__(details=details)
+
+
 # Telegram
 class TelegramAlreadyLinkedError(ConflictServiceError):
     code = "telegram_already_linked"

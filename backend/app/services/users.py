@@ -2,7 +2,7 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import User
+from core.models import User, UserSettings
 from core.schemas.user import UserCreate, UserRead, UserUpdate
 from core.security import hash_password, verify_password
 from repositories import UserRepository
@@ -42,6 +42,7 @@ class UserService:
             name=create_schema.name,
             email=create_schema.email,
             hashed_password=hash_password(create_schema.password),
+            settings=UserSettings(),
         )
 
         await self.user_repository.add(user)
