@@ -64,6 +64,11 @@ class EmailAlreadyTakenError(ConflictServiceError):
         super().__init__(details=details)
 
 
+class InvalidCurrentPasswordError(BusinessRuleServiceError):
+    code = "invalid_current_password"
+    message = "Invalid current password"
+
+
 # Telegram
 class TelegramAlreadyLinkedError(ConflictServiceError):
     code = "telegram_already_linked"

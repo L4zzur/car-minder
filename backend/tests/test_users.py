@@ -192,4 +192,3 @@ async def test_update_user_duplicate_email(
     )
     assert response.status_code == 409
     assert response.json()["code"] == "email_already_taken"
-

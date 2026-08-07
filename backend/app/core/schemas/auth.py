@@ -19,3 +19,8 @@ class TelegramAuthRequest(BaseModel):
 class TelegramLinkTokenResponse(BaseModel):
     token: str
     bot_username: str | None = None
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str

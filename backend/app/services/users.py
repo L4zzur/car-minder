@@ -9,6 +9,7 @@ from repositories import UserRepository
 
 from .exceptions import (
     EmailAlreadyTakenError,
+    InvalidCurrentPasswordError,
     UsernameAlreadyTakenError,
     UserNotFoundError,
 )
@@ -103,6 +104,22 @@ class UserService:
         await self.session.refresh(user)
 
         return UserRead.model_validate(user)
+
+    async def change_password(
+        self,
+        user_id: UUID,
+        current_password: str,
+        new_password: str,
+    ) -> None:
+        user = await self.user_repository.get_by_id(user_id)
+        if user is None:
+            raise UserNotFoundError(user_id)
+
+        if not verify_password(current_password, user.hashed_password):
+            raise InvalidCurrentPasswordError()
+
+        user.hashed_password = hash_password(new_password)
+        await self.session.commit()
 
     async def delete_user(
         self,

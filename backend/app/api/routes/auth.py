@@ -7,7 +7,7 @@ from api.auth import ACCESS_TOKEN_COOKIE, CSRF_TOKEN_COOKIE, get_cookie_secure_f
 from api.deps import get_current_user, get_user_service
 from core.config import settings
 from core.models import User
-from core.schemas import Token, UserRead
+from core.schemas import ChangePasswordRequest, Token, UserRead
 from core.security import create_access_token
 from services import UserService
 
@@ -61,3 +61,16 @@ async def logout(response: Response):
 @router.get("/me", response_model=UserRead)
 async def get_me(current_user: User = Depends(get_current_user)):
     return current_user
+
+
+@router.post("/change-password", status_code=status.HTTP_204_NO_CONTENT)
+async def change_password(
+    body: ChangePasswordRequest,
+    current_user: User = Depends(get_current_user),
+    service: UserService = Depends(get_user_service),
+):
+    await service.change_password(
+        user_id=current_user.id,
+        current_password=body.current_password,
+        new_password=body.new_password,
+    )
