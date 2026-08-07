@@ -145,6 +145,23 @@ class ReminderService:
 
         return ReminderRead.model_validate(reminder)
 
+    async def list_by_car(
+        self,
+        car_id: UUID,
+        user_id: UUID,
+    ) -> list[ReminderRead]:
+        reminders = await self.reminder_repository.list_by_car_id(car_id)
+        # Filter to make sure they belong to current_user
+        user_reminders = [r for r in reminders if r.service_item.car.user_id == user_id]
+        return [ReminderRead.model_validate(r) for r in user_reminders]
+
+    async def list_user_reminders(
+        self,
+        user_id: UUID,
+    ) -> list[ReminderRead]:
+        reminders = await self.reminder_repository.list_by_user_id(user_id)
+        return [ReminderRead.model_validate(r) for r in reminders]
+
     async def delete_reminder(
         self,
         reminder_id: UUID,

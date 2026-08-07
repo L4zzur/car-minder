@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from core.models import Reminder, ServiceItem
+from core.models import Car, Reminder, ServiceItem
 
 
 class ReminderRepository:
@@ -54,6 +54,25 @@ class ReminderRepository:
         stmt = select(Reminder).where(
             Reminder.service_item_id.in_(service_item_ids),
             Reminder.is_active.is_(True),
+        )
+        result = await self.session.execute(stmt)
+        return list(result.scalars().all())
+
+    async def list_by_car_id(self, car_id: UUID) -> list[Reminder]:
+        stmt = (
+            select(Reminder)
+            .join(Reminder.service_item)
+            .where(ServiceItem.car_id == car_id)
+        )
+        result = await self.session.execute(stmt)
+        return list(result.scalars().all())
+
+    async def list_by_user_id(self, user_id: UUID) -> list[Reminder]:
+        stmt = (
+            select(Reminder)
+            .join(Reminder.service_item)
+            .join(ServiceItem.car)
+            .where(Car.user_id == user_id)
         )
         result = await self.session.execute(stmt)
         return list(result.scalars().all())

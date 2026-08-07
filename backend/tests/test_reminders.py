@@ -59,11 +59,16 @@ async def test_list_reminders(auth_client: AsyncClient, test_service_item: dict)
         json={"service_item_id": item_id, "interval_km": 5000},
     )
 
-    response = await auth_client.get(f"/api/reminders/service-item/{item_id}")
+    response = await auth_client.get(f"/api/reminders?service_item_id={item_id}")
     assert response.status_code == 200
     data = response.json()
     assert len(data) >= 1
     assert data[0]["interval_km"] == 5000
+
+    # Also test listing all reminders
+    all_resp = await auth_client.get("/api/reminders")
+    assert all_resp.status_code == 200
+    assert len(all_resp.json()) >= 1
 
 
 @pytest.mark.asyncio

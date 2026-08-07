@@ -24,30 +24,18 @@ async def add_reminder(
     return await service.add_reminder(create_schema, current_user.id)
 
 
-@router.get(
-    "/service-item/{service_item_id}",
-    response_model=list[ReminderRead],
-    status_code=200,
-)
-async def list_by_service_item(
-    service_item_id: UUID,
+@router.get("", response_model=list[ReminderRead], status_code=200)
+async def list_reminders(
+    car_id: UUID | None = None,
+    service_item_id: UUID | None = None,
     current_user: User = Depends(get_current_user),
     service: ReminderService = Depends(get_reminder_service),
 ) -> list[ReminderRead]:
-    return await service.list_by_service_item(service_item_id, current_user.id)
-
-
-@router.get(
-    "/service-item/{service_item_id}/active",
-    response_model=list[ReminderRead],
-    status_code=200,
-)
-async def list_active_by_service_item(
-    service_item_id: UUID,
-    current_user: User = Depends(get_current_user),
-    service: ReminderService = Depends(get_reminder_service),
-) -> list[ReminderRead]:
-    return await service.list_active_by_service_item(service_item_id, current_user.id)
+    if car_id:
+        return await service.list_by_car(car_id, current_user.id)
+    if service_item_id:
+        return await service.list_by_service_item(service_item_id, current_user.id)
+    return await service.list_user_reminders(current_user.id)
 
 
 @router.get("/{reminder_id}", response_model=ReminderRead, status_code=200)
