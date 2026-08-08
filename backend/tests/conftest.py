@@ -52,6 +52,8 @@ def event_loop():
 
 @pytest.fixture(scope="session", autouse=True)
 async def setup_db():
+    if os.path.exists(TEST_DB_PATH):
+        os.remove(TEST_DB_PATH)
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield
