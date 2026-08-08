@@ -1,7 +1,8 @@
 from datetime import datetime, time
 from uuid import UUID
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from .base import ORMReadSchema
 
@@ -28,3 +29,15 @@ class UserSettingsUpdate(BaseModel):
     notify_via_telegram: bool | None = None
     notify_via_email: bool | None = None
     language: str | None = Field(None, min_length=2, max_length=10)
+
+    @field_validator("timezone")
+    @classmethod
+    def validate_timezone(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        try:
+            ZoneInfo(v)
+            return v
+        except (ZoneInfoNotFoundError, ValueError):
+            raise ValueError(f"Invalid IANA timezone: '{v}'")
+
