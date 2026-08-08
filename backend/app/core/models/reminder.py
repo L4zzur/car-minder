@@ -1,7 +1,8 @@
+from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import UUID
 
-from sqlalchemy import CheckConstraint, ForeignKey, text
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
@@ -47,6 +48,12 @@ class Reminder(Base, IdMixin, CreatedAtMixin, UpdatedAtMixin):
     notify_before_days: Mapped[int | None] = mapped_column(
         nullable=True,
         comment="Notify this many days before service is due",
+    )
+
+    last_notified_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+        comment="Timestamp of the last sent notification",
     )
 
     note: Mapped[str | None] = mapped_column(

@@ -53,6 +53,7 @@ class ReminderRead(ORMReadSchema):
     interval_days: int | None
     notify_before_km: int | None
     notify_before_days: int | None
+    last_notified_at: datetime | None = None
     note: str | None
     created_at: datetime
     updated_at: datetime

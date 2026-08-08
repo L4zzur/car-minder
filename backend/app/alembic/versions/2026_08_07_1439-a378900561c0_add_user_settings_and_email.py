@@ -1,4 +1,4 @@
-"""add_user_settings_and_email
+"""add user_settings and email
 
 Revision ID: a378900561c0
 Revises: 9a80387ade5a
