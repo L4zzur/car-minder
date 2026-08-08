@@ -19,6 +19,7 @@
 	import ServiceItemCard from '$lib/components/ServiceItemCard.svelte';
 	import AddServiceDialog from '$lib/components/ui/AddServiceDialog.svelte';
 	import EditCarDialog from '$lib/components/ui/EditCarDialog.svelte';
+	import RemindersDialog from '$lib/components/ui/RemindersDialog.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as m from '$lib/paraglide/messages.js';
 
@@ -226,11 +227,13 @@
 					onServiceAdded={() => loadCarPage({ showLoading: false })}
 					class="flex-1 sm:flex-initial"
 				/>
+				<RemindersDialog
+					{car}
+					{serviceItems}
+					onReminderChanged={() => loadCarPage({ showLoading: false })}
+					class="flex-1 sm:flex-initial"
+				/>
 			{/if}
-			<Button class="flex-1 sm:flex-none">
-				<Bell data-icon="inline-start" />
-				{m.car_detail_reminder()}
-			</Button>
 		</div>
 	</header>
 
