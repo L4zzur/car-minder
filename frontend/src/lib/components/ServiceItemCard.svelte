@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { CircleAlert, CircleCheck, Clock, Trash2 } from 'lucide-svelte';
+	import { Bell, CircleAlert, CircleCheck, Clock, Trash2 } from 'lucide-svelte';
 
-	import type { ServiceItemSummary } from '$lib/api';
+	import type { CarRead, ServiceItemSummary } from '$lib/api';
 	import EditServiceDialog from '$lib/components/ui/EditServiceDialog.svelte';
+	import RemindersDialog from '$lib/components/ui/RemindersDialog.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as m from '$lib/paraglide/messages.js';
@@ -10,17 +11,23 @@
 
 	let {
 		item,
+		car,
+		serviceItems = [],
 		isSaving,
 		isDeleting,
 		onMarkServiced,
 		onItemUpdated,
+		onReminderChanged,
 		onDelete
 	}: {
 		item: ServiceItemSummary;
+		car?: CarRead;
+		serviceItems?: ServiceItemSummary[];
 		isSaving: boolean;
 		isDeleting: boolean;
 		onMarkServiced: () => void;
 		onItemUpdated?: () => void;
+		onReminderChanged?: () => void;
 		onDelete: () => void;
 	} = $props();
 
@@ -95,6 +102,21 @@
 				</Tooltip.Trigger>
 				<Tooltip.Content><p>{m.service_card_tooltip_mark()}</p></Tooltip.Content>
 			</Tooltip.Root>
+
+			{#if car}
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						<RemindersDialog {car} {serviceItems} targetServiceItemId={item.id} {onReminderChanged}>
+							{#snippet child({ props })}
+								<Button {...props} variant="ghost" size="icon" class="size-8 text-muted-foreground hover:text-foreground">
+									<Bell class="size-4" />
+								</Button>
+							{/snippet}
+						</RemindersDialog>
+					</Tooltip.Trigger>
+					<Tooltip.Content><p>{m.reminders_dialog_tooltip_manage()}</p></Tooltip.Content>
+				</Tooltip.Root>
+			{/if}
 
 			{#if onItemUpdated}
 				<Tooltip.Root>

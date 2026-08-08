@@ -182,6 +182,7 @@
 
 	"reminders_dialog_badge_due": "service due!",
 	"reminders_dialog_badge_soon": "soon",
+	"reminders_dialog_tooltip_manage": "configure reminder",
 	"reminders_dialog_overdue_km": "overdue by {km} km",
 	"reminders_dialog_left_km": "{km} km left",
 	"reminders_dialog_overdue_days": "overdue by {days} days",

@@ -182,6 +182,7 @@
 
 	"reminders_dialog_badge_due": "пора обслужить!",
 	"reminders_dialog_badge_soon": "скоро",
+	"reminders_dialog_tooltip_manage": "настроить напоминание",
 	"reminders_dialog_overdue_km": "просрочено на {km} км",
 	"reminders_dialog_left_km": "осталось {km} км",
 	"reminders_dialog_overdue_days": "просрочено на {days} дн.",

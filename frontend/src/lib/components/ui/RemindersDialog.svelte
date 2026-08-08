@@ -27,12 +27,14 @@
 	let {
 		car,
 		serviceItems = [],
+		targetServiceItemId = null,
 		onReminderChanged,
 		child,
 		class: className = ''
 	} = $props<{
 		car: CarRead;
 		serviceItems?: ServiceItemSummary[];
+		targetServiceItemId?: string | null;
 		onReminderChanged?: () => void;
 		child?: (opts: { props: Record<string, unknown> }) => import('svelte').Snippet;
 		class?: string;
@@ -68,23 +70,39 @@
 	let formError = $state('');
 	let formSuccess = $state('');
 
+	const displayReminders = $derived.by(() => {
+		if (!targetServiceItemId) return reminders;
+		return reminders.filter((r) => r.service_item_id === targetServiceItemId);
+	});
+
 	const selectedServiceItemLabel = $derived.by(() => {
 		if (!selectedServiceItemId) return m.reminders_dialog_select_placeholder();
 		const item = serviceItems.find((s: ServiceItemSummary) => s.id === selectedServiceItemId);
 		return item ? item.name.toLowerCase() : m.reminders_dialog_select_placeholder();
 	});
 
+	let wasOpen = false;
 	$effect(() => {
-		if (open) {
-			loadReminders();
-			activeTab = 'list';
+		if (open && !wasOpen) {
+			wasOpen = true;
 			editingReminderId = null;
 			resetForm();
+			activeTab = 'list';
+			loadReminders().then(() => {
+				if (targetServiceItemId) {
+					const existing = reminders.find((r) => r.service_item_id === targetServiceItemId);
+					if (!existing) {
+						activeTab = 'add';
+					}
+				}
+			});
+		} else if (!open) {
+			wasOpen = false;
 		}
 	});
 
 	function resetForm() {
-		selectedServiceItemId = serviceItems[0]?.id ?? '';
+		selectedServiceItemId = targetServiceItemId ?? serviceItems[0]?.id ?? '';
 		intervalKm = '';
 		intervalDays = '';
 		notifyBeforeKm = '';
@@ -278,7 +296,7 @@
 		<Tabs.Root bind:value={activeTab} class="w-full space-y-4">
 			<Tabs.List class="grid w-full grid-cols-2">
 				<Tabs.Trigger value="list" class="lowercase">
-					{m.reminders_dialog_tab_list({ count: reminders.length })}
+					{m.reminders_dialog_tab_list({ count: displayReminders.length })}
 				</Tabs.Trigger>
 				<Tabs.Trigger value="add" class="lowercase">
 					<Plus data-icon="inline-start" /> {m.reminders_dialog_tab_add()}
@@ -292,7 +310,7 @@
 						<Loader2 class="animate-spin" data-icon="inline-start" />
 						{m.reminders_dialog_loading()}
 					</div>
-				{:else if reminders.length === 0}
+				{:else if displayReminders.length === 0}
 					<div class="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground lowercase">
 						<Bell class="size-8 text-muted-foreground/40" />
 						<p class="font-medium text-sm">{m.reminders_dialog_empty_title()}</p>
@@ -300,7 +318,7 @@
 					</div>
 				{:else}
 					<div class="space-y-3 max-h-[380px] overflow-y-auto pr-1">
-						{#each reminders as reminder (reminder.id)}
+						{#each displayReminders as reminder (reminder.id)}
 							{@const item = getServiceItem(reminder.service_item_id)}
 							{@const metrics = getReminderMetrics(reminder, item, car.current_odometer_km)}
 							{@const status = getReminderStatus(reminder, metrics)}
