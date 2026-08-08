@@ -8,6 +8,7 @@ dependencies = [
     "aiogram>=3.30.0",
     "aiosqlite>=0.22.1",
     "alembic>=1.19.0",
+    "apscheduler[sqlalchemy]>=3.11.3",
     "fastapi>=0.141.1",
     "pwdlib[argon2]>=0.3.0",
     "pydantic-settings>=2.14.2",
