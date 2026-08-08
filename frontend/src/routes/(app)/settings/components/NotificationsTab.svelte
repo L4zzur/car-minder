@@ -92,7 +92,7 @@
 			{:else if settings}
 				<form onsubmit={(e) => { e.preventDefault(); saveSettings(); }} class="space-y-4">
 					<Field.FieldGroup class="gap-4">
-						<!-- Row 1: Time inputs -->
+						<!-- Tab 1: Time inputs -->
 						<div class="grid gap-4 sm:grid-cols-2">
 							<Field.Field>
 								<Field.FieldLabel for="service_reminder_time" class="lowercase">{m.settings_notifications_service_time_label()}</Field.FieldLabel>
@@ -119,7 +119,7 @@
 							</Field.Field>
 						</div>
 
-						<!-- Row 2: Intervals and Timezone -->
+						<!-- Tab 2: Intervals and Timezone -->
 						<div class="grid gap-4 sm:grid-cols-2">
 							<Field.Field>
 								<Field.FieldLabel for="mileage_prompt_interval_days" class="lowercase">{m.settings_notifications_interval_label()}</Field.FieldLabel>
@@ -145,10 +145,10 @@
 							</Field.Field>
 						</div>
 
-						<!-- Row 3: Notification Channels -->
-						<div class="space-y-3">
+						<!-- Tab 3: Notification Channels -->
+						<div class="flex flex-col gap-3">
 							<span class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{m.settings_notifications_channels_heading()}</span>
-							
+
 							<div class="grid gap-3 sm:grid-cols-2">
 								<Label
 									class="flex items-start gap-3 rounded-lg border p-3.5 hover:bg-accent/50 cursor-pointer has-[[aria-checked=true]]:border-primary has-[[aria-checked=true]]:bg-primary/5 transition-colors"
