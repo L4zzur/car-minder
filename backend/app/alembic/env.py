@@ -1,5 +1,6 @@
 import asyncio
 from logging.config import fileConfig
+from typing import Any
 
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
@@ -31,6 +32,12 @@ target_metadata = Base.metadata
 config.set_main_option("sqlalchemy.url", settings.db.url)
 
 
+def include_name(name: str | None, type_: str, parent_names: Any) -> bool:
+    if type_ == "table" and name == "apscheduler_jobs":
+        return False
+    return True
+
+
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 
@@ -50,6 +57,7 @@ def run_migrations_offline() -> None:
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
         render_as_batch=True,
+        include_name=include_name,
     )
 
     with context.begin_transaction():
@@ -61,6 +69,7 @@ def do_run_migrations(connection: Connection) -> None:
         connection=connection,
         target_metadata=target_metadata,
         render_as_batch=True,
+        include_name=include_name,
     )
 
     with context.begin_transaction():
