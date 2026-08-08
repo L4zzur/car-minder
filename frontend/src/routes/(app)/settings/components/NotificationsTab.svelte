@@ -12,6 +12,7 @@
 	import * as Field from '$lib/components/ui/field';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
+	import TimezoneSelect from '$lib/components/TimezoneSelect.svelte';
 	import * as m from '$lib/paraglide/messages.js';
 
 	let settings = $state<UserSettingsRead | null>(null);
@@ -135,12 +136,7 @@
 
 							<Field.Field>
 								<Field.FieldLabel for="timezone" class="lowercase">{m.settings_notifications_timezone_label()}</Field.FieldLabel>
-								<Input
-									id="timezone"
-									type="text"
-									placeholder="Europe/Moscow"
-									bind:value={settings.timezone}
-								/>
+								<TimezoneSelect bind:value={settings.timezone} />
 								<Field.FieldDescription class="lowercase">{m.settings_notifications_timezone_desc()}</Field.FieldDescription>
 							</Field.Field>
 						</div>
