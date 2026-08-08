@@ -133,6 +133,12 @@
 	"add_service_err_odometer_positive": "пробег должен быть положительным числом",
 	"add_service_err_failed": "не удалось добавить расходник",
 
+	"edit_service_title": "редактирование расходника",
+	"edit_service_desc": "обнови название, дату или пробег обслуживания",
+	"edit_service_edit_btn": "редактировать",
+	"edit_service_saving": "сохранение...",
+	"edit_service_err_failed": "не удалось обновить расходник",
+
 	"reminders_dialog_btn": "напоминания",
 	"reminders_dialog_title": "напоминания по авто",
 	"reminders_dialog_desc": "настройка интервальных напоминалок о расходниках",

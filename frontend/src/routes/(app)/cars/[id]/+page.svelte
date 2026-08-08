@@ -333,6 +333,7 @@
 							isSaving={savingServiceItemId === item.id}
 							isDeleting={deletingServiceItemId === item.id}
 							onMarkServiced={() => handleMarkServiced(item.id)}
+							onItemUpdated={() => loadCarPage({ showLoading: false })}
 							onDelete={() => handleDeleteServiceItem(item.id)}
 						/>
 					{/each}

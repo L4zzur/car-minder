@@ -133,6 +133,12 @@
 	"add_service_err_odometer_positive": "mileage must be a positive number",
 	"add_service_err_failed": "failed to add service item",
 
+	"edit_service_title": "edit service item",
+	"edit_service_desc": "update the name, date, or mileage",
+	"edit_service_edit_btn": "edit",
+	"edit_service_saving": "saving...",
+	"edit_service_err_failed": "failed to update service item",
+
 	"reminders_dialog_btn": "reminders",
 	"reminders_dialog_title": "car reminders",
 	"reminders_dialog_desc": "list and configure interval maintenance reminders",

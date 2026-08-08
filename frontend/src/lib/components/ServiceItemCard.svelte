@@ -2,6 +2,7 @@
 	import { CircleAlert, CircleCheck, Clock, Trash2 } from 'lucide-svelte';
 
 	import type { ServiceItemSummary } from '$lib/api';
+	import EditServiceDialog from '$lib/components/ui/EditServiceDialog.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as m from '$lib/paraglide/messages.js';
@@ -12,12 +13,14 @@
 		isSaving,
 		isDeleting,
 		onMarkServiced,
+		onItemUpdated,
 		onDelete
 	}: {
 		item: ServiceItemSummary;
 		isSaving: boolean;
 		isDeleting: boolean;
 		onMarkServiced: () => void;
+		onItemUpdated?: () => void;
 		onDelete: () => void;
 	} = $props();
 
@@ -54,12 +57,12 @@
 		{#if item.status === 'due'}
 			<CircleAlert class="mt-0.5 size-5 text-destructive shrink-0" />
 		{:else if item.status === 'soon'}
-			<Clock class="mt-0.5 size-5 text-primary shrink-0" />
+			<Clock class="mt-0.5 size-5 text-amber-500 dark:text-amber-400 shrink-0" />
 		{:else}
 			<CircleCheck class="mt-0.5 size-5 text-muted-foreground shrink-0" />
 		{/if}
-		<div class="space-y-1">
-			<h3 class="font-medium text-sm sm:text-base">{item.name}</h3>
+		<div class="space-y-1 flex-1 min-w-0">
+			<h3 class="font-medium text-sm sm:text-base truncate">{item.name}</h3>
 			<div class="flex flex-wrap gap-x-1 text-xs text-muted-foreground">
 				<span>{m.service_card_serviced_at({ date: formatDate(item.last_service_at) })}</span>
 				<span>//</span>
@@ -69,9 +72,19 @@
 	</div>
 
 	<div class="flex items-center justify-between gap-2 border-t border-border/50 pt-3">
-		<span class="rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground">
-			{getNextLabel()}
-		</span>
+		{#if item.status === 'due' || item.status === 'soon'}
+			<span class="rounded-md bg-muted/80 px-2 py-1 text-xs font-medium text-foreground">
+				{getNextLabel()}
+			</span>
+		{:else if item.status === 'ok'}
+			<span class="rounded-md bg-muted/60 px-2 py-1 text-xs text-foreground/80">
+				{getNextLabel()}
+			</span>
+		{:else}
+			<span class="rounded-md bg-muted/40 px-2 py-1 text-xs text-muted-foreground">
+				{getNextLabel()}
+			</span>
+		{/if}
 
 		<div class="flex items-center gap-1">
 			<Tooltip.Root>
@@ -83,9 +96,18 @@
 				<Tooltip.Content><p>{m.service_card_tooltip_mark()}</p></Tooltip.Content>
 			</Tooltip.Root>
 
+			{#if onItemUpdated}
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						<EditServiceDialog {item} {onItemUpdated} />
+					</Tooltip.Trigger>
+					<Tooltip.Content><p>{m.edit_service_edit_btn()}</p></Tooltip.Content>
+				</Tooltip.Root>
+			{/if}
+
 			<Tooltip.Root>
 				<Tooltip.Trigger>
-					<Button variant="ghost" size="icon" disabled={isDeleting} onclick={onDelete} class="text-muted-foreground hover:text-destructive">
+					<Button variant="ghost" size="icon" disabled={isDeleting} onclick={onDelete} class="size-8 text-muted-foreground hover:text-destructive">
 						<Trash2 class="size-4" />
 					</Button>
 				</Tooltip.Trigger>
