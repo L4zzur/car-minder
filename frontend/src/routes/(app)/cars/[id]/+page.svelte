@@ -8,9 +8,11 @@
 	import {
 		Cars,
 		MileageLogs,
+		Reminders,
 		ServiceItems,
 		type CarRead,
 		type MileageLogRead,
+		type ReminderRead,
 		type ServiceItemSummary
 	} from '$lib/api';
 	import CarStats from '$lib/components/CarStats.svelte';
@@ -22,6 +24,7 @@
 	import RemindersDialog from '$lib/components/ui/RemindersDialog.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as m from '$lib/paraglide/messages.js';
+	import { getReminderMetrics, getReminderStatus } from '$lib/reminderStatus.js';
 
 	type MileageLogView = {
 		id: string;
@@ -32,6 +35,7 @@
 	let car = $state<CarRead | null>(null);
 	let mileageValue = $state<number | string>('');
 	let serviceItems = $state<ServiceItemSummary[]>([]);
+	let reminders = $state<ReminderRead[]>([]);
 	let mileageLogs = $state<MileageLogView[]>([]);
 	let isLoading = $state(true);
 	let isSavingMileage = $state(false);
@@ -44,8 +48,21 @@
 
 	const drivenKm = $derived(car ? car.current_odometer_km - car.initial_odometer_km : 0);
 	const serviceItemCount = $derived(serviceItems.length);
-	const dueCount = $derived(serviceItems.filter((item) => item.status === 'due').length);
-	const soonCount = $derived(serviceItems.filter((item) => item.status === 'soon').length);
+	const reminderCount = $derived(reminders.filter((r) => r.is_active).length);
+	const reminderDueCount = $derived(
+		reminders.filter((r) => {
+			if (!r.is_active || !car) return false;
+			const item = serviceItems.find((s) => s.id === r.service_item_id) ?? null;
+			return getReminderStatus(r, getReminderMetrics(r, item, car.current_odometer_km)) === 'due';
+		}).length
+	);
+	const reminderSoonCount = $derived(
+		reminders.filter((r) => {
+			if (!r.is_active || !car) return false;
+			const item = serviceItems.find((s) => s.id === r.service_item_id) ?? null;
+			return getReminderStatus(r, getReminderMetrics(r, item, car.current_odometer_km)) === 'soon';
+		}).length
+	);
 
 	function sortMileageLogs(logs: MileageLogRead[]) {
 		return [...logs].sort(
@@ -62,10 +79,11 @@
 		error = '';
 
 		try {
-			const [carResponse, mileageResponse, serviceResponse] = await Promise.all([
+			const [carResponse, mileageResponse, serviceResponse, remindersResponse] = await Promise.all([
 				Cars.getCarApiCarsCarIdGet({ path: { car_id: carId } }),
 				MileageLogs.listByCarApiMileageLogsGet({ query: { car_id: carId } }),
-				ServiceItems.listByCarApiServiceItemsGet({ query: { car_id: carId } })
+				ServiceItems.listByCarApiServiceItemsGet({ query: { car_id: carId } }),
+				Reminders.listRemindersApiRemindersGet({ query: { car_id: carId } })
 			]);
 
 			if (carResponse.error || !carResponse.data) {
@@ -83,6 +101,7 @@
 			}));
 
 			serviceItems = serviceResponse.data ?? [];
+			reminders = remindersResponse.data ?? [];
 		} catch (e) {
 			console.error('failed to load car page:', e);
 			error = m.car_detail_err_load_failed();
@@ -270,7 +289,7 @@
 			</div>
 		</div>
 
-		<CarStats {car} {drivenKm} {dueCount} {soonCount} {serviceItemCount} />
+		<CarStats {car} {drivenKm} {serviceItemCount} {reminderCount} {reminderDueCount} {reminderSoonCount} />
 
 		<div class="grid max-w-4xl grid-cols-1 gap-4 md:grid-cols-2">
 			<MileageForm

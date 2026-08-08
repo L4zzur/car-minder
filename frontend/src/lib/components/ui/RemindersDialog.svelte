@@ -22,6 +22,7 @@
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as m from '$lib/paraglide/messages.js';
 	import { getLocale } from '$lib/paraglide/runtime';
+	import { getReminderMetrics, getReminderStatus } from '$lib/reminderStatus.js';
 
 	let {
 		car,
@@ -247,27 +248,6 @@
 		return serviceItems.find((s: ServiceItemSummary) => s.id === itemId) ?? null;
 	}
 
-	function getReminderMetrics(reminder: ReminderRead) {
-		const item = getServiceItem(reminder.service_item_id);
-		if (!item) return null;
-
-		let kmLeft: number | null = null;
-		let daysLeft: number | null = null;
-
-		if (reminder.interval_km && item.last_service_odometer_km !== undefined) {
-			const dueKm = item.last_service_odometer_km + reminder.interval_km;
-			kmLeft = dueKm - car.current_odometer_km;
-		}
-
-		if (reminder.interval_days && item.last_service_at) {
-			const lastDate = new Date(item.last_service_at).getTime();
-			const dueDate = lastDate + reminder.interval_days * 86400 * 1000;
-			daysLeft = Math.ceil((dueDate - Date.now()) / (86400 * 1000));
-		}
-
-		return { kmLeft, daysLeft };
-	}
-
 	const formatOdometer = (val: number) => val.toLocaleString(getLocale());
 
 	const serviceItemName = (item: ServiceItemSummary | null) =>
@@ -322,7 +302,8 @@
 					<div class="space-y-3 max-h-[380px] overflow-y-auto pr-1">
 						{#each reminders as reminder (reminder.id)}
 							{@const item = getServiceItem(reminder.service_item_id)}
-							{@const metrics = getReminderMetrics(reminder)}
+							{@const metrics = getReminderMetrics(reminder, item, car.current_odometer_km)}
+							{@const status = getReminderStatus(reminder, metrics)}
 							<div class="flex flex-col gap-3 rounded-lg border p-4 bg-card hover:bg-accent/30 transition-colors">
 								{#if editingReminderId === reminder.id}
 									<!-- Inline Edit Form -->
@@ -393,9 +374,9 @@
 												</span>
 
 												{#if reminder.is_active}
-													{#if metrics && ((metrics.kmLeft !== null && metrics.kmLeft <= 0) || (metrics.daysLeft !== null && metrics.daysLeft <= 0))}
+													{#if status === 'due'}
 														<Badge variant="destructive" class="lowercase text-xs">{m.reminders_dialog_badge_due()}</Badge>
-													{:else if metrics && ((metrics.kmLeft !== null && metrics.kmLeft <= (reminder.notify_before_km || 500)) || (metrics.daysLeft !== null && metrics.daysLeft <= (reminder.notify_before_days || 14)))}
+													{:else if status === 'soon'}
 														<Badge variant="outline" class="lowercase text-xs border-amber-500/30 bg-amber-500/15 text-amber-600 dark:text-amber-400">{m.reminders_dialog_badge_soon()}</Badge>
 													{:else}
 														<Badge variant="outline" class="lowercase text-xs border-emerald-500/30 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">{m.reminders_dialog_active()}</Badge>

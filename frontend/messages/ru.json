@@ -90,6 +90,7 @@
 	"car_stats_items_tracked": "всего отслеживается",
 	"car_stats_reminders": "напоминания",
 	"car_stats_reminders_summary": "{soon} скоро, {due} просрочено",
+	"car_stats_reminders_ok": "всё в норме",
 
 	"mileage_form_title": "добавить пробег",
 	"mileage_form_label": "одометр, км",

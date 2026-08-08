@@ -90,6 +90,7 @@
 	"car_stats_items_tracked": "total tracked",
 	"car_stats_reminders": "reminders",
 	"car_stats_reminders_summary": "{soon} soon, {due} overdue",
+	"car_stats_reminders_ok": "all good",
 
 	"mileage_form_title": "add mileage",
 	"mileage_form_label": "odometer, km",

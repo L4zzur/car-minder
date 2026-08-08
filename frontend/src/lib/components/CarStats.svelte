@@ -8,14 +8,16 @@
 	let {
 		car,
 		drivenKm,
-		dueCount,
-		soonCount,
+		reminderCount,
+		reminderDueCount,
+		reminderSoonCount,
 		serviceItemCount
 	}: {
 		car: CarRead;
 		drivenKm: number;
-		dueCount: number;
-		soonCount: number;
+		reminderCount: number;
+		reminderDueCount: number;
+		reminderSoonCount: number;
 		serviceItemCount: number;
 	} = $props();
 
@@ -57,9 +59,13 @@
 			<Bell class="size-4" />
 			<span>{m.car_stats_reminders()}</span>
 		</div>
-		<div class="text-2xl font-semibold">{dueCount + soonCount}</div>
+		<div class="text-2xl font-semibold">{reminderCount}</div>
 		<p class="mt-1 text-xs text-muted-foreground">
-			{m.car_stats_reminders_summary({ soon: soonCount, due: dueCount })}
+			{#if reminderDueCount > 0 || reminderSoonCount > 0}
+				{m.car_stats_reminders_summary({ soon: reminderSoonCount, due: reminderDueCount })}
+			{:else}
+				{m.car_stats_reminders_ok()}
+			{/if}
 		</p>
 	</div>
 </div>
