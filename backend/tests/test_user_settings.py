@@ -54,7 +54,6 @@ async def test_update_user_settings_invalid_timezone(
     assert response.status_code == 422
 
 
-
 @pytest.mark.asyncio
 async def test_change_password(
     auth_client: AsyncClient,

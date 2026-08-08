@@ -65,7 +65,9 @@ async def test_webhook_invalid_secret_token_returns_403(client: AsyncClient):
 @pytest.mark.asyncio
 async def test_webhook_valid_secret_token_processes_update(client: AsyncClient):
     """POST /api/telegram/webhook with valid secret processes update and returns 200 OK."""
-    secret = settings.bot.webhook_secret.get_secret_value()
+    secret = settings.bot.webhook_secret
+    assert secret is not None
+    secret_value = secret.get_secret_value()
 
     update_payload = {
         "update_id": 10001,
@@ -82,7 +84,7 @@ async def test_webhook_valid_secret_token_processes_update(client: AsyncClient):
         resp = await client.post(
             "/api/telegram/webhook",
             json=update_payload,
-            headers={"X-Telegram-Bot-Api-Secret-Token": secret},
+            headers={"X-Telegram-Bot-Api-Secret-Token": secret_value},
         )
         assert resp.status_code == 200
         assert resp.json() == {"ok": True}
@@ -121,9 +123,11 @@ async def test_telegram_auth_miniapp_valid_init_data(
     user.telegram_id = tg_id
     await session.commit()
 
-    bot_token = settings.bot.token.get_secret_value()
+    bot_token = settings.bot.token
+    assert bot_token is not None
+    bot_token_value = bot_token.get_secret_value()
     valid_init_data = create_telegram_init_data(
-        bot_token, {"id": tg_id, "first_name": "TestUser"}
+        bot_token_value, {"id": tg_id, "first_name": "TestUser"}
     )
 
     resp = await client.post(

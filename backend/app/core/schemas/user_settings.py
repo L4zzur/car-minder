@@ -39,5 +39,4 @@ class UserSettingsUpdate(BaseModel):
             ZoneInfo(v)
             return v
         except (ZoneInfoNotFoundError, ValueError):
-            raise ValueError(f"Invalid IANA timezone: '{v}'")
-
+            raise ValueError(f"Invalid IANA timezone: '{v}'") from None
