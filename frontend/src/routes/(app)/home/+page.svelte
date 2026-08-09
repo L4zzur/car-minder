@@ -12,6 +12,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import * as Empty from '$lib/components/ui/empty';
+	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as m from '$lib/paraglide/messages.js';
 
 	let cars = $state<CarRead[]>([]);
@@ -80,11 +81,13 @@
 	{#if isLoading}
 		<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 			{#each Array(3) as _}
-				<Card.Root class="animate-pulse">
-					<Card.Header class="h-32 rounded-t-lg bg-muted"></Card.Header>
+				<Card.Root>
+					<Card.Header class="h-32 rounded-t-lg p-0">
+						<Skeleton class="h-full w-full rounded-t-lg" />
+					</Card.Header>
 					<Card.Content class="flex flex-col gap-2 p-4">
-						<div class="h-4 w-3/4 bg-muted"></div>
-						<div class="h-4 w-1/2 bg-muted"></div>
+						<Skeleton class="h-4 w-3/4" />
+						<Skeleton class="h-4 w-1/2" />
 					</Card.Content>
 				</Card.Root>
 			{/each}
