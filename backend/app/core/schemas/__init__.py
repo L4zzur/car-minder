@@ -25,12 +25,14 @@ __all__ = [
     "TokenData",
     "TelegramAuthRequest",
     "TelegramLinkTokenResponse",
+    "TelegramBotInfoResponse",
     "ChangePasswordRequest",
 ]
 
 from .auth import (
     ChangePasswordRequest,
     TelegramAuthRequest,
+    TelegramBotInfoResponse,
     TelegramLinkTokenResponse,
     Token,
     TokenData,

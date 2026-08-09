@@ -9,7 +9,12 @@ from bot import bot, dp
 from core.config import AppMode, settings
 from core.logger import logger
 from core.models import User
-from core.schemas import TelegramAuthRequest, TelegramLinkTokenResponse, Token
+from core.schemas import (
+    TelegramAuthRequest,
+    TelegramBotInfoResponse,
+    TelegramLinkTokenResponse,
+    Token,
+)
 from core.security import create_access_token
 from services.telegram_auth import TelegramAuthService
 
@@ -133,3 +138,12 @@ async def get_bot_webhook() -> dict:
     if not settings.bot.is_active:
         return {"status": "Telegram bot is disabled"}
     return {"status": "Webhook is active"}
+
+
+@router.get("/info")
+async def get_telegram_info(request: Request) -> TelegramBotInfoResponse:
+    bot_username = getattr(request.app.state, "bot_username", None)
+    return TelegramBotInfoResponse(
+        bot_username=bot_username,
+        is_active=settings.bot.is_active,
+    )
