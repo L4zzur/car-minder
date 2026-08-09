@@ -1,7 +1,8 @@
-from aiogram import Router
+from aiogram import Router, html
 from aiogram.filters import Command, CommandObject
 from aiogram.types import InlineKeyboardButton, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram_i18n import I18nContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
@@ -20,6 +21,7 @@ async def cmd_start(
     message: Message,
     command: CommandObject,
     session: AsyncSession,
+    i18n: I18nContext,
 ) -> None:
     if not message.from_user:
         return
@@ -32,39 +34,32 @@ async def cmd_start(
         try:
             result = await auth_service.link_user_by_token(token, telegram_id)
             if result:
-                await message.answer(
-                    "🎉 <b>Аккаунт успешно привязан!</b>\n\n"
-                    "Теперь вы можете полноценно использовать Telegram Mini App и получать уведомления."
-                )
+                await message.answer(i18n.get("start_linked_success"))
             else:
-                await message.answer(
-                    "❌ <b>Недействительный токен привязки.</b>\n\n"
-                    "Возможно, время действия ссылки истекло (5 минут). Сгенерируйте новую ссылку на сайте."
-                )
+                await message.answer(i18n.get("start_invalid_token"))
 
         except TelegramAlreadyLinkedError:
-            await message.answer("⚠️ Ваш профиль на сайте уже привязан к Telegram.")
+            await message.answer(i18n.get("start_already_linked"))
         except TelegramAlreadyLinkedToAnotherError:
-            await message.answer(
-                "⚠️ Этот Telegram-аккаунт уже привязан к другому пользователю."
-            )
+            await message.answer(i18n.get("start_already_linked_to_another"))
         return
 
     user = await user_repo.get_by_telegram_id(telegram_id)
 
     if user:
         await message.answer(
-            f"👋 <b>С возвращением, {message.from_user.first_name}!</b>\n\n"
-            "Твой аккаунт привязан и готов к работе."
+            i18n.get(
+                "start_welcome_back",
+                name=html.quote(user.name),
+            )
         )
     else:
         builder = InlineKeyboardBuilder()
-        builder.row(InlineKeyboardButton(text="Сайт приложения", url=settings.domain))
+        builder.row(
+            InlineKeyboardButton(text=i18n.get("site_button"), url=settings.domain)
+        )
         await message.answer(
-            f"👋 <b>Привет, {message.from_user.full_name}!</b>\n\n"
-            "Чтобы начать пользоваться Car Minder:\n"
-            "1. Зарегистрируйся на сайте приложения.\n"
-            "2. Перейди в свой профиль и нажмите <b>«Привязать Telegram»</b>.",
+            i18n.get("start_hello_new", name=html.quote(message.from_user.full_name)),
             reply_markup=builder.as_markup(),
         )
 
