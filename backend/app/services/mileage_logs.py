@@ -4,8 +4,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import MileageLog
 from core.schemas import MileageLogCreate, MileageLogRead
-from repositories import CarRepository, MileageLogRepository
+from repositories import (
+    CarRepository,
+    MileageLogRepository,
+    UserSettingsRepository,
+)
 from rules import validate_new_mileage_log_odometer
+from services.scheduler_helper import sync_mileage_prompt_job
 
 from .exceptions import CarNotFoundError, MileageLogNotFoundError
 
@@ -52,6 +57,11 @@ class MileageLogService:
         await self.mileage_log_repository.add(mileage_log)
         await self.session.commit()
         await self.session.refresh(mileage_log)
+
+        # Re-sync odometer prompt job to reset the inactivity timer
+        settings_repo = UserSettingsRepository(self.session)
+        user_settings = await settings_repo.get_by_user_id(user_id)
+        sync_mileage_prompt_job(car, mileage_log.created_at, user_settings)
 
         return MileageLogRead.model_validate(mileage_log)
 

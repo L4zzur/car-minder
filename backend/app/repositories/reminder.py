@@ -93,6 +93,7 @@ class ReminderRepository:
             .join(Reminder.service_item)
             .join(ServiceItem.car)
             .where(Car.user_id == user_id)
+            .options(selectinload(Reminder.service_item))
         )
         result = await self.session.execute(stmt)
         return list(result.scalars().all())

@@ -38,11 +38,17 @@ language_name_en = 🇬🇧 english
 
 service_reminder_title = 🔧 <b>пора на обслуживание: { $car_brand } { $car_model }</b>
 service_reminder_item = 📍 <b>расходник:</b> { $item_name }
-service_reminder_reason_days = ⏳ до планового ТО осталось дней: <b>{ $days_left }</b>
-service_reminder_reason_km = 🚗 до планового ТО осталось км: <b>{ $km_left }</b>
+service_reminder_reason_days = ⏳ до планового обслуживание осталось дней: <b>{ $days_left }</b>
+service_reminder_reason_km = 🚗 до планового обслуживание осталось км: <b>{ $km_left }</b>
 service_reminder_overdue = ⚠️ <b>срок обслуживания наступил!</b>
-mark_service_done_button = ✅ отметить обслуживание выполненным
+mark_service_done_button = ✅ отметить обслуживание
+mark_service_done_success = ✅ отметка о проведении обслуживание сохранена!
 
-mileage_prompt_title = 📏 <b>обновление одометра: { $car_brand } { $car_model }</b>
+mileage_prompt_title = 🚙 <b>обновление одометра: { $car_brand } { $car_model }</b>
 mileage_prompt_body = ты не обновлял пробег уже <b>{ $days }</b> дн. (текущий: <b>{ $current_km }</b> км). какой сейчас одометр?
 update_mileage_button = ✍️ ввести новый пробег
+skip_mileage_button = ⏩ пропустить
+skip_mileage_success = ⏩ напоминание пропущено. напомним в следующий раз!
+prompt_mileage_enter_msg = ✏️ <b>введи новый пробег числом</b> в ответном сообщении (например, 125500):
+prompt_mileage_invalid_msg = ❌ введено неверное значение. пробег должен быть числом больше текущего ({ $current_km } км).
+mileage_updated_success = ✅ пробег <b>{ $new_km }</b> км успешно сохранён!

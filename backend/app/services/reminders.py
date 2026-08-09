@@ -9,7 +9,12 @@ from core.schemas import (
     ReminderUpdate,
 )
 from core.validators import ReminderIntervalData, validate_reminder_intervals
-from repositories import ReminderRepository, ServiceItemRepository
+from repositories import (
+    ReminderRepository,
+    ServiceItemRepository,
+    UserSettingsRepository,
+)
+from services.scheduler_helper import remove_reminder_job, sync_reminder_job
 
 from .exceptions import (
     ReminderIntervalError,
@@ -28,6 +33,7 @@ class ReminderService:
         self.session = session
         self.reminder_repository = reminder_repository
         self.service_item_repository = service_item_repository
+        self.user_settings_repository = UserSettingsRepository(session)
 
     async def _get_item_with_owner_check(
         self,
@@ -63,6 +69,9 @@ class ReminderService:
         await self.reminder_repository.add(reminder)
         await self.session.commit()
         await self.session.refresh(reminder)
+
+        user_settings = await self.user_settings_repository.get_by_user_id(user_id)
+        sync_reminder_job(reminder, _service_item, user_settings)
 
         return ReminderRead.model_validate(reminder)
 
@@ -143,6 +152,9 @@ class ReminderService:
         await self.session.commit()
         await self.session.refresh(reminder)
 
+        user_settings = await self.user_settings_repository.get_by_user_id(user_id)
+        sync_reminder_job(reminder, reminder.service_item, user_settings)
+
         return ReminderRead.model_validate(reminder)
 
     async def list_by_car(
@@ -169,3 +181,5 @@ class ReminderService:
 
         await self.reminder_repository.delete(reminder)
         await self.session.commit()
+
+        remove_reminder_job(reminder_id)

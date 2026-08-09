@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.schemas import Language, UserSettingsUpdate
 from repositories import UserRepository, UserSettingsRepository
-from services import UserSettingsService
+from services.user_settings import UserSettingsService
 
 router = Router()
 

@@ -19,8 +19,10 @@ from repositories import (
     MileageLogRepository,
     ReminderRepository,
     ServiceItemRepository,
+    UserSettingsRepository,
 )
 from rules.mileage import validate_new_odometer
+from services.scheduler_helper import remove_reminder_job, sync_reminder_job
 
 from .exceptions import CarNotFoundError, ServiceItemNotFoundError
 
@@ -248,6 +250,18 @@ class ServiceItemService:
         await self.session.commit()
         await self.session.refresh(service_item)
 
+        # Re-sync connected reminder jobs with updated last_service_at
+        active_reminders = (
+            await self.reminder_repository.list_active_by_service_item_id(
+                service_item.id
+            )
+        )
+        if active_reminders:
+            settings_repo = UserSettingsRepository(self.session)
+            user_settings = await settings_repo.get_by_user_id(user_id)
+            for reminder in active_reminders:
+                sync_reminder_job(reminder, service_item, user_settings)
+
         return ServiceItemRead.model_validate(service_item)
 
     async def delete_service_item(
@@ -257,5 +271,12 @@ class ServiceItemService:
     ) -> None:
         service_item = await self._get_item_with_owner_check(service_item_id, user_id)
 
+        reminders = await self.reminder_repository.list_by_service_item_id(
+            service_item_id
+        )
+
         await self.service_item_repository.delete(service_item)
         await self.session.commit()
+
+        for reminder in reminders:
+            remove_reminder_job(reminder.id)

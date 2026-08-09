@@ -41,8 +41,14 @@ service_reminder_item = 📍 <b>service item:</b> { $item_name }
 service_reminder_reason_days = ⏳ days left until service: <b>{ $days_left }</b>
 service_reminder_reason_km = 🚗 km left until service: <b>{ $km_left }</b>
 service_reminder_overdue = ⚠️ <b>service is due!</b>
-mark_service_done_button = ✅ mark service as done
+mark_service_done_button = ✅ mark service completed
+mark_service_done_success = ✅ service marked as completed!
 
-mileage_prompt_title = 📏 <b>odometer update: { $car_brand } { $car_model }</b>
+mileage_prompt_title = 🚙 <b>odometer update: { $car_brand } { $car_model }</b>
 mileage_prompt_body = you haven't updated your mileage for <b>{ $days }</b> days (current: <b>{ $current_km }</b> km). what's the odometer now?
 update_mileage_button = ✍️ enter new mileage
+skip_mileage_button = ⏩ skip
+skip_mileage_success = ⏩ mileage reminder skipped. will remind next time!
+prompt_mileage_enter_msg = ✏️ <b>enter new mileage as a number</b> in reply message (e.g. 125500):
+prompt_mileage_invalid_msg = ❌ invalid value. odometer reading must be a number greater than current ({ $current_km } km).
+mileage_updated_success = ✅ odometer <b>{ $new_km }</b> km successfully saved!

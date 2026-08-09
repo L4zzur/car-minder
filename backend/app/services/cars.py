@@ -4,7 +4,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import Car
 from core.schemas import CarCreate, CarRead, CarUpdate
-from repositories import CarRepository, MileageLogRepository, UserRepository
+from repositories import (
+    CarRepository,
+    MileageLogRepository,
+    UserRepository,
+    UserSettingsRepository,
+)
+from services.scheduler_helper import (
+    remove_mileage_prompt_job,
+    sync_mileage_prompt_job,
+)
 
 from .exceptions import CarNotFoundError, UserNotFoundError
 
@@ -42,6 +51,11 @@ class CarService:
         await self.car_repository.add(car)
         await self.session.commit()
         await self.session.refresh(car)
+
+        user_settings = await UserSettingsRepository(self.session).get_by_user_id(
+            user_id
+        )
+        sync_mileage_prompt_job(car, car.created_at, user_settings)
 
         return await self._to_read_schema(car)
 
@@ -96,6 +110,8 @@ class CarService:
 
         await self.car_repository.delete(car)
         await self.session.commit()
+
+        remove_mileage_prompt_job(car_id)
 
     async def _to_read_schema(self, car: Car) -> CarRead:
         latest_mileage = await self.mileage_log_repository.get_latest_for_car(car.id)

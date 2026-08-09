@@ -60,10 +60,15 @@ async def send_service_reminder_job(reminder_id: UUID | str) -> None:
             last_notified = reminder.last_notified_at
             if last_notified.tzinfo is None:
                 last_notified = last_notified.replace(tzinfo=UTC)
-            if (now_utc - last_notified).total_seconds() < 12 * 3600:
+            seconds_since = (now_utc - last_notified).total_seconds()
+            if seconds_since < 12 * 3600:
+                mins_ago = int(seconds_since // 60)
                 logger.info(
-                    f"Reminder {reminder_id} was already sent recently ({reminder.last_notified_at}); skipping."
+                    f"[JOB-SKIP] Reminder '{reminder_id}' was notified {mins_ago} minutes ago ({reminder.last_notified_at}); skipping Telegram message."
                 )
+                from services.scheduler_helper import sync_reminder_job
+
+                sync_reminder_job(reminder, service_item, user_settings)
                 return
 
         mileage_repo = MileageLogRepository(session)
@@ -72,17 +77,20 @@ async def send_service_reminder_job(reminder_id: UUID | str) -> None:
             latest_log.odometer_km if latest_log else car.initial_odometer_km
         )
 
+        if not i18n_core.locales:
+            await i18n_core.startup()
+
         locale = user_settings.language or "ru"
 
         title = i18n_core.get(
             "service_reminder_title",
-            locale=locale,
+            locale,
             car_brand=car.brand,
             car_model=car.model,
         )
         item_line = i18n_core.get(
             "service_reminder_item",
-            locale=locale,
+            locale,
             item_name=service_item.name,
         )
 
@@ -91,22 +99,22 @@ async def send_service_reminder_job(reminder_id: UUID | str) -> None:
             days_passed = (now_utc.date() - service_item.last_service_at.date()).days
             days_left = reminder.interval_days - days_passed
             if days_left <= 0:
-                reason_line = i18n_core.get("service_reminder_overdue", locale=locale)
+                reason_line = i18n_core.get("service_reminder_overdue", locale)
             else:
                 reason_line = i18n_core.get(
                     "service_reminder_reason_days",
-                    locale=locale,
+                    locale,
                     days_left=days_left,
                 )
         elif reminder.interval_km:
             km_passed = current_odometer_km - service_item.last_service_odometer_km
             km_left = reminder.interval_km - km_passed
             if km_left <= 0:
-                reason_line = i18n_core.get("service_reminder_overdue", locale=locale)
+                reason_line = i18n_core.get("service_reminder_overdue", locale)
             else:
                 reason_line = i18n_core.get(
                     "service_reminder_reason_km",
-                    locale=locale,
+                    locale,
                     km_left=km_left,
                 )
 
@@ -123,7 +131,7 @@ async def send_service_reminder_job(reminder_id: UUID | str) -> None:
             inline_keyboard=[
                 [
                     InlineKeyboardButton(
-                        text=i18n_core.get("mark_service_done_button", locale=locale),
+                        text=i18n_core.get("mark_service_done_button", locale),
                         callback_data=f"mark_serviced:{service_item.id}",
                     )
                 ]
@@ -139,18 +147,26 @@ async def send_service_reminder_job(reminder_id: UUID | str) -> None:
             reminder.last_notified_at = now_utc
             await session.commit()
             logger.info(
-                f"Successfully sent service reminder {reminder_id} to user {user.id} (telegram_id={user.telegram_id})."
+                f"[JOB-SUCCESS] Sent Telegram reminder '{reminder_id}' to user {user.id} (chat_id={user.telegram_id})."
             )
         except Exception as e:
             logger.error(
-                f"Failed to send Telegram reminder {reminder_id} to chat {user.telegram_id}: {e}"
+                f"[JOB-ERROR] Failed to send Telegram reminder '{reminder_id}' to chat {user.telegram_id}: {e}"
             )
 
+        from services.scheduler_helper import sync_reminder_job
 
-async def send_mileage_prompt_job(car_id: UUID | str) -> None:
+        sync_reminder_job(reminder, service_item, user_settings)
+
+
+async def send_mileage_prompt_job(
+    car_id: UUID | str, force: bool = False
+) -> None:
     """Executes a scheduled odometer prompt task and asks the user to update mileage."""
     if not bot:
-        logger.warning("Telegram bot is not initialized; skipping mileage prompt job.")
+        logger.warning(
+            "[JOB-WARN] Telegram bot is not initialized; skipping mileage prompt job."
+        )
         return
 
     if isinstance(car_id, str):
@@ -161,6 +177,9 @@ async def send_mileage_prompt_job(car_id: UUID | str) -> None:
         car = await car_repo.get_with_user(car_id)
 
         if not car or not car.user:
+            logger.warning(
+                f"[JOB-WARN] Car {car_id} or user not found; skipping prompt."
+            )
             return
 
         user = car.user
@@ -172,7 +191,7 @@ async def send_mileage_prompt_job(car_id: UUID | str) -> None:
             or not user_settings.notify_via_telegram
         ):
             logger.info(
-                f"User {user.id} has disabled Telegram notifications or has no telegram_id."
+                f"[JOB-SKIP] User {user.id} has disabled Telegram notifications or has no telegram_id."
             )
             return
 
@@ -182,32 +201,35 @@ async def send_mileage_prompt_job(car_id: UUID | str) -> None:
         latest_log = await mileage_repo.get_latest_for_car(car_id)
 
         now_utc = datetime.now(UTC)
-        if latest_log:
-            last_recorded = latest_log.created_at
-            if last_recorded.tzinfo is None:
-                last_recorded = last_recorded.replace(tzinfo=UTC)
-            days_since_last = (now_utc - last_recorded).days
-            if days_since_last < prompt_interval:
-                logger.info(
-                    f"Car {car_id} mileage was updated {days_since_last} days ago; skipping prompt."
-                )
-                return
-            current_km = latest_log.odometer_km
-        else:
-            days_since_last = prompt_interval
-            current_km = car.initial_odometer_km
+        last_recorded = latest_log.created_at if latest_log else car.created_at
+        if last_recorded.tzinfo is None:
+            last_recorded = last_recorded.replace(tzinfo=UTC)
+
+        days_since_last = (now_utc.date() - last_recorded.date()).days
+        if not force and days_since_last < prompt_interval:
+            logger.info(
+                f"[JOB-SKIP] Car {car_id} mileage was updated {days_since_last} days ago (< {prompt_interval} days); skipping prompt."
+            )
+            return
+
+        current_km = (
+            latest_log.odometer_km if latest_log else car.initial_odometer_km
+        )
+
+        if not i18n_core.locales:
+            await i18n_core.startup()
 
         locale = user_settings.language or "ru"
 
         title = i18n_core.get(
             "mileage_prompt_title",
-            locale=locale,
+            locale,
             car_brand=car.brand,
             car_model=car.model,
         )
         body = i18n_core.get(
             "mileage_prompt_body",
-            locale=locale,
+            locale,
             days=days_since_last,
             current_km=current_km,
         )
@@ -218,9 +240,13 @@ async def send_mileage_prompt_job(car_id: UUID | str) -> None:
             inline_keyboard=[
                 [
                     InlineKeyboardButton(
-                        text=i18n_core.get("update_mileage_button", locale=locale),
+                        text=i18n_core.get("update_mileage_button", locale),
                         callback_data=f"prompt_mileage:{car.id}",
-                    )
+                    ),
+                    InlineKeyboardButton(
+                        text=i18n_core.get("skip_mileage_button", locale),
+                        callback_data=f"skip_mileage:{car.id}",
+                    ),
                 ]
             ]
         )
@@ -232,9 +258,15 @@ async def send_mileage_prompt_job(car_id: UUID | str) -> None:
                 reply_markup=keyboard,
             )
             logger.info(
-                f"Successfully sent mileage prompt for car {car_id} to user {user.id}."
+                f"[JOB-SUCCESS] Sent mileage prompt for car {car_id} to user {user.id} (chat_id={user.telegram_id})."
             )
         except Exception as e:
             logger.error(
-                f"Failed to send mileage prompt for car {car_id} to chat {user.telegram_id}: {e}"
+                f"[JOB-ERROR] Failed to send mileage prompt for car {car_id} to chat {user.telegram_id}: {e}"
             )
+
+        from services.scheduler_helper import sync_mileage_prompt_job
+
+        sync_mileage_prompt_job(
+            car, last_recorded, user_settings, already_prompted_today=True
+        )
