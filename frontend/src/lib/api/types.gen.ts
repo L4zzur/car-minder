@@ -437,6 +437,20 @@ export type TelegramAuthRequest = {
 };
 
 /**
+ * TelegramBotInfoResponse
+ */
+export type TelegramBotInfoResponse = {
+    /**
+     * Bot Username
+     */
+    bot_username?: string | null;
+    /**
+     * Is Active
+     */
+    is_active?: boolean;
+};
+
+/**
  * TelegramLinkTokenResponse
  */
 export type TelegramLinkTokenResponse = {
@@ -1622,3 +1636,19 @@ export type UnlinkTelegramApiTelegramLinkDeleteResponses = {
 };
 
 export type UnlinkTelegramApiTelegramLinkDeleteResponse = UnlinkTelegramApiTelegramLinkDeleteResponses[keyof UnlinkTelegramApiTelegramLinkDeleteResponses];
+
+export type GetTelegramInfoApiTelegramInfoGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/telegram/info';
+};
+
+export type GetTelegramInfoApiTelegramInfoGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: TelegramBotInfoResponse;
+};
+
+export type GetTelegramInfoApiTelegramInfoGetResponse = GetTelegramInfoApiTelegramInfoGetResponses[keyof GetTelegramInfoApiTelegramInfoGetResponses];
