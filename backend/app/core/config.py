@@ -65,6 +65,10 @@ class DatabaseConfig(BaseModel):
     def url(self) -> str:
         return f"sqlite+aiosqlite:///{self.file_path}"
 
+    @property
+    def sync_url(self) -> str:
+        return f"sqlite:///{self.file_path}"
+
     @field_validator("file_path", mode="before")
     @classmethod
     def ensure_sqlite_file(cls, v):

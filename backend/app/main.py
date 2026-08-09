@@ -12,6 +12,7 @@ from bot import bot, dp
 from core.config import AppMode, settings
 from core.db_helper import db_helper
 from core.logger import logger, setup_logging
+from core.scheduler import shutdown_scheduler, start_scheduler
 from middleware.csrf import csrf_protect
 
 setup_logging()
@@ -48,9 +49,14 @@ async def lifespan(app: FastAPI):
         logger.info("Telegram bot is disabled.")
         app.state.bot_username = None
 
+    # startup APScheduler
+    start_scheduler()
+
     # startup
     yield
-    # shutdown
+    # shutdown APScheduler
+    shutdown_scheduler()
+
     if settings.bot.is_active and bot:
         try:
             await bot.delete_webhook()
