@@ -1,10 +1,13 @@
 from datetime import datetime, time
+from typing import Literal
 from uuid import UUID
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from pydantic import BaseModel, Field, field_validator
 
 from .base import ORMReadSchema
+
+Language = Literal["ru", "en"]
 
 
 class UserSettingsRead(ORMReadSchema):
@@ -16,7 +19,7 @@ class UserSettingsRead(ORMReadSchema):
     timezone: str
     notify_via_telegram: bool
     notify_via_email: bool
-    language: str
+    language: Language
     created_at: datetime
     updated_at: datetime
 
@@ -28,7 +31,7 @@ class UserSettingsUpdate(BaseModel):
     timezone: str | None = Field(None, min_length=1, max_length=64)
     notify_via_telegram: bool | None = None
     notify_via_email: bool | None = None
-    language: str | None = Field(None, min_length=2, max_length=10)
+    language: Language | None = None
 
     @field_validator("timezone")
     @classmethod

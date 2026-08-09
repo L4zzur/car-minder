@@ -2,6 +2,7 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.models import UserSettings
 from core.schemas.user_settings import UserSettingsRead, UserSettingsUpdate
 from repositories import UserSettingsRepository
 from services.exceptions import UserSettingsNotFoundError
@@ -30,7 +31,8 @@ class UserSettingsService:
     ) -> UserSettingsRead:
         settings = await self.settings_repository.get_by_user_id(user_id)
         if not settings:
-            raise UserSettingsNotFoundError(user_id)
+            settings = UserSettings(user_id=user_id)
+            self.session.add(settings)
 
         update_data = update_schema.model_dump(exclude_unset=True)
         for field, value in update_data.items():

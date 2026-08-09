@@ -55,6 +55,17 @@ async def test_update_user_settings_invalid_timezone(
 
 
 @pytest.mark.asyncio
+async def test_update_user_settings_invalid_language(
+    auth_client: AsyncClient,
+) -> None:
+    response = await auth_client.patch(
+        "/api/users/me/settings",
+        json={"language": "xx"},
+    )
+    assert response.status_code == 422
+
+
+@pytest.mark.asyncio
 async def test_change_password(
     auth_client: AsyncClient,
     test_user: dict,

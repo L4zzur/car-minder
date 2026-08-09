@@ -17,6 +17,7 @@ __all__ = [
     "UserUpdate",
     "UserSettingsRead",
     "UserSettingsUpdate",
+    "Language",
     "ReminderCreate",
     "ReminderRead",
     "ReminderUpdate",
@@ -47,4 +48,4 @@ from .service_item import (
     ServiceItemUpdate,
 )
 from .user import UserCreate, UserRead, UserUpdate
-from .user_settings import UserSettingsRead, UserSettingsUpdate
+from .user_settings import Language, UserSettingsRead, UserSettingsUpdate
