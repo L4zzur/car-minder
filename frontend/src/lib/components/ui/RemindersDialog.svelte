@@ -485,13 +485,15 @@
 									<Select.Trigger id="reminder_service_item" class="w-full lowercase">
 										{selectedServiceItemLabel}
 									</Select.Trigger>
-									<Select.Content>
+								<Select.Content>
+									<Select.Group>
 										{#each serviceItems as item (item.id)}
 											<Select.Item value={item.id} label={item.name.toLowerCase()} class="lowercase">
 												{item.name.toLowerCase()}
 											</Select.Item>
 										{/each}
-									</Select.Content>
+									</Select.Group>
+								</Select.Content>
 								</Select.Root>
 							{:else}
 								<p class="text-xs text-warning">{m.reminders_dialog_service_items_missing()}</p>

@@ -72,7 +72,7 @@
 					handleSubmit();
 				}}
 			>
-				<Field.Group>
+				<Field.Group class="gap-4">
 					<Field.Field data-invalid={error ? true : undefined}>
 						<Field.Label for="username">{m.auth_username()}</Field.Label>
 						<Input
@@ -104,7 +104,7 @@
 						</Button>
 						<Field.Description class="text-center">
 							{m.login_no_account()}
-							<a href="/register" class="text-sidebar-primary hover:underline">{m.login_link_register()}</a>
+							<a href="/register" class="text-primary hover:underline">{m.login_link_register()}</a>
 						</Field.Description>
 					</Field.Field>
 				</Field.Group>

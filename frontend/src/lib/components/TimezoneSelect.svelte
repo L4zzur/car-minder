@@ -3,6 +3,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Select from '$lib/components/ui/select';
 	import { Input } from '$lib/components/ui/input';
+	import * as m from '$lib/paraglide/messages.js';
 
 	interface Props {
 		value: string;
@@ -11,7 +12,6 @@
 
 	let { value = $bindable('Europe/Moscow'), onchange }: Props = $props();
 
-	// Получаем поддерживаемые часовые пояса браузера или фоллбэк список популярных
 	let timezones = $state<Array<{ value: string; label: string; searchStr: string }>>([]);
 	let searchQuery = $state('');
 
@@ -90,7 +90,7 @@
 	}
 
 	let selectedLabel = $derived(
-		timezones.find((t) => t.value === value)?.label || value || 'Выберите часовой пояс'
+		timezones.find((t) => t.value === value)?.label || value || m.settings_timezone_placeholder()
 	);
 </script>
 
@@ -107,17 +107,17 @@
 				<span class="truncate">{selectedLabel}</span>
 			</Select.Trigger>
 			<Select.Content class="max-h-72 w-[var(--bits-select-anchor-width)] min-w-[280px]">
-				<div class="p-2 sticky top-0 bg-popover z-10">
+				<div class="sticky top-0 z-10 bg-popover p-2">
 					<Input
 						type="search"
-						placeholder="Поиск часового пояса..."
+						placeholder={m.settings_timezone_search_placeholder()}
 						bind:value={searchQuery}
 						class="h-8 text-xs"
 					/>
 				</div>
 				<Select.Group>
 					{#if filteredTimezones.length === 0}
-						<div class="p-3 text-center text-xs text-muted-foreground">Ничего не найдено</div>
+						<div class="p-3 text-center text-xs text-muted-foreground">{m.settings_timezone_empty()}</div>
 					{:else}
 						{#each filteredTimezones.slice(0, 100) as tz (tz.value)}
 							<Select.Item value={tz.value} label={tz.label} class="text-xs">
@@ -135,8 +135,8 @@
 		variant="outline"
 		size="icon"
 		onclick={detectLocalTimezone}
-		title="Определить автоматически по браузеру"
-		aria-label="Определить автоматически"
+		title={m.settings_timezone_detect_title()}
+		aria-label={m.settings_timezone_detect_aria()}
 		class="shrink-0"
 	>
 		<MapPin class="text-muted-foreground" />

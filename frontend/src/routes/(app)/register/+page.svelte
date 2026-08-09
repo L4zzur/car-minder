@@ -22,6 +22,7 @@
 	let passwordMismatch = $derived(
 		confirmPassword.length > 0 && password !== confirmPassword
 	);
+	let usernameInvalid = $state(false);
 
 	async function handleSubmit() {
 		if (passwordMismatch) {
@@ -31,6 +32,7 @@
 
 		isLoading = true;
 		error = '';
+		usernameInvalid = false;
 
 		try {
 			const registerResp = await Users.registerUserApiUsersPost({
@@ -78,6 +80,7 @@
 
 	function getRegisterError(apiError: unknown) {
 		if (isApiError(apiError) && apiError.code === 'username_already_taken') {
+			usernameInvalid = true;
 			return m.register_error_username_taken();
 		}
 
@@ -108,15 +111,15 @@
 					handleSubmit();
 				}}
 			>
-				<Field.Group>
-					<Field.Field data-invalid={error && error.includes('логин') ? true : undefined}>
+				<Field.Group class="gap-4">
+					<Field.Field data-invalid={usernameInvalid}>
 						<Field.Label for="username">{m.auth_username()}</Field.Label>
 						<Input
 							id="username"
 							bind:value={username}
 							placeholder="acloudyskye"
 							minlength={4}
-							aria-invalid={error && error.includes('логин') ? true : undefined}
+							aria-invalid={usernameInvalid}
 							required
 						/>
 						<Field.Description>{m.register_username_hint()}</Field.Description>
@@ -128,14 +131,14 @@
 						<Field.Description>{m.register_name_hint()}</Field.Description>
 					</Field.Field>
 
-					<Field.Field data-invalid={passwordMismatch || (error && error.includes('пароль')) ? true : undefined}>
+					<Field.Field data-invalid={passwordMismatch}>
 						<Field.Label for="password">{m.auth_password()}</Field.Label>
 						<Input
 							id="password"
 							type="password"
 							bind:value={password}
 							minlength={8}
-							aria-invalid={passwordMismatch || (error && error.includes('пароль')) ? true : undefined}
+							aria-invalid={passwordMismatch}
 							required
 						/>
 						<Field.Description>{m.register_password_hint()}</Field.Description>
@@ -169,7 +172,7 @@
 						</Button>
 						<Field.Description class="text-center">
 							{m.register_has_account()}
-							<a href="/login" class="text-sidebar-primary hover:underline">{m.register_link_login()}</a>
+							<a href="/login" class="text-primary hover:underline">{m.register_link_login()}</a>
 						</Field.Description>
 					</Field.Field>
 				</Field.Group>
