@@ -75,7 +75,7 @@
 	}
 </script>
 
-<div class="space-y-6">
+<div class="flex flex-col gap-6">
 	<Card.Root class="w-full">
 		<Card.Header>
 			<Card.Title class="text-lg font-semibold lowercase">{m.settings_profile_main_info()}</Card.Title>
@@ -95,10 +95,10 @@
 	</Card.Root>
 
 	<Card.Root class="w-full">
-		<Card.Header class="flex flex-row items-start justify-between space-y-0">
+		<Card.Header class="flex flex-row items-start justify-between">
 			<div class="flex flex-col gap-1">
 				<Card.Title class="flex items-center gap-2 text-lg font-semibold lowercase">
-					<Send class="text-sky-500" />
+					<Send class="text-info" />
 					{m.settings_telegram_title()}
 				</Card.Title>
 				<Card.Description class="lowercase">
@@ -107,7 +107,7 @@
 			</div>
 
 			{#if auth.user?.telegram_id}
-				<Badge variant="secondary" class="border-emerald-500/20 bg-emerald-500/10 text-emerald-500 lowercase">
+				<Badge variant="secondary" class="border-success/20 bg-success/10 text-success lowercase">
 					<CheckCircle2 data-icon="inline-start" />
 					{m.settings_telegram_linked()}
 				</Badge>
@@ -116,7 +116,7 @@
 					{m.settings_telegram_disabled()}
 				</Badge>
 			{:else}
-				<Badge variant="outline" class="border-amber-500/20 bg-amber-500/10 text-amber-500 lowercase">
+				<Badge variant="outline" class="border-warning/20 bg-warning/10 text-warning lowercase">
 					{m.settings_telegram_unlinked()}
 				</Badge>
 			{/if}
@@ -147,9 +147,9 @@
 					</Button>
 				</div>
 			{:else if isBotDisabled}
-				<div class="flex flex-col gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-amber-600 dark:text-amber-400">
+				<div class="flex flex-col gap-2 rounded-lg border border-warning/30 bg-warning/10 p-4 text-warning">
 					<div class="flex items-center gap-2 font-medium lowercase">
-						<AlertTriangle class="h-4 w-4 shrink-0" />
+						<AlertTriangle class="size-4 shrink-0" />
 						{m.settings_telegram_bot_disabled()}
 					</div>
 					<p class="text-xs text-muted-foreground leading-relaxed lowercase">

@@ -55,7 +55,7 @@
 		</div>
 		<ScrollArea type="always" class="mt-4 h-[100px] pr-4">
 			{#if logs.length}
-				<div class="space-y-1">
+				<div class="flex flex-col gap-1">
 					{#each logs as log, i (log.id)}
 						{@const delta = deltas[i]}
 						<div class="grid grid-cols-3 items-center gap-2 py-1.5 text-sm border-b border-border/20 last:border-0">
@@ -76,9 +76,9 @@
 												aria-label={m.mileage_history_delete_aria()}
 												disabled={deletingId === log.id}
 												onclick={() => onDelete(log.id)}
-												class="size-6 text-muted-foreground hover:text-destructive"
+												class="text-muted-foreground hover:text-destructive"
 											>
-												<Trash2 class="size-3.5" />
+												<Trash2 />
 											</Button>
 										</Tooltip.Trigger>
 										<Tooltip.Content>

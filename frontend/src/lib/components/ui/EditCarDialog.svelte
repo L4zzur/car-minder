@@ -140,10 +140,10 @@
 		</Dialog.Header>
 
 		{#if isConfirmingDelete}
-			<div class="space-y-4 py-2">
+			<div class="flex flex-col gap-4 py-2">
 				<div class="flex items-center gap-3 rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-destructive">
 					<AlertTriangle class="size-5 shrink-0" />
-					<div class="space-y-1">
+					<div class="flex flex-col gap-1">
 						<p class="text-sm font-medium lowercase">{m.edit_car_delete_confirm_title()}</p>
 						<p class="text-xs text-muted-foreground lowercase leading-relaxed">
 							{m.edit_car_delete_confirm_desc()}
@@ -172,7 +172,7 @@
 			</div>
 		{:else}
 			<form
-				class="space-y-4"
+				class="flex flex-col gap-4"
 				onsubmit={(e) => {
 					e.preventDefault();
 					handleSubmit();

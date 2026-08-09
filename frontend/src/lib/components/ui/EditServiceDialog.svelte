@@ -83,8 +83,8 @@
 		{#if child}
 			{@render child({ props: {} })}
 		{:else}
-			<Button variant="ghost" size="icon" class="size-8 text-muted-foreground hover:text-foreground">
-				<Pencil class="size-4" />
+			<Button variant="ghost" size="icon" class="text-muted-foreground hover:text-foreground">
+				<Pencil />
 			</Button>
 		{/if}
 	</Dialog.Trigger>
@@ -94,7 +94,7 @@
 			<Dialog.Description class="lowercase text-sm text-muted-foreground">{m.edit_service_desc()}</Dialog.Description>
 		</Dialog.Header>
 		<form
-			class="space-y-4"
+			class="flex flex-col gap-4"
 			onsubmit={(event) => {
 				event.preventDefault();
 				handleSubmit();

@@ -91,8 +91,8 @@
 		</header>
 
 		<div class="grid flex-1 items-center gap-12 py-12 lg:grid-cols-[minmax(0,1fr)_24rem]">
-			<div class="max-w-2xl space-y-8">
-				<div class="space-y-4">
+			<div class="flex max-w-2xl flex-col gap-8">
+				<div class="flex flex-col gap-4">
 					<p class="text-sm font-medium text-muted-foreground">личный журнал обслуживания</p>
 					<h1 class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
 						гараж, пробег и обслуживание в одном месте
@@ -120,7 +120,7 @@
 					{/each}
 				</div>
 
-				<div class="max-w-xl space-y-3">
+				<div class="flex max-w-xl flex-col gap-3">
 					<div class="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase">
 						<CodeXml class="size-3.5" />
 						<span>стек</span>

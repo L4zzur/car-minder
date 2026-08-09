@@ -64,11 +64,11 @@
 		{#if item.status === 'due'}
 			<CircleAlert class="mt-0.5 size-5 text-destructive shrink-0" />
 		{:else if item.status === 'soon'}
-			<Clock class="mt-0.5 size-5 text-amber-500 dark:text-amber-400 shrink-0" />
+			<Clock class="mt-0.5 size-5 text-warning shrink-0" />
 		{:else}
 			<CircleCheck class="mt-0.5 size-5 text-muted-foreground shrink-0" />
 		{/if}
-		<div class="space-y-1 flex-1 min-w-0">
+		<div class="flex min-w-0 flex-1 flex-col gap-1">
 			<h3 class="font-medium text-sm sm:text-base truncate">{item.name}</h3>
 			<div class="flex flex-wrap gap-x-1 text-xs text-muted-foreground">
 				<span>{m.service_card_serviced_at({ date: formatDate(item.last_service_at) })}</span>
@@ -108,8 +108,8 @@
 					<Tooltip.Trigger>
 						<RemindersDialog {car} {serviceItems} targetServiceItemId={item.id} {onReminderChanged}>
 							{#snippet child({ props })}
-								<Button {...props} variant="ghost" size="icon" class="size-8 text-muted-foreground hover:text-foreground">
-									<Bell class="size-4" />
+								<Button {...props} variant="ghost" size="icon" class="text-muted-foreground hover:text-foreground">
+									<Bell />
 								</Button>
 							{/snippet}
 						</RemindersDialog>
@@ -129,8 +129,8 @@
 
 			<Tooltip.Root>
 				<Tooltip.Trigger>
-					<Button variant="ghost" size="icon" disabled={isDeleting} onclick={onDelete} class="size-8 text-muted-foreground hover:text-destructive">
-						<Trash2 class="size-4" />
+					<Button variant="ghost" size="icon" disabled={isDeleting} onclick={onDelete} class="text-muted-foreground hover:text-destructive">
+						<Trash2 />
 					</Button>
 				</Tooltip.Trigger>
 				<Tooltip.Content><p>{m.service_card_tooltip_delete()}</p></Tooltip.Content>

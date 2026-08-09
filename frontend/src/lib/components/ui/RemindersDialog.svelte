@@ -293,7 +293,7 @@
 			</Dialog.Description>
 		</Dialog.Header>
 
-		<Tabs.Root bind:value={activeTab} class="w-full space-y-4">
+		<Tabs.Root bind:value={activeTab} class="flex w-full flex-col gap-4">
 			<Tabs.List class="grid w-full grid-cols-2">
 				<Tabs.Trigger value="list" class="lowercase">
 					{m.reminders_dialog_tab_list({ count: displayReminders.length })}
@@ -304,7 +304,7 @@
 			</Tabs.List>
 
 			<!-- Tab 1: Reminders List -->
-			<Tabs.Content value="list" class="space-y-3">
+			<Tabs.Content value="list" class="flex flex-col gap-3">
 				{#if isLoading}
 					<div class="flex items-center justify-center p-8 text-sm text-muted-foreground">
 						<Loader2 class="animate-spin" data-icon="inline-start" />
@@ -317,7 +317,7 @@
 						<p class="text-xs">{m.reminders_dialog_empty_desc()}</p>
 					</div>
 				{:else}
-					<div class="space-y-3 max-h-[380px] overflow-y-auto pr-1">
+					<div class="flex max-h-[380px] flex-col gap-3 overflow-y-auto pr-1">
 						{#each displayReminders as reminder (reminder.id)}
 							{@const item = getServiceItem(reminder.service_item_id)}
 							{@const metrics = getReminderMetrics(reminder, item, car.current_odometer_km)}
@@ -325,7 +325,7 @@
 							<div class="flex flex-col gap-3 rounded-lg border p-4 bg-card hover:bg-accent/30 transition-colors">
 								{#if editingReminderId === reminder.id}
 									<!-- Inline Edit Form -->
-									<div class="space-y-3">
+									<div class="flex flex-col gap-3">
 										<div class="flex items-center justify-between">
 											<span class="text-sm font-semibold lowercase">
 												{m.reminders_dialog_edit_title({ name: serviceItemName(item) })}
@@ -385,7 +385,7 @@
 								{:else}
 									<!-- Card Display -->
 									<div class="flex items-start justify-between gap-3">
-										<div class="space-y-2 flex-1 min-w-0">
+										<div class="flex min-w-0 flex-1 flex-col gap-2">
 											<div class="flex items-center gap-2 flex-wrap">
 												<span class="text-sm font-semibold text-foreground lowercase truncate">
 													{serviceItemName(item)}
@@ -395,9 +395,9 @@
 													{#if status === 'due'}
 														<Badge variant="destructive" class="lowercase text-xs">{m.reminders_dialog_badge_due()}</Badge>
 													{:else if status === 'soon'}
-														<Badge variant="outline" class="lowercase text-xs border-amber-500/30 bg-amber-500/15 text-amber-600 dark:text-amber-400">{m.reminders_dialog_badge_soon()}</Badge>
+														<Badge variant="outline" class="lowercase text-xs border-warning/30 bg-warning/15 text-warning">{m.reminders_dialog_badge_soon()}</Badge>
 													{:else}
-														<Badge variant="outline" class="lowercase text-xs border-emerald-500/30 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">{m.reminders_dialog_active()}</Badge>
+														<Badge variant="outline" class="lowercase text-xs border-success/30 bg-success/15 text-success">{m.reminders_dialog_active()}</Badge>
 													{/if}
 												{:else}
 													<Badge variant="outline" class="lowercase text-xs text-muted-foreground border-dashed">{m.reminders_dialog_disabled()}</Badge>
@@ -447,9 +447,9 @@
 												variant="ghost"
 												size="icon"
 												onclick={() => startEdit(reminder)}
-												class="size-8 text-muted-foreground hover:text-foreground"
+												class="text-muted-foreground hover:text-foreground"
 											>
-												<Pencil class="size-4" />
+												<Pencil />
 											</Button>
 
 											<Button
@@ -457,12 +457,12 @@
 												size="icon"
 												onclick={() => handleDeleteReminder(reminder.id)}
 												disabled={deletingId === reminder.id}
-												class="size-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+												class="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
 											>
 												{#if deletingId === reminder.id}
-													<Loader2 class="size-4 animate-spin" />
+													<Loader2 class="animate-spin" />
 												{:else}
-													<Trash2 class="size-4" />
+													<Trash2 />
 												{/if}
 											</Button>
 										</div>
@@ -476,7 +476,7 @@
 
 			<!-- Tab 2: Add Reminder Form -->
 			<Tabs.Content value="add">
-				<form onsubmit={(e) => { e.preventDefault(); handleCreateReminder(); }} class="space-y-4">
+				<form onsubmit={(e) => { e.preventDefault(); handleCreateReminder(); }} class="flex flex-col gap-4">
 					<Field.FieldGroup class="gap-4">
 						<Field.Field>
 							<Field.FieldLabel for="reminder_service_item" class="lowercase text-xs font-medium">{m.reminders_dialog_service_item_label()}</Field.FieldLabel>
@@ -494,7 +494,7 @@
 									</Select.Content>
 								</Select.Root>
 							{:else}
-								<p class="text-xs text-amber-500">{m.reminders_dialog_service_items_missing()}</p>
+								<p class="text-xs text-warning">{m.reminders_dialog_service_items_missing()}</p>
 							{/if}
 						</Field.Field>
 
@@ -554,7 +554,7 @@
 					</Field.FieldGroup>
 
 					{#if formSuccess}
-						<div class="flex items-center gap-2 rounded-md bg-emerald-500/10 p-3 text-xs text-emerald-500 border border-emerald-500/20 lowercase">
+						<div class="flex items-center gap-2 rounded-md bg-success/10 p-3 text-xs text-success border border-success/20 lowercase">
 							<CheckCircle2 class="size-4 shrink-0" />
 							{formSuccess}
 						</div>

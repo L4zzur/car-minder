@@ -3,9 +3,8 @@
 
 	import { type CarRead } from '$lib/api';
 	import { Button } from '$lib/components/ui/button';
+	import { Input } from '$lib/components/ui/input';
 	import * as m from '$lib/paraglide/messages.js';
-
-	import Input from './ui/input/input.svelte';
 
 	let {
 		car,
@@ -51,7 +50,7 @@
 			<span class="text-right text-xs text-destructive">{localError}</span>
 		{/if}
 	</div>
-	<form class="space-y-3" onsubmit={handleSubmit} novalidate>
+	<form class="flex flex-col gap-3" onsubmit={handleSubmit} novalidate>
 		<div>
 			<label for="odometer" class="mb-1.5 block text-xs text-muted-foreground"> {m.mileage_form_label()} </label>
 

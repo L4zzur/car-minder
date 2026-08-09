@@ -3,6 +3,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { i18n } from '$lib/i18n.svelte';
 	import { locales, type Locale } from '$lib/paraglide/runtime';
+	import { cn } from '$lib/utils';
 	import Check from 'lucide-svelte/icons/check';
 	import Languages from 'lucide-svelte/icons/languages';
 
@@ -25,7 +26,7 @@
 				size="sm"
 				class="gap-2 border-border/60 bg-background/50 hover:bg-accent/80 hover:text-accent-foreground backdrop-blur-sm transition-all"
 			>
-				<Languages data-icon="inline-start" class="size-4 text-muted-foreground" />
+				<Languages data-icon="inline-start" class="text-muted-foreground" />
 				<span class="font-semibold uppercase tracking-wider text-xs">{i18n.lang}</span>
 			</Button>
 		{/snippet}
@@ -34,12 +35,17 @@
 		<DropdownMenu.Group>
 			{#each locales as loc (loc)}
 				<DropdownMenu.Item
-					class="flex items-center justify-between cursor-pointer py-2 px-3 text-sm transition-colors rounded-sm {i18n.lang === loc ? 'bg-accent/70 font-semibold text-foreground' : 'text-muted-foreground hover:text-foreground'}"
+					class={cn(
+						'flex cursor-pointer items-center justify-between rounded-sm px-3 py-2 text-sm transition-colors',
+						i18n.lang === loc
+							? 'bg-accent/70 font-semibold text-foreground'
+							: 'text-muted-foreground hover:text-foreground'
+					)}
 					onclick={() => changeLanguage(loc)}
 				>
 					<span>{labels[loc].nativeName}</span>
 					{#if i18n.lang === loc}
-						<Check class="size-4 text-emerald-500 shrink-0" />
+						<Check class="shrink-0 text-success" />
 					{/if}
 				</DropdownMenu.Item>
 			{/each}

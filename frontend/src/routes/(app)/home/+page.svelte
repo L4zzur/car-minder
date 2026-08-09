@@ -45,7 +45,7 @@
 	<title>{m.garage_head_title()} // car minder</title>
 </svelte:head>
 
-<div class="container mx-auto space-y-6 p-6">
+<div class="container mx-auto flex flex-col gap-6 p-6">
 	<div class="flex items-center justify-between">
 		<div class="flex items-center gap-3">
 			{#if auth.user}
@@ -81,7 +81,7 @@
 			{#each Array(3) as _}
 				<Card.Root class="animate-pulse">
 					<Card.Header class="h-32 rounded-t-lg bg-muted"></Card.Header>
-					<Card.Content class="space-y-2 p-4">
+					<Card.Content class="flex flex-col gap-2 p-4">
 						<div class="h-4 w-3/4 bg-muted"></div>
 						<div class="h-4 w-1/2 bg-muted"></div>
 					</Card.Content>
@@ -90,12 +90,12 @@
 		</div>
 	{:else if cars.length === 0}
 		<div
-			class="flex flex-col items-center justify-center space-y-4 rounded-lg border-2 border-dashed p-12 text-center"
+			class="flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed p-12 text-center"
 		>
 			<div class="rounded-full bg-muted p-4">
-				<CarFront class="h-8 w-8 text-muted-foreground" />
+				<CarFront class="size-8 text-muted-foreground" />
 			</div>
-			<div class="space-y-1">
+			<div class="flex flex-col gap-1">
 				<h3 class="text-lg font-semibold">{m.garage_has_no_car_title()}</h3>
 				<p class="text-sm text-muted-foreground">
 					{m.garage_has_no_car_desc()}

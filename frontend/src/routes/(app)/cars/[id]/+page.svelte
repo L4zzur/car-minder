@@ -229,7 +229,7 @@
 	<title>{car ? `${car.brand} ${car.model}` : m.add_car_dialog_title()} // car minder</title>
 </svelte:head>
 
-<div class="container mx-auto space-y-6 p-4 sm:p-6">
+<div class="container mx-auto flex flex-col gap-6 p-4 sm:p-6">
 	<header class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 		<a
 			href="/home"
@@ -261,12 +261,12 @@
 			{m.car_detail_loading()}
 		</div>
 	{:else if error || !car}
-		<div class="space-y-4 rounded-lg border bg-card p-6">
+		<div class="flex flex-col gap-4 rounded-lg border bg-card p-6">
 			<p class="text-sm text-muted-foreground">{error || m.car_detail_not_found()}</p>
 			<Button onclick={() => goto('/home')}>{m.car_detail_return_to_garage()}</Button>
 		</div>
 	{:else}
-		<div class="space-y-4">
+		<div class="flex flex-col gap-4">
 			<div class="flex items-center gap-3">
 				<div class="flex size-10 items-center justify-center rounded-lg border bg-card">
 					<CarFront class="size-5" />
@@ -307,7 +307,7 @@
 			/>
 		</div>
 
-		<div class="space-y-4">
+		<div class="flex flex-col gap-4">
 			<div class="flex items-center justify-between">
 				<div>
 					<h2 class="text-lg font-medium">{m.car_detail_service_items_heading()}</h2>

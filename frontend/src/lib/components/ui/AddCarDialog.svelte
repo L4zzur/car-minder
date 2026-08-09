@@ -98,22 +98,22 @@
 			<Dialog.Description>{m.add_car_dialog_desc()}</Dialog.Description>
 		</Dialog.Header>
 		<form
-			class="space-y-4"
+			class="flex flex-col gap-4"
 			onsubmit={(e) => {
 				e.preventDefault();
 				handleSubmit();
 			}}
 		>
-			<div class="space-y-2">
+			<div class="flex flex-col gap-2">
 				<Label for="brand">{m.add_car_brand_label()}</Label>
 				<Input id="brand" bind:value={brand} placeholder={m.add_car_brand_placeholder()} required />
 			</div>
-			<div class="space-y-2">
+			<div class="flex flex-col gap-2">
 				<Label for="model">{m.add_car_model_label()}</Label>
 				<Input id="model" bind:value={model} placeholder={m.add_car_model_placeholder()} required />
 			</div>
 			<div class="grid grid-cols-2 gap-4">
-				<div class="space-y-2">
+				<div class="flex flex-col gap-2">
 					<Label for="year">{m.add_car_year_label()}</Label>
 					<Input
 						id="year"
@@ -124,7 +124,7 @@
 						required
 					/>
 				</div>
-				<div class="space-y-2">
+				<div class="flex flex-col gap-2">
 					<Label for="odometer">{m.add_car_odometer_label()}</Label>
 					<Input id="odometer" type="number" bind:value={odometer} min="0" required />
 				</div>

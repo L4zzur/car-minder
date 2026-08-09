@@ -92,22 +92,22 @@
 			<Dialog.Description>{m.add_service_desc()}</Dialog.Description>
 		</Dialog.Header>
 		<form
-			class="space-y-4"
+			class="flex flex-col gap-4"
 			onsubmit={(event) => {
 				event.preventDefault();
 				handleSubmit();
 			}}
 		>
-			<div class="space-y-2">
+			<div class="flex flex-col gap-2">
 				<Label for="service-name">{m.add_service_name_label()}</Label>
 				<Input id="service-name" bind:value={name} placeholder={m.add_service_name_placeholder()} required />
 			</div>
 			<div class="grid grid-cols-2 gap-4">
-				<div class="space-y-2">
+				<div class="flex flex-col gap-2">
 					<Label for="service-date">{m.add_service_date_label()}</Label>
 					<Input id="service-date" type="date" bind:value={lastServiceAt} required />
 				</div>
-				<div class="space-y-2">
+				<div class="flex flex-col gap-2">
 					<Label for="service-odometer">{m.add_service_odometer_label()}</Label>
 					<Input id="service-odometer" type="number" min="0" bind:value={lastOdometerKm} required />
 				</div>

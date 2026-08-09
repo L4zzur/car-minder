@@ -44,8 +44,8 @@
 	<title>{m.settings_title()} // car minder</title>
 </svelte:head>
 
-<div class="container mx-auto max-w-3xl space-y-6 p-4 sm:p-6">
-	<div class="space-y-4">
+<div class="container mx-auto flex max-w-3xl flex-col gap-6 p-4 sm:p-6">
+	<div class="flex flex-col gap-4">
 		<div>
 			<Button variant="ghost" size="sm" href="/home" class="-ml-2 text-muted-foreground hover:text-foreground lowercase">
 				<ArrowLeft data-icon="inline-start" />
@@ -59,7 +59,7 @@
 		</div>
 	</div>
 
-	<Tabs.Root value="profile" class="w-full space-y-6">
+	<Tabs.Root value="profile" class="flex w-full flex-col gap-6">
 		<Tabs.List class="grid w-full grid-cols-3 max-w-md">
 			<Tabs.Trigger value="profile" class="lowercase">
 				<UserIcon data-icon="inline-start" />

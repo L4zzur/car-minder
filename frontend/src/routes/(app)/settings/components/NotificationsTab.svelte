@@ -101,7 +101,7 @@
 					{m.settings_notifications_loading()}
 				</div>
 			{:else if settings}
-				<form onsubmit={(e) => { e.preventDefault(); saveSettings(); }} class="space-y-4">
+				<form onsubmit={(e) => { e.preventDefault(); saveSettings(); }} class="flex flex-col gap-4">
 					<Field.FieldGroup class="gap-4">
 						<!-- Tab 1: Time inputs -->
 						<div class="grid gap-4 sm:grid-cols-2">
@@ -156,7 +156,7 @@
 									type="single"
 									bind:value={settings.language}
 									onValueChange={(val) => {
-										if (val && settings) settings.language = val;
+										if ((val === 'ru' || val === 'en') && settings) settings.language = val;
 									}}
 								>
 									<Select.Trigger id="language" class="w-full justify-between font-normal">
@@ -217,7 +217,7 @@
 					</Field.FieldGroup>
 
 					{#if successMsg}
-						<div class="flex items-center gap-2 rounded-md bg-emerald-500/10 p-3 text-sm text-emerald-500 border border-emerald-500/20 lowercase">
+						<div class="flex items-center gap-2 rounded-md bg-success/10 p-3 text-sm text-success border border-success/20 lowercase">
 							<CheckCircle2 class="size-4 shrink-0" />
 							{successMsg}
 						</div>

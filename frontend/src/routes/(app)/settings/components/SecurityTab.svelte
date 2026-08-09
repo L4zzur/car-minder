@@ -127,7 +127,7 @@
 	}
 </script>
 
-<div class="space-y-6 w-full">
+<div class="flex w-full flex-col gap-6">
 	<!-- Email Card -->
 	<Card.Root class="w-full">
 		<Card.Header>
@@ -137,7 +137,7 @@
 			<Card.Description class="lowercase">{m.settings_security_email_desc()}</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			<form onsubmit={(e) => { e.preventDefault(); updateEmail(); }} class="space-y-4">
+			<form onsubmit={(e) => { e.preventDefault(); updateEmail(); }} class="flex flex-col gap-4">
 				<Field.FieldGroup class="max-w-md gap-4">
 					<Field.Field>
 						<Field.FieldLabel for="user_email" class="lowercase">{m.settings_security_email_label()}</Field.FieldLabel>
@@ -151,7 +151,7 @@
 				</Field.FieldGroup>
 
 				{#if emailSuccessMsg}
-					<div class="flex items-center gap-2 rounded-md bg-emerald-500/10 p-3 text-sm text-emerald-500 border border-emerald-500/20 lowercase">
+					<div class="flex items-center gap-2 rounded-md bg-success/10 p-3 text-sm text-success border border-success/20 lowercase">
 						<CheckCircle2 class="size-4 shrink-0" />
 						{emailSuccessMsg}
 					</div>
@@ -188,7 +188,7 @@
 			<Card.Description class="lowercase">{m.settings_security_password_desc()}</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			<form onsubmit={(e) => { e.preventDefault(); changePassword(); }} class="space-y-4">
+			<form onsubmit={(e) => { e.preventDefault(); changePassword(); }} class="flex flex-col gap-4">
 				<Field.FieldGroup class="gap-4">
 					<Field.Field class="max-w-md">
 						<Field.FieldLabel for="current_password" class="lowercase">{m.settings_security_password_current()}</Field.FieldLabel>
@@ -227,7 +227,7 @@
 				</Field.FieldGroup>
 
 				{#if passwordSuccessMsg}
-					<div class="flex items-center gap-2 rounded-md bg-emerald-500/10 p-3 text-sm text-emerald-500 border border-emerald-500/20 lowercase">
+					<div class="flex items-center gap-2 rounded-md bg-success/10 p-3 text-sm text-success border border-success/20 lowercase">
 						<CheckCircle2 class="size-4 shrink-0" />
 						{passwordSuccessMsg}
 					</div>

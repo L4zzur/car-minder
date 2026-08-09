@@ -139,6 +139,6 @@
 		aria-label="Определить автоматически"
 		class="shrink-0"
 	>
-		<MapPin class="size-4 text-muted-foreground" />
+		<MapPin class="text-muted-foreground" />
 	</Button>
 </div>
