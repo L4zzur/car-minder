@@ -53,15 +53,27 @@ def event_loop():
 @pytest.fixture(scope="session", autouse=True)
 async def setup_db():
     if os.path.exists(TEST_DB_PATH):
-        os.remove(TEST_DB_PATH)
+        try:
+            os.remove(TEST_DB_PATH)
+        except OSError:
+            pass
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
     await test_engine.dispose()
+    try:
+        from core.scheduler import shutdown_scheduler
+
+        shutdown_scheduler()
+    except Exception:
+        pass
     if os.path.exists(TEST_DB_PATH):
-        os.remove(TEST_DB_PATH)
+        try:
+            os.remove(TEST_DB_PATH)
+        except OSError:
+            pass
 
 
 @pytest.fixture

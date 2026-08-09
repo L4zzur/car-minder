@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from core.models import Car, Reminder, ServiceItem
+from core.models import Car, Reminder, ServiceItem, User
 
 
 class ReminderRepository:
@@ -24,6 +24,20 @@ class ReminderRepository:
             select(Reminder)
             .where(Reminder.id == reminder_id)
             .options(selectinload(Reminder.service_item).selectinload(ServiceItem.car))
+        )
+        result = await self.session.execute(stmt)
+        return result.scalars().first()
+
+    async def get_with_relations(self, reminder_id: UUID) -> Reminder | None:
+        stmt = (
+            select(Reminder)
+            .where(Reminder.id == reminder_id)
+            .options(
+                selectinload(Reminder.service_item)
+                .selectinload(ServiceItem.car)
+                .selectinload(Car.user)
+                .selectinload(User.settings)
+            )
         )
         result = await self.session.execute(stmt)
         return result.scalars().first()

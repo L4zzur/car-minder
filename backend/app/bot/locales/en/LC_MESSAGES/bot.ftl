@@ -1,37 +1,48 @@
 start_linked_success =
-    🎉 <b>Account successfully linked!</b>
+    🎉 <b>account successfully linked!</b>
 
-    Now you can use the Telegram Mini App and get notifications.
+    now you can use the telegram mini app and get notifications.
 
 start_invalid_token =
-    ❌ <b>Invalid link token.</b>
+    ❌ <b>invalid link token.</b>
 
-    Looks like the link expired (5 minutes). Generate a new one on the website.
+    looks like the link expired (5 minutes). generate a new one on the website.
 
-start_already_linked = ⚠️ Your profile on the website is already linked to Telegram.
+start_already_linked = ⚠️ your profile on the website is already linked to telegram.
 
-start_already_linked_to_another = ⚠️ This Telegram account is already linked to another user.
+start_already_linked_to_another = ⚠️ this telegram account is already linked to another user.
 
 start_welcome_back =
-    👋 <b>Welcome back, { $name }!</b>
+    👋 <b>welcome back, { $name }!</b>
 
-    Your account is linked and ready to go.
+    your account is linked and ready to go.
 
 start_hello_new =
-    👋 <b>Hi, { $name }!</b>
+    👋 <b>hi, { $name }!</b>
 
-    To start using Car Minder:
-    1. Register on the website.
-    2. Open your profile and press <b>“Link Telegram”</b>.
+    to start using car minder:
+    1. register on the website.
+    2. open your profile and press <b>“link telegram”</b>.
 
-site_button = Website
+site_button = website
 
-language_prompt = 🌐 Pick the language for notifications and the bot:
+language_prompt = 🌐 pick the language for notifications and the bot:
 
-language_changed = ✅ Language saved: { $language }
+language_changed = ✅ language saved: { $language }
 
 language_not_linked =
-    ⚠️ First link your account: open the website, go to “Profile” and press “Link Telegram”.
+    ⚠️ first link your account: open the website, go to “profile” and press “link telegram”.
 
-language_name_ru = 🇷🇺 Русский
-language_name_en = 🇬🇧 English
+language_name_ru = 🇷🇺 русский
+language_name_en = 🇬🇧 english
+
+service_reminder_title = 🔧 <b>time for service: { $car_brand } { $car_model }</b>
+service_reminder_item = 📍 <b>service item:</b> { $item_name }
+service_reminder_reason_days = ⏳ days left until service: <b>{ $days_left }</b>
+service_reminder_reason_km = 🚗 km left until service: <b>{ $km_left }</b>
+service_reminder_overdue = ⚠️ <b>service is due!</b>
+mark_service_done_button = ✅ mark service as done
+
+mileage_prompt_title = 📏 <b>odometer update: { $car_brand } { $car_model }</b>
+mileage_prompt_body = you haven't updated your mileage for <b>{ $days }</b> days (current: <b>{ $current_km }</b> km). what's the odometer now?
+update_mileage_button = ✍️ enter new mileage
