@@ -4,8 +4,8 @@
 	import { ServiceItems, type CarRead } from '$lib/api';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
+	import * as Field from '$lib/components/ui/field';
 	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
 	import * as m from '$lib/paraglide/messages.js';
 
 	let {
@@ -98,28 +98,30 @@
 				handleSubmit();
 			}}
 		>
-			<div class="flex flex-col gap-2">
-				<Label for="service-name">{m.add_service_name_label()}</Label>
-				<Input id="service-name" bind:value={name} placeholder={m.add_service_name_placeholder()} required />
-			</div>
-			<div class="grid grid-cols-2 gap-4">
-				<div class="flex flex-col gap-2">
-					<Label for="service-date">{m.add_service_date_label()}</Label>
-					<Input id="service-date" type="date" bind:value={lastServiceAt} required />
+			<Field.Group class="gap-4">
+				<Field.Field>
+					<Field.Label for="service-name">{m.add_service_name_label()}</Field.Label>
+					<Input id="service-name" bind:value={name} placeholder={m.add_service_name_placeholder()} required />
+				</Field.Field>
+				<div class="grid grid-cols-2 gap-4">
+					<Field.Field>
+						<Field.Label for="service-date">{m.add_service_date_label()}</Field.Label>
+						<Input id="service-date" type="date" bind:value={lastServiceAt} required />
+					</Field.Field>
+					<Field.Field>
+						<Field.Label for="service-odometer">{m.add_service_odometer_label()}</Field.Label>
+						<Input id="service-odometer" type="number" min="0" bind:value={lastOdometerKm} required />
+					</Field.Field>
 				</div>
-				<div class="flex flex-col gap-2">
-					<Label for="service-odometer">{m.add_service_odometer_label()}</Label>
-					<Input id="service-odometer" type="number" min="0" bind:value={lastOdometerKm} required />
-				</div>
-			</div>
-			{#if error}
-				<p class="text-xs text-destructive">{error}</p>
-			{/if}
-			<Dialog.Footer>
-				<Button type="submit" class="w-full" disabled={isLoading}>
-					{isLoading ? m.add_service_btn_submitting() : m.add_service_btn_submit()}
-				</Button>
-			</Dialog.Footer>
+				{#if error}
+					<p class="text-xs text-destructive">{error}</p>
+				{/if}
+				<Dialog.Footer>
+					<Button type="submit" class="w-full" disabled={isLoading}>
+						{isLoading ? m.add_service_btn_submitting() : m.add_service_btn_submit()}
+					</Button>
+				</Dialog.Footer>
+			</Field.Group>
 		</form>
 	</Dialog.Content>
 </Dialog.Root>

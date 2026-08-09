@@ -3,6 +3,7 @@
 
 	import { type CarRead } from '$lib/api';
 	import { Button } from '$lib/components/ui/button';
+	import * as Field from '$lib/components/ui/field';
 	import { Input } from '$lib/components/ui/input';
 	import * as m from '$lib/paraglide/messages.js';
 
@@ -44,18 +45,15 @@
 </script>
 
 <div class="flex flex-col gap-3 rounded-lg border bg-card p-4">
-	<div class="flex min-h-5 items-center justify-between gap-3">
-		<h3 class="text-sm font-medium">{m.mileage_form_title()}</h3>
-		{#if localError}
-			<span class="text-right text-xs text-destructive">{localError}</span>
-		{/if}
-	</div>
+	<h3 class="min-h-5 text-sm font-medium">{m.mileage_form_title()}</h3>
 	<form class="flex flex-col gap-3" onsubmit={handleSubmit} novalidate>
-		<div>
-			<label for="odometer" class="mb-1.5 block text-xs text-muted-foreground"> {m.mileage_form_label()} </label>
-
-			<Input type="number" bind:value={mileageValue} />
-		</div>
+		<Field.Field>
+			<Field.Label for="odometer">{m.mileage_form_label()}</Field.Label>
+			<Input id="odometer" type="number" bind:value={mileageValue} />
+			{#if localError}
+				<Field.Error>{localError}</Field.Error>
+			{/if}
+		</Field.Field>
 		<Button type="submit" class="w-full" disabled={isSaving}>
 			<Gauge data-icon="inline-start" />
 			{isSaving ? m.mileage_form_btn_submitting() : m.mileage_form_btn_submit()}
