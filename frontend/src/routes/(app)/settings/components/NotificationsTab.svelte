@@ -12,8 +12,18 @@
 	import * as Field from '$lib/components/ui/field';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
+	import * as Select from '$lib/components/ui/select';
 	import TimezoneSelect from '$lib/components/TimezoneSelect.svelte';
 	import * as m from '$lib/paraglide/messages.js';
+
+	const languageOptions: Array<{ value: string; label: string }> = [
+		{ value: 'ru', label: 'Русский' },
+		{ value: 'en', label: 'English' }
+	];
+
+	function languageLabel(value: string): string {
+		return languageOptions.find((opt) => opt.value === value)?.label ?? value;
+	}
 
 	let settings = $state<UserSettingsRead | null>(null);
 	let isLoading = $state(true);
@@ -138,6 +148,31 @@
 								<Field.FieldLabel for="timezone" class="lowercase">{m.settings_notifications_timezone_label()}</Field.FieldLabel>
 								<TimezoneSelect bind:value={settings.timezone} />
 								<Field.FieldDescription class="lowercase">{m.settings_notifications_timezone_desc()}</Field.FieldDescription>
+							</Field.Field>
+
+							<Field.Field>
+								<Field.FieldLabel for="language" class="lowercase">{m.settings_notifications_language_label()}</Field.FieldLabel>
+								<Select.Root
+									type="single"
+									bind:value={settings.language}
+									onValueChange={(val) => {
+										if (val && settings) settings.language = val;
+									}}
+								>
+									<Select.Trigger id="language" class="w-full justify-between font-normal">
+										<span>{languageLabel(settings.language)}</span>
+									</Select.Trigger>
+									<Select.Content class="w-[var(--bits-select-anchor-width)] min-w-[200px]">
+										<Select.Group>
+											{#each languageOptions as opt (opt.value)}
+												<Select.Item value={opt.value} label={opt.label}>
+													{opt.label}
+												</Select.Item>
+											{/each}
+										</Select.Group>
+									</Select.Content>
+								</Select.Root>
+								<Field.FieldDescription class="lowercase">{m.settings_notifications_language_desc()}</Field.FieldDescription>
 							</Field.Field>
 						</div>
 

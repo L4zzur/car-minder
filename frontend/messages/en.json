@@ -243,6 +243,8 @@
 	"settings_notifications_interval_desc": "how often to ask for mileage update",
 	"settings_notifications_timezone_label": "timezone",
 	"settings_notifications_timezone_desc": "your timezone (e.g. Europe/Moscow)",
+	"settings_notifications_language_label": "notifications & bot language",
+	"settings_notifications_language_desc": "the language telegram bot notifications will use",
 	"settings_notifications_channels_heading": "notification channels",
 	"settings_notifications_telegram_title": "telegram notifications",
 	"settings_notifications_telegram_desc": "receive reminders via bot",

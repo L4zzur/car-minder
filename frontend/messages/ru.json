@@ -243,6 +243,8 @@
 	"settings_notifications_interval_desc": "раз в сколько дней запрашивать пробег",
 	"settings_notifications_timezone_label": "часовой пояс",
 	"settings_notifications_timezone_desc": "твоя таймзона (напр. Europe/Moscow)",
+	"settings_notifications_language_label": "язык уведомлений и бота",
+	"settings_notifications_language_desc": "на этом языке telegram-бот будет присылать уведомления",
 	"settings_notifications_channels_heading": "каналы уведомлений",
 	"settings_notifications_telegram_title": "уведомления в telegram",
 	"settings_notifications_telegram_desc": "присылать напоминания через бота",
