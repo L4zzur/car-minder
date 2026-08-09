@@ -243,6 +243,10 @@ export type ReminderRead = {
      */
     notify_before_days: number | null;
     /**
+     * Last Notified At
+     */
+    last_notified_at?: string | null;
+    /**
      * Note
      */
     note: string | null;
@@ -555,7 +559,7 @@ export type UserSettingsRead = {
     /**
      * Language
      */
-    language: string;
+    language: 'ru' | 'en';
     /**
      * Created At
      */
@@ -597,7 +601,7 @@ export type UserSettingsUpdate = {
     /**
      * Language
      */
-    language?: string | null;
+    language?: 'ru' | 'en' | null;
 };
 
 /**
