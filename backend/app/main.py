@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from api.errors import register_exception_handlers
 from api.router import api_router
-from bot import bot, dp
+from bot import bot, dp, i18n_core
 from core.config import AppMode, settings
 from core.db_helper import db_helper
 from core.logger import logger, setup_logging
@@ -23,6 +23,7 @@ async def lifespan(app: FastAPI):
     if settings.bot.is_active and bot:
         try:
             logger.info(f"Setting webhook to: {settings.bot.webhook_url}")
+            await i18n_core.startup()
             await bot.delete_webhook(drop_pending_updates=True)
             webhook_url = settings.bot.webhook_url
             if webhook_url:
@@ -62,6 +63,7 @@ async def lifespan(app: FastAPI):
             await bot.delete_webhook()
         except Exception:
             pass
+        await i18n_core.shutdown()
     await db_helper.dispose()
 
 
