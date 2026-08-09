@@ -14,9 +14,6 @@ importers:
       '@tma.js/sdk-svelte':
         specifier: ^1.0.21
         version: 1.0.21(svelte@5.55.5(@typescript-eslint/types@8.59.1))(typescript@6.0.3)
-      konsta:
-        specifier: ^5.1.0
-        version: 5.1.0
       lucide-svelte:
         specifier: ^1.0.1
         version: 1.0.1(svelte@5.55.5(@typescript-eslint/types@8.59.1))
@@ -1125,10 +1122,6 @@ packages:
 
   known-css-properties@0.37.0:
     resolution: {integrity: sha512-JCDrsP4Z1Sb9JwG0aJ8Eo2r7k4Ou5MwmThS/6lcIe1ICyb7UBJKGRIUUdqc2ASdE/42lgz6zFUnzAIhtXnBVrQ==}
-
-  konsta@5.1.0:
-    resolution: {integrity: sha512-ZY6DgYCGTJioHKECp7O4ZevkljprJu9zZHkSxzPkE/BlGL05XeTvTjLnB+RHqJovQRStzMSSqvM5wO5uzWOlvw==}
-    engines: {node: '>= 4.7.0'}
 
   kysely@0.28.17:
     resolution: {integrity: sha512-nbD8lB9EB3wNdMhOCdx5Li8DxnLbvKByylRLcJ1h+4SkrowVeECAyZlyiKMThF7xFdRz0jSQ2MoJr+wXux2y0Q==}
@@ -2685,10 +2678,6 @@ snapshots:
   kleur@4.1.5: {}
 
   known-css-properties@0.37.0: {}
-
-  konsta@5.1.0:
-    dependencies:
-      tailwind-merge: 3.5.0
 
   kysely@0.28.17: {}
 
