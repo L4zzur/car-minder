@@ -8,6 +8,7 @@
 
 	import { Telegram } from '$lib/api';
 	import { auth } from '$lib/auth.svelte';
+	import * as Alert from '$lib/components/ui/alert';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -124,10 +125,10 @@
 
 		<Card.Content class="border-t pt-4">
 			{#if errorMsg}
-				<div class="mb-4 flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20 lowercase">
+				<Alert.Root variant="destructive" class="mb-4 flex items-center gap-2 border-destructive/20 bg-destructive/10 text-destructive">
 					<AlertTriangle class="size-4 shrink-0" />
-					{errorMsg}
-				</div>
+					<span class="lowercase">{errorMsg}</span>
+				</Alert.Root>
 			{/if}
 
 			{#if auth.user?.telegram_id}
@@ -147,7 +148,7 @@
 					</Button>
 				</div>
 			{:else if isBotDisabled}
-				<div class="flex flex-col gap-2 rounded-lg border border-warning/30 bg-warning/10 p-4 text-warning">
+				<Alert.Root class="flex-col gap-2 rounded-lg border-warning/30 bg-warning/10 p-4 text-warning">
 					<div class="flex items-center gap-2 font-medium lowercase">
 						<AlertTriangle class="size-4 shrink-0" />
 						{m.settings_telegram_bot_disabled()}
@@ -155,7 +156,7 @@
 					<p class="text-xs text-muted-foreground leading-relaxed lowercase">
 						для привязки аккаунта необходимо сначала задать токен бота в конфигурации приложения (<code class="rounded bg-muted px-1 py-0.5 font-mono text-[11px] text-foreground">APP__BOT__TOKEN</code>) согласно документации
 					</p>
-				</div>
+				</Alert.Root>
 			{:else}
 				<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 					<p class="text-sm text-muted-foreground lowercase">

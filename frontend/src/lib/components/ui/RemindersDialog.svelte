@@ -12,9 +12,11 @@
 	import X from '@lucide/svelte/icons/x';
 
 	import { Reminders, type CarRead, type ReminderRead, type ServiceItemSummary } from '$lib/api';
+	import * as Alert from '$lib/components/ui/alert';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
+	import * as Empty from '$lib/components/ui/empty';
 	import * as Field from '$lib/components/ui/field';
 	import { Input } from '$lib/components/ui/input';
 	import * as Select from '$lib/components/ui/select';
@@ -311,11 +313,17 @@
 						{m.reminders_dialog_loading()}
 					</div>
 				{:else if displayReminders.length === 0}
-					<div class="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground lowercase">
-						<Bell class="size-8 text-muted-foreground/40" />
-						<p class="font-medium text-sm">{m.reminders_dialog_empty_title()}</p>
-						<p class="text-xs">{m.reminders_dialog_empty_desc()}</p>
-					</div>
+					<Empty.Root class="rounded-lg border border-dashed p-8">
+						<Empty.Header>
+							<Empty.Media variant="icon">
+								<Bell />
+							</Empty.Media>
+							<Empty.Title class="lowercase">{m.reminders_dialog_empty_title()}</Empty.Title>
+							<Empty.Description class="text-xs lowercase">
+								{m.reminders_dialog_empty_desc()}
+							</Empty.Description>
+						</Empty.Header>
+					</Empty.Root>
 				{:else}
 					<div class="flex max-h-[380px] flex-col gap-3 overflow-y-auto pr-1">
 						{#each displayReminders as reminder (reminder.id)}
@@ -556,17 +564,17 @@
 					</Field.FieldGroup>
 
 					{#if formSuccess}
-						<div class="flex items-center gap-2 rounded-md bg-success/10 p-3 text-xs text-success border border-success/20 lowercase">
+						<Alert.Root class="flex items-center gap-2 border-success/20 bg-success/10 text-success">
 							<CheckCircle2 class="size-4 shrink-0" />
-							{formSuccess}
-						</div>
+							<span class="text-xs lowercase">{formSuccess}</span>
+						</Alert.Root>
 					{/if}
 
 					{#if formError}
-						<div class="flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-xs text-destructive border border-destructive/20 lowercase">
+						<Alert.Root variant="destructive" class="flex items-center gap-2 border-destructive/20 bg-destructive/10 text-destructive">
 							<AlertTriangle class="size-4 shrink-0" />
-							{formError}
-						</div>
+							<span class="text-xs lowercase">{formError}</span>
+						</Alert.Root>
 					{/if}
 
 					<div class="flex justify-end pt-2">

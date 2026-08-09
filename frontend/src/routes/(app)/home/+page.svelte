@@ -11,6 +11,7 @@
 	import AddCarDialog from '$lib/components/ui/AddCarDialog.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
+	import * as Empty from '$lib/components/ui/empty';
 	import * as m from '$lib/paraglide/messages.js';
 
 	let cars = $state<CarRead[]>([]);
@@ -89,24 +90,22 @@
 			{/each}
 		</div>
 	{:else if cars.length === 0}
-		<div
-			class="flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed p-12 text-center"
-		>
-			<div class="rounded-full bg-muted p-4">
-				<CarFront class="size-8 text-muted-foreground" />
-			</div>
-			<div class="flex flex-col gap-1">
-				<h3 class="text-lg font-semibold">{m.garage_has_no_car_title()}</h3>
-				<p class="text-sm text-muted-foreground">
-					{m.garage_has_no_car_desc()}
-				</p>
-			</div>
-			<AddCarDialog onCarAdded={loadCars}>
-				{#snippet child({ props })}
-					<Button {...props}>{m.garage_add_first_car()}</Button>
-				{/snippet}
-			</AddCarDialog>
-		</div>
+		<Empty.Root class="rounded-lg border-2 border-dashed p-12">
+			<Empty.Header>
+				<Empty.Media variant="icon">
+					<CarFront />
+				</Empty.Media>
+				<Empty.Title>{m.garage_has_no_car_title()}</Empty.Title>
+				<Empty.Description>{m.garage_has_no_car_desc()}</Empty.Description>
+			</Empty.Header>
+			<Empty.Content>
+				<AddCarDialog onCarAdded={loadCars}>
+					{#snippet child({ props })}
+						<Button {...props}>{m.garage_add_first_car()}</Button>
+					{/snippet}
+				</AddCarDialog>
+			</Empty.Content>
+		</Empty.Root>
 	{:else}
 		<div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 			{#each cars as car}

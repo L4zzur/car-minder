@@ -8,6 +8,7 @@
 
 	import { Auth, Users } from '$lib/api';
 	import { auth } from '$lib/auth.svelte';
+	import * as Alert from '$lib/components/ui/alert';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import * as Field from '$lib/components/ui/field';
@@ -151,17 +152,17 @@
 				</Field.FieldGroup>
 
 				{#if emailSuccessMsg}
-					<div class="flex items-center gap-2 rounded-md bg-success/10 p-3 text-sm text-success border border-success/20 lowercase">
+					<Alert.Root class="flex items-center gap-2 border-success/20 bg-success/10 text-success">
 						<CheckCircle2 class="size-4 shrink-0" />
-						{emailSuccessMsg}
-					</div>
+						<span class="lowercase">{emailSuccessMsg}</span>
+					</Alert.Root>
 				{/if}
 
 				{#if emailErrorMsg}
-					<div class="flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20 lowercase">
+					<Alert.Root variant="destructive" class="flex items-center gap-2 border-destructive/20 bg-destructive/10 text-destructive">
 						<AlertTriangle class="size-4 shrink-0" />
-						{emailErrorMsg}
-					</div>
+						<span class="lowercase">{emailErrorMsg}</span>
+					</Alert.Root>
 				{/if}
 
 				<div class="flex justify-end">
@@ -227,17 +228,17 @@
 				</Field.FieldGroup>
 
 				{#if passwordSuccessMsg}
-					<div class="flex items-center gap-2 rounded-md bg-success/10 p-3 text-sm text-success border border-success/20 lowercase">
+					<Alert.Root class="flex items-center gap-2 border-success/20 bg-success/10 text-success">
 						<CheckCircle2 class="size-4 shrink-0" />
-						{passwordSuccessMsg}
-					</div>
+						<span class="lowercase">{passwordSuccessMsg}</span>
+					</Alert.Root>
 				{/if}
 
 				{#if passwordErrorMsg}
-					<div class="flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20 lowercase">
+					<Alert.Root variant="destructive" class="flex items-center gap-2 border-destructive/20 bg-destructive/10 text-destructive">
 						<AlertTriangle class="size-4 shrink-0" />
-						{passwordErrorMsg}
-					</div>
+						<span class="lowercase">{passwordErrorMsg}</span>
+					</Alert.Root>
 				{/if}
 
 				<div class="flex justify-end">

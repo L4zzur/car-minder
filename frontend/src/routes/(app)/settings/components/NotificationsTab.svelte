@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 
 	import { UserSettings, type UserSettingsRead } from '$lib/api';
+	import * as Alert from '$lib/components/ui/alert';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { Checkbox } from '$lib/components/ui/checkbox';
@@ -217,17 +218,17 @@
 					</Field.FieldGroup>
 
 					{#if successMsg}
-						<div class="flex items-center gap-2 rounded-md bg-success/10 p-3 text-sm text-success border border-success/20 lowercase">
+						<Alert.Root class="flex items-center gap-2 border-success/20 bg-success/10 text-success">
 							<CheckCircle2 class="size-4 shrink-0" />
-							{successMsg}
-						</div>
+							<span class="lowercase">{successMsg}</span>
+						</Alert.Root>
 					{/if}
 
 					{#if errorMsg}
-						<div class="flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20 lowercase">
+						<Alert.Root variant="destructive" class="flex items-center gap-2 border-destructive/20 bg-destructive/10 text-destructive">
 							<AlertTriangle class="size-4 shrink-0" />
-							{errorMsg}
-						</div>
+							<span class="lowercase">{errorMsg}</span>
+						</Alert.Root>
 					{/if}
 
 					<div class="flex justify-end">

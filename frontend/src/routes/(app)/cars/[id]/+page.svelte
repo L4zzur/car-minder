@@ -23,6 +23,7 @@
 	import EditCarDialog from '$lib/components/ui/EditCarDialog.svelte';
 	import RemindersDialog from '$lib/components/ui/RemindersDialog.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import * as Empty from '$lib/components/ui/empty';
 	import * as m from '$lib/paraglide/messages.js';
 	import { getReminderMetrics, getReminderStatus } from '$lib/reminderStatus.js';
 
@@ -341,9 +342,11 @@
 						/>
 					{/each}
 				{:else}
-					<div class="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
-						{m.car_detail_empty_service_items()}
-					</div>
+					<Empty.Root class="rounded-lg border border-dashed">
+						<Empty.Header>
+							<Empty.Description>{m.car_detail_empty_service_items()}</Empty.Description>
+						</Empty.Header>
+					</Empty.Root>
 				{/if}
 			</div>
 		</div>
