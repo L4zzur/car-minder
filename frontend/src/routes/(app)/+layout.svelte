@@ -3,6 +3,7 @@
 	import '$lib/api-client';
 
 	import { ModeWatcher } from 'mode-watcher';
+	import * as Tooltip from '$lib/components/ui/tooltip';
 
 	import favicon from '$lib/assets/favicon.svg';
 
@@ -11,4 +12,6 @@
 
 <ModeWatcher defaultMode="dark" />
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
-{@render children()}
+<Tooltip.Provider>
+	{@render children()}
+</Tooltip.Provider>
