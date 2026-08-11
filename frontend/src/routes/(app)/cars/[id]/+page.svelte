@@ -33,8 +33,15 @@
 		createdAt: string;
 	};
 
+	let { data } = $props<{ data: { car?: CarRead } }>();
+
 	let car = $state<CarRead | null>(null);
 	let mileageValue = $state<number | string>('');
+
+	$effect(() => {
+		car = data?.car ?? null;
+		mileageValue = data?.car?.current_odometer_km ?? '';
+	});
 	let serviceItems = $state<ServiceItemSummary[]>([]);
 	let reminders = $state<ReminderRead[]>([]);
 	let mileageLogs = $state<MileageLogView[]>([]);
@@ -80,21 +87,24 @@
 		error = '';
 
 		try {
-			const [carResponse, mileageResponse, serviceResponse, remindersResponse] = await Promise.all([
-				Cars.getCarApiCarsCarIdGet({ path: { car_id: carId } }),
-				MileageLogs.listByCarApiMileageLogsGet({ query: { car_id: carId } }),
-				ServiceItems.listByCarApiServiceItemsGet({ query: { car_id: carId } }),
-				Reminders.listRemindersApiRemindersGet({ query: { car_id: carId } })
-			]);
+			const carResponse = await Cars.getCarApiCarsCarIdGet({ path: { car_id: carId } });
 
 			if (carResponse.error || !carResponse.data) {
 				error = m.car_detail_not_found();
+				car = null;
 				return;
 			}
 
 			const loadedCar = carResponse.data;
 			car = loadedCar;
 			mileageValue = loadedCar.current_odometer_km;
+
+			const [mileageResponse, serviceResponse, remindersResponse] = await Promise.all([
+				MileageLogs.listByCarApiMileageLogsGet({ query: { car_id: carId } }),
+				ServiceItems.listByCarApiServiceItemsGet({ query: { car_id: carId } }),
+				Reminders.listRemindersApiRemindersGet({ query: { car_id: carId } })
+			]);
+
 			mileageLogs = sortMileageLogs(mileageResponse.data ?? []).map((log) => ({
 				id: log.id,
 				odometerKm: log.odometer_km,
@@ -105,7 +115,8 @@
 			reminders = remindersResponse.data ?? [];
 		} catch (e) {
 			console.error('failed to load car page:', e);
-			error = m.car_detail_err_load_failed();
+			error = m.car_detail_not_found();
+			car = null;
 		} finally {
 			isLoading = false;
 		}
@@ -261,12 +272,7 @@
 		<div class="rounded-lg border bg-card p-6 text-sm text-muted-foreground">
 			{m.car_detail_loading()}
 		</div>
-	{:else if error || !car}
-		<div class="flex flex-col gap-4 rounded-lg border bg-card p-6">
-			<p class="text-sm text-muted-foreground">{error || m.car_detail_not_found()}</p>
-			<Button onclick={() => goto('/garage')}>{m.car_detail_return_to_garage()}</Button>
-		</div>
-	{:else}
+	{:else if car}
 		<div class="flex flex-col gap-4">
 			<div class="flex items-center gap-3">
 				<div class="flex size-10 items-center justify-center rounded-lg border bg-card">
