@@ -4,6 +4,7 @@
 	import type { CarRead, ServiceItemSummary } from '$lib/api';
 	import EditServiceDialog from '$lib/components/ui/EditServiceDialog.svelte';
 	import RemindersDialog from '$lib/components/ui/RemindersDialog.svelte';
+	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import * as m from '$lib/paraglide/messages.js';
@@ -79,19 +80,12 @@
 	</div>
 
 	<div class="flex items-center justify-between gap-2 border-t border-border/50 pt-3">
-		{#if item.status === 'due' || item.status === 'soon'}
-			<span class="rounded-md bg-muted/80 px-2 py-1 text-xs font-medium text-foreground">
-				{getNextLabel()}
-			</span>
-		{:else if item.status === 'ok'}
-			<span class="rounded-md bg-muted/60 px-2 py-1 text-xs text-foreground/80">
-				{getNextLabel()}
-			</span>
-		{:else}
-			<span class="rounded-md bg-muted/40 px-2 py-1 text-xs text-muted-foreground">
-				{getNextLabel()}
-			</span>
-		{/if}
+		<Badge
+			variant={item.status === 'due' ? 'destructive' : item.status === 'soon' ? 'secondary' : 'outline'}
+			class="font-normal"
+		>
+			{getNextLabel()}
+		</Badge>
 
 		<div class="flex items-center gap-1">
 			<Tooltip.Root>
