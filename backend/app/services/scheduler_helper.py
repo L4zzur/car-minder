@@ -85,6 +85,12 @@ def sync_reminder_job(
     now_utc = datetime.now(UTC)
     reason = "Calculated due date is in the future."
     if run_date < now_utc:
+        existing_job = scheduler.get_job(job_id)
+        is_already_future = (
+            existing_job is not None
+            and existing_job.next_run_time is not None
+            and existing_job.next_run_time > now_utc
+        )
         is_recently_notified = False
         if reminder.last_notified_at:
             last_notified = reminder.last_notified_at
@@ -93,13 +99,13 @@ def sync_reminder_job(
             if (now_utc - last_notified).total_seconds() < 12 * 3600:
                 is_recently_notified = True
 
-        if is_recently_notified:
+        if is_recently_notified or is_already_future:
             target_date = now_utc.date() + timedelta(days=1)
             local_target = datetime.combine(target_date, preferred_time, tzinfo=tz)
             run_date = local_target.astimezone(UTC)
             if run_date < now_utc:
                 run_date = now_utc + timedelta(days=1)
-            reason = "Already notified today; scheduled next check for tomorrow."
+            reason = "Already notified or scheduled in future; scheduled next check for tomorrow."
         else:
             run_date = now_utc + timedelta(seconds=2)
             reason = "Target time has passed; scheduled for immediate execution."
@@ -176,12 +182,18 @@ def sync_mileage_prompt_job(
     now_utc = datetime.now(UTC)
     reason = "Calculated prompt date is in the future."
     if run_date <= now_utc:
-        if already_prompted_today:
+        existing_job = scheduler.get_job(job_id)
+        is_already_future = (
+            existing_job is not None
+            and existing_job.next_run_time is not None
+            and existing_job.next_run_time > now_utc
+        )
+        if already_prompted_today or is_already_future:
             local_now = now_utc.astimezone(tz)
             tomorrow_date = local_now.date() + timedelta(days=1)
             local_target = datetime.combine(tomorrow_date, preferred_time, tzinfo=tz)
             run_date = local_target.astimezone(UTC)
-            reason = "Already prompted; scheduled next check for tomorrow."
+            reason = "Already prompted or scheduled in future; scheduled next check for tomorrow."
         else:
             run_date = now_utc + timedelta(seconds=2)
             reason = "Odometer prompt interval has passed; scheduled for immediate execution."
