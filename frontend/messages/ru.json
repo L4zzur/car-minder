@@ -54,6 +54,17 @@
 	"car_card_detailed": "подробнее",
 	"car_card_no_service_items": "нет активных расходников или напоминаний",
 
+	"landing_go_to_garage": "перейти в гараж",
+	"landing_settings": "настройки",
+	"landing_demo_engine_oil": "масло двигателя",
+	"landing_demo_brake_fluid": "тормозная жидкость",
+	"landing_demo_air_filter": "воздушный фильтр",
+	"landing_status_due": "просрочено",
+	"landing_status_in_km": "через {km} км",
+	"landing_status_in_days": "через {days} дн.",
+	"landing_status_active": "активно",
+	"landing_status_serviced": "обслужено",
+
 	"add_car_btn": "добавить авто",
 	"add_car_dialog_title": "новая машина",
 	"add_car_dialog_desc": "заполни данные о своём железном друге",

@@ -54,6 +54,17 @@
 	"car_card_detailed": "details",
 	"car_card_no_service_items": "no active service items or reminders",
 
+	"landing_go_to_garage": "go to garage",
+	"landing_settings": "settings",
+	"landing_demo_engine_oil": "engine oil",
+	"landing_demo_brake_fluid": "brake fluid",
+	"landing_demo_air_filter": "air filter",
+	"landing_status_due": "overdue",
+	"landing_status_in_km": "in {km} km",
+	"landing_status_in_days": "in {days} days",
+	"landing_status_active": "active",
+	"landing_status_serviced": "serviced",
+
 	"add_car_btn": "add car",
 	"add_car_dialog_title": "new car",
 	"add_car_dialog_desc": "fill in details about your car",

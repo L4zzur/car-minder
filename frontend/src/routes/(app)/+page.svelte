@@ -14,10 +14,21 @@
 		Server,
 		Wrench
 	} from 'lucide-svelte';
+	import { onMount } from 'svelte';
 
+	import { Cars, Reminders, ServiceItems, type CarRead } from '$lib/api';
+	import { auth } from '$lib/auth.svelte';
 	import CarCard from '$lib/components/CarCard.svelte';
 	import GitHubMark from '$lib/components/icons/GitHubMark.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import * as m from '$lib/paraglide/messages.js';
+	import { buildServiceLines, getReminderMetrics, getReminderStatus } from '$lib/reminderStatus.js';
+
+	type ServiceLine = {
+		label: string;
+		meta: string;
+		status?: 'due' | 'soon' | 'ok';
+	};
 
 	const demoCar = {
 		brand: 'Volkswagen',
@@ -27,11 +38,15 @@
 		current_odometer_km: 61107
 	};
 
-	const serviceLines = [
-		{ label: 'масло двигателя', meta: 'через 1 580 км' },
-		{ label: 'тормозная жидкость', meta: 'через 18 дней' },
-		{ label: 'воздушный фильтр', meta: 'готово' }
+	const demoServiceLines: ServiceLine[] = [
+		{ label: m.landing_demo_engine_oil(), meta: m.landing_status_in_km({ km: '1 580' }), status: 'soon' },
+		{ label: m.landing_demo_brake_fluid(), meta: m.landing_status_in_days({ days: '18' }), status: 'ok' },
+		{ label: m.landing_demo_air_filter(), meta: m.landing_status_serviced(), status: 'ok' }
 	];
+
+	let displayCar = $state<any>(demoCar);
+	let displayServiceLines = $state<ServiceLine[]>(demoServiceLines);
+	let displayHref = $state<string | undefined>(undefined);
 
 	const highlights = [
 		{ icon: Gauge, label: 'пробег' },
@@ -54,6 +69,34 @@
 	];
 
 	const currentYear = 2026;
+
+	onMount(async () => {
+		await auth.init();
+		if (auth.isAuthenticated) {
+			try {
+				const carsRes = await Cars.listUserCarsApiCarsGet();
+				const cars = carsRes.data || [];
+				if (cars.length > 0) {
+					// Pick first or random car
+					const userCar = cars[Math.floor(Math.random() * cars.length)];
+					displayCar = userCar;
+					displayHref = `/cars/${userCar.id}`;
+
+					const [serviceRes, remindersRes] = await Promise.all([
+						ServiceItems.listByCarApiServiceItemsGet({ query: { car_id: userCar.id } }),
+						Reminders.listRemindersApiRemindersGet({ query: { car_id: userCar.id } })
+					]);
+
+					const serviceItems = serviceRes.data || [];
+					const reminders = remindersRes.data || [];
+
+					displayServiceLines = buildServiceLines(reminders, serviceItems, userCar.current_odometer_km, m);
+				}
+			} catch (e) {
+				console.error('Failed to load user car for landing:', e);
+			}
+		}
+	});
 </script>
 
 <svelte:head>
@@ -104,8 +147,13 @@
 				</div>
 
 				<div class="flex flex-col gap-3 sm:flex-row">
-					<Button href="/login" size="lg">войти</Button>
-					<Button href="/register" variant="outline" size="lg">создать аккаунт</Button>
+					{#if auth.isAuthenticated}
+						<Button href="/home" size="lg">{m.landing_go_to_garage()}</Button>
+						<Button href="/settings" variant="outline" size="lg">{m.landing_settings()}</Button>
+					{:else}
+						<Button href="/login" size="lg">{m.login_btn_submit()}</Button>
+						<Button href="/register" variant="outline" size="lg">{m.register_btn_submit()}</Button>
+					{/if}
 				</div>
 
 				<div class="grid max-w-xl gap-3 sm:grid-cols-3">
@@ -141,7 +189,7 @@
 			</div>
 
 			<div class="w-full max-w-md justify-self-start lg:justify-self-end">
-				<CarCard car={demoCar} {serviceLines} />
+				<CarCard car={displayCar} serviceLines={displayServiceLines} href={displayHref} />
 			</div>
 		</div>
 
