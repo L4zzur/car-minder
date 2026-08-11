@@ -37,7 +37,7 @@ client.interceptors.request.use((request) => {
 client.interceptors.response.use((response) => {
 	if (response.status === 401) {
 		console.warn('Unauthorized');
-		if (typeof window !== 'undefined' && !['/login', '/register'].includes(window.location.pathname)) {
+		if (typeof window !== 'undefined' && !['/', '/login', '/register'].includes(window.location.pathname)) {
 			window.location.href = '/login';
 		}
 	}
