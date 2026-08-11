@@ -28,7 +28,7 @@
 		car,
 		href,
 		serviceLines = [],
-		actionLabel = m.car_card_detailed()
+		actionLabel
 	}: {
 		car: CarCardData;
 		href?: string;
@@ -39,6 +39,7 @@
 	const formatOdometer = (value: number) => value.toLocaleString(getLocale());
 	const currentOdometer = $derived(car.current_odometer_km ?? car.initial_odometer_km);
 	const hasMileageUpdates = $derived(currentOdometer !== car.initial_odometer_km);
+	const finalActionLabel = $derived(actionLabel ?? m.car_card_detailed());
 </script>
 
 <Card.Root class="flex h-full flex-col justify-between transition-shadow hover:shadow-md">
@@ -102,7 +103,7 @@
 
 	{#if href}
 		<Card.Footer class="pt-4">
-			<Button variant="outline" class="w-full" {href}>{actionLabel}</Button>
+			<Button variant="outline" class="w-full" {href}>{finalActionLabel}</Button>
 		</Card.Footer>
 	{/if}
 </Card.Root>
