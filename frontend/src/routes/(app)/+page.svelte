@@ -16,11 +16,12 @@
 	} from 'lucide-svelte';
 	import { onMount } from 'svelte';
 
-	import { Cars, Reminders, ServiceItems, type CarRead } from '$lib/api';
+	import { Cars, Reminders, ServiceItems, type CarRead, type ReminderRead, type ServiceItemSummary } from '$lib/api';
 	import { auth } from '$lib/auth.svelte';
 	import CarCard from '$lib/components/CarCard.svelte';
 	import GitHubMark from '$lib/components/icons/GitHubMark.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import * as m from '$lib/paraglide/messages.js';
 	import { buildServiceLines, getReminderMetrics, getReminderStatus } from '$lib/reminderStatus.js';
 
@@ -38,21 +39,28 @@
 		current_odometer_km: 61107
 	};
 
-	const demoServiceLines: ServiceLine[] = [
+	const demoServiceLines = $derived<ServiceLine[]>([
 		{ label: m.landing_demo_engine_oil(), meta: m.landing_status_in_km({ km: '1 580' }), status: 'soon' },
 		{ label: m.landing_demo_brake_fluid(), meta: m.landing_status_in_days({ days: '18' }), status: 'ok' },
 		{ label: m.landing_demo_air_filter(), meta: m.landing_status_serviced(), status: 'ok' }
-	];
+	]);
 
 	let displayCar = $state<any>(demoCar);
-	let displayServiceLines = $state<ServiceLine[]>(demoServiceLines);
+	let userServiceItems = $state<ServiceItemSummary[]>([]);
+	let userReminders = $state<ReminderRead[]>([]);
 	let displayHref = $state<string | undefined>(undefined);
 
-	const highlights = [
-		{ icon: Gauge, label: 'пробег' },
-		{ icon: Wrench, label: 'обслуживание' },
-		{ icon: Bell, label: 'напоминания' }
-	];
+	let displayServiceLines = $derived<ServiceLine[]>(
+		userReminders.length > 0 || userServiceItems.length > 0
+			? buildServiceLines(userReminders, userServiceItems, displayCar.current_odometer_km ?? displayCar.initial_odometer_km, m)
+			: demoServiceLines
+	);
+
+	const highlights = $derived([
+		{ icon: Gauge, label: m.landing_highlight_mileage() },
+		{ icon: Wrench, label: m.landing_highlight_service() },
+		{ icon: Bell, label: m.landing_highlight_reminders() }
+	]);
 
 	const technologies = [
 		{ icon: Layers2, label: 'Svelte' },
@@ -63,10 +71,10 @@
 		{ icon: Database, label: 'SQLite' }
 	];
 
-	const links = [
-		{ icon: Contact, label: 'автор', href: 'https://l4zzur.top' },
-		{ icon: GitHubMark, label: 'репо', href: 'https://github.com/L4zzur/car-minder' }
-	];
+	const links = $derived([
+		{ icon: Contact, label: m.landing_link_author(), href: 'https://l4zzur.top' },
+		{ icon: GitHubMark, label: m.landing_link_repo(), href: 'https://github.com/L4zzur/car-minder' }
+	]);
 
 	const currentYear = 2026;
 
@@ -87,10 +95,8 @@
 						Reminders.listRemindersApiRemindersGet({ query: { car_id: userCar.id } })
 					]);
 
-					const serviceItems = serviceRes.data || [];
-					const reminders = remindersRes.data || [];
-
-					displayServiceLines = buildServiceLines(reminders, serviceItems, userCar.current_odometer_km, m);
+					userServiceItems = serviceRes.data || [];
+					userReminders = remindersRes.data || [];
 				}
 			} catch (e) {
 				console.error('Failed to load user car for landing:', e);
@@ -130,19 +136,19 @@
 						<ExternalLink class="size-3 opacity-50 transition-opacity group-hover:opacity-100" />
 					</a>
 				{/each}
+				<LanguageSwitcher />
 			</nav>
 		</header>
 
 		<div class="grid flex-1 items-center gap-12 py-12 lg:grid-cols-[minmax(0,1fr)_24rem]">
 			<div class="flex max-w-2xl flex-col gap-8">
 				<div class="flex flex-col gap-4">
-					<p class="text-sm font-medium text-muted-foreground">личный журнал обслуживания</p>
+					<p class="text-sm font-medium text-muted-foreground">{m.landing_badge()}</p>
 					<h1 class="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-						гараж, пробег и обслуживание в одном месте
+						{m.landing_hero_title()}
 					</h1>
 					<p class="max-w-xl text-base leading-7 text-muted-foreground">
-						добавляй машины, фиксируй пробег и держи рядом список работ, которые скоро потребуют
-						внимания.
+						{m.landing_hero_desc()}
 					</p>
 				</div>
 
@@ -171,7 +177,7 @@
 				<div class="flex max-w-xl flex-col gap-3">
 					<div class="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase">
 						<CodeXml class="size-3.5" />
-						<span>стек</span>
+						<span>{m.landing_stack_label()}</span>
 					</div>
 
 					<div class="flex flex-wrap gap-2">
