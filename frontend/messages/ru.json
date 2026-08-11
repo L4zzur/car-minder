@@ -52,6 +52,7 @@
 	"car_card_start_odometer": "старт: {km} км",
 	"car_card_initial_odometer": "пока равен начальному",
 	"car_card_detailed": "подробнее",
+	"car_card_no_service_items": "нет активных расходников или напоминаний",
 
 	"add_car_btn": "добавить авто",
 	"add_car_dialog_title": "новая машина",

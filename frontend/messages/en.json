@@ -52,6 +52,7 @@
 	"car_card_start_odometer": "start: {km} km",
 	"car_card_initial_odometer": "currently initial",
 	"car_card_detailed": "details",
+	"car_card_no_service_items": "no active service items or reminders",
 
 	"add_car_btn": "add car",
 	"add_car_dialog_title": "new car",

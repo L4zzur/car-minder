@@ -5,7 +5,7 @@
 
 	import { goto } from '$app/navigation';
 
-	import { Auth, Cars, type CarRead } from '$lib/api';
+	import { Auth, Cars, Reminders, ServiceItems, type CarRead } from '$lib/api';
 	import { auth } from '$lib/auth.svelte';
 	import CarCard from '$lib/components/CarCard.svelte';
 	import AddCarDialog from '$lib/components/ui/AddCarDialog.svelte';
@@ -14,15 +14,47 @@
 	import * as Empty from '$lib/components/ui/empty';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import * as m from '$lib/paraglide/messages.js';
+	import { buildServiceLines, getReminderMetrics, getReminderStatus } from '$lib/reminderStatus.js';
 
-	let cars = $state<CarRead[]>([]);
+	type ServiceLine = {
+		label: string;
+		meta: string;
+		status?: 'due' | 'soon' | 'ok';
+	};
+
+	type CarWithDetails = CarRead & {
+		serviceLines?: ServiceLine[];
+	};
+
+	let cars = $state<CarWithDetails[]>([]);
 	let isLoading = $state(true);
 
 	async function loadCars() {
 		isLoading = true;
 		try {
 			const response = await Cars.listUserCarsApiCarsGet();
-			cars = response.data || [];
+			const rawCars = response.data || [];
+
+			cars = await Promise.all(
+				rawCars.map(async (car) => {
+					try {
+						const [serviceRes, remindersRes] = await Promise.all([
+							ServiceItems.listByCarApiServiceItemsGet({ query: { car_id: car.id } }),
+							Reminders.listRemindersApiRemindersGet({ query: { car_id: car.id } })
+						]);
+
+						const serviceItems = serviceRes.data || [];
+						const reminders = remindersRes.data || [];
+
+						return {
+							...car,
+							serviceLines: buildServiceLines(reminders, serviceItems, car.current_odometer_km, m)
+						};
+					} catch {
+						return car;
+					}
+				})
+			);
 		} catch (e) {
 			console.error('failed to load cars:', e);
 		} finally {
@@ -112,7 +144,7 @@
 	{:else}
 		<div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 			{#each cars as car}
-				<CarCard {car} href={`/cars/${car.id}`} />
+				<CarCard {car} serviceLines={car.serviceLines} href={`/cars/${car.id}`} />
 			{/each}
 		</div>
 	{/if}
