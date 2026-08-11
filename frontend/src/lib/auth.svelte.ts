@@ -9,8 +9,13 @@ class AuthStore {
 		return !!this.user;
 	}
 
-	init() {
-		this.isReady = true;
+	async init() {
+		if (!this.isReady) {
+			this.isReady = true;
+			if (!this.user) {
+				await this.fetchUser();
+			}
+		}
 	}
 
 	async login() {

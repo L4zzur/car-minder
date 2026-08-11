@@ -52,7 +52,12 @@
 		}
 	}
 
-	onMount(() => auth.init());
+	onMount(async () => {
+		await auth.init();
+		if (auth.isAuthenticated) {
+			await goto('/home');
+		}
+	});
 </script>
 
 <svelte:head>

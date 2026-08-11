@@ -91,7 +91,12 @@
 		return typeof value === 'object' && value !== null && 'code' in value;
 	}
 
-	onMount(() => auth.init());
+	onMount(async () => {
+		await auth.init();
+		if (auth.isAuthenticated) {
+			await goto('/home');
+		}
+	});
 </script>
 
 <svelte:head>
