@@ -111,6 +111,8 @@ def sync_reminder_job(
         id=job_id,
         args=[reminder.id],
         replace_existing=True,
+        misfire_grace_time=86400,
+        coalesce=True,
     )
     logger.info(
         f"[SCHEDULER] Scheduled job '{job_id}' for {run_date} UTC. Reason: {reason}"
@@ -191,6 +193,8 @@ def sync_mileage_prompt_job(
         id=job_id,
         args=[car.id],
         replace_existing=True,
+        misfire_grace_time=86400,
+        coalesce=True,
     )
     logger.info(
         f"[SCHEDULER] Scheduled mileage prompt job '{job_id}' for {run_date} UTC. Reason: {reason}"
