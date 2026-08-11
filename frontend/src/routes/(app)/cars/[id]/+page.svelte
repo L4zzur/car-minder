@@ -19,6 +19,7 @@
 	import MileageForm from '$lib/components/MileageForm.svelte';
 	import MileageHistory from '$lib/components/MileageHistory.svelte';
 	import ServiceItemCard from '$lib/components/ServiceItemCard.svelte';
+	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import AddServiceDialog from '$lib/components/ui/AddServiceDialog.svelte';
 	import EditCarDialog from '$lib/components/ui/EditCarDialog.svelte';
 	import RemindersDialog from '$lib/components/ui/RemindersDialog.svelte';
@@ -264,6 +265,7 @@
 					onReminderChanged={() => loadCarPage({ showLoading: false })}
 					class="flex-1 sm:flex-initial"
 				/>
+				<LanguageSwitcher />
 			{/if}
 		</div>
 	</header>

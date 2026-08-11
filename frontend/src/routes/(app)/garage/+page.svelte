@@ -5,9 +5,10 @@
 
 	import { goto } from '$app/navigation';
 
-	import { Auth, Cars, Reminders, ServiceItems, type CarRead } from '$lib/api';
+	import { Auth, Cars, Reminders, ServiceItems, type CarRead, type ReminderRead, type ServiceItemSummary } from '$lib/api';
 	import { auth } from '$lib/auth.svelte';
 	import CarCard from '$lib/components/CarCard.svelte';
+	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import AddCarDialog from '$lib/components/ui/AddCarDialog.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -16,14 +17,9 @@
 	import * as m from '$lib/paraglide/messages.js';
 	import { buildServiceLines, getReminderMetrics, getReminderStatus } from '$lib/reminderStatus.js';
 
-	type ServiceLine = {
-		label: string;
-		meta: string;
-		status?: 'due' | 'soon' | 'ok';
-	};
-
 	type CarWithDetails = CarRead & {
-		serviceLines?: ServiceLine[];
+		serviceItems?: ServiceItemSummary[];
+		reminders?: ReminderRead[];
 	};
 
 	let cars = $state<CarWithDetails[]>([]);
@@ -43,12 +39,10 @@
 							Reminders.listRemindersApiRemindersGet({ query: { car_id: car.id } })
 						]);
 
-						const serviceItems = serviceRes.data || [];
-						const reminders = remindersRes.data || [];
-
 						return {
 							...car,
-							serviceLines: buildServiceLines(reminders, serviceItems, car.current_odometer_km, m)
+							serviceItems: serviceRes.data || [],
+							reminders: remindersRes.data || []
 						};
 					} catch {
 						return car;
@@ -103,6 +97,8 @@
 			>
 				{m.garage_logout()}
 			</Button>
+
+			<LanguageSwitcher />
 		</div>
 	</div>
 	<div class="flex items-center justify-between">
@@ -144,7 +140,11 @@
 	{:else}
 		<div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 			{#each cars as car}
-				<CarCard {car} serviceLines={car.serviceLines} href={`/cars/${car.id}`} />
+				<CarCard
+					{car}
+					serviceLines={buildServiceLines(car.reminders || [], car.serviceItems || [], car.current_odometer_km, m)}
+					href={`/cars/${car.id}`}
+				/>
 			{/each}
 		</div>
 	{/if}

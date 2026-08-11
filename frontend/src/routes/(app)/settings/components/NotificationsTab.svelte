@@ -7,6 +7,7 @@
 
 	import { UserSettings, type UserSettingsRead } from '$lib/api';
 	import * as Alert from '$lib/components/ui/alert';
+	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import { Checkbox } from '$lib/components/ui/checkbox';
@@ -69,7 +70,7 @@
 					mileage_prompt_interval_days: settings.mileage_prompt_interval_days,
 					timezone: settings.timezone,
 					notify_via_telegram: settings.notify_via_telegram,
-					notify_via_email: settings.notify_via_email,
+					notify_via_email: false,
 					language: settings.language
 				}
 			});
@@ -150,31 +151,6 @@
 								<TimezoneSelect bind:value={settings.timezone} />
 								<Field.FieldDescription class="lowercase">{m.settings_notifications_timezone_desc()}</Field.FieldDescription>
 							</Field.Field>
-
-							<Field.Field>
-								<Field.FieldLabel for="language" class="lowercase">{m.settings_notifications_language_label()}</Field.FieldLabel>
-								<Select.Root
-									type="single"
-									bind:value={settings.language}
-									onValueChange={(val) => {
-										if ((val === 'ru' || val === 'en') && settings) settings.language = val;
-									}}
-								>
-									<Select.Trigger id="language" class="w-full justify-between font-normal">
-										<span>{languageLabel(settings.language)}</span>
-									</Select.Trigger>
-									<Select.Content class="w-[var(--bits-select-anchor-width)] min-w-[200px]">
-										<Select.Group>
-											{#each languageOptions as opt (opt.value)}
-												<Select.Item value={opt.value} label={opt.label}>
-													{opt.label}
-												</Select.Item>
-											{/each}
-										</Select.Group>
-									</Select.Content>
-								</Select.Root>
-								<Field.FieldDescription class="lowercase">{m.settings_notifications_language_desc()}</Field.FieldDescription>
-							</Field.Field>
 						</div>
 
 						<!-- Tab 3: Notification Channels -->
@@ -199,19 +175,23 @@
 								</Label>
 
 								<Label
-									class="flex items-start gap-3 rounded-lg border p-3.5 hover:bg-accent/50 cursor-pointer has-[[aria-checked=true]]:border-primary has-[[aria-checked=true]]:bg-primary/5 transition-colors"
+									class="flex items-center justify-between rounded-lg border p-3.5 opacity-50 cursor-not-allowed transition-colors"
 								>
-									<Checkbox
-										id="notify_email"
-										bind:checked={settings.notify_via_email}
-										class="mt-0.5"
-									/>
-									<div class="grid gap-1 font-normal">
-										<p class="text-sm font-medium leading-none lowercase">{m.settings_notifications_email_title()}</p>
-										<p class="text-xs text-muted-foreground lowercase">
-											{m.settings_notifications_email_desc()}
-										</p>
+									<div class="flex items-start gap-3">
+										<Checkbox
+											id="notify_email"
+											checked={false}
+											disabled
+											class="mt-0.5"
+										/>
+										<div class="grid gap-1 font-normal">
+											<p class="text-sm font-medium leading-none lowercase">{m.settings_notifications_email_title()}</p>
+											<p class="text-xs text-muted-foreground lowercase">
+												{m.settings_notifications_email_desc()}
+											</p>
+										</div>
 									</div>
+									<Badge variant="outline" class="text-[10px] lowercase font-mono">soon</Badge>
 								</Label>
 							</div>
 						</div>

@@ -5,6 +5,7 @@
 
 	import { Auth, Users } from '$lib/api';
 	import { auth } from '$lib/auth.svelte';
+	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import * as Field from '$lib/components/ui/field';
@@ -103,7 +104,10 @@
 	<title>{m.register_title()} // car minder</title>
 </svelte:head>
 
-<div class="flex min-h-screen items-center justify-center py-8">
+<div class="relative flex min-h-screen items-center justify-center p-4 py-8">
+	<div class="absolute top-4 right-4">
+		<LanguageSwitcher />
+	</div>
 	<Card.Root class="w-[400px]">
 		<Card.Header>
 			<Card.Title class="text-2xl">{m.register_heading()}</Card.Title>
