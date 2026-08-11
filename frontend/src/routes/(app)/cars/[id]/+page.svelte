@@ -233,7 +233,7 @@
 <div class="container mx-auto flex flex-col gap-6 p-4 sm:p-6">
 	<header class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 		<a
-			href="/home"
+			href="/garage"
 			class="flex items-center gap-2 self-start text-sm text-muted-foreground transition-colors hover:text-foreground"
 		>
 			<ArrowLeft class="size-4" />
@@ -264,7 +264,7 @@
 	{:else if error || !car}
 		<div class="flex flex-col gap-4 rounded-lg border bg-card p-6">
 			<p class="text-sm text-muted-foreground">{error || m.car_detail_not_found()}</p>
-			<Button onclick={() => goto('/home')}>{m.car_detail_return_to_garage()}</Button>
+			<Button onclick={() => goto('/garage')}>{m.car_detail_return_to_garage()}</Button>
 		</div>
 	{:else}
 		<div class="flex flex-col gap-4">
@@ -282,7 +282,7 @@
 						<EditCarDialog
 							{car}
 							onCarUpdated={() => loadCarPage({ showLoading: false })}
-							onCarDeleted={() => goto('/home')}
+							onCarDeleted={() => goto('/garage')}
 						/>
 					</div>
 					<p class="text-sm text-muted-foreground">{m.car_detail_subtitle()}</p>

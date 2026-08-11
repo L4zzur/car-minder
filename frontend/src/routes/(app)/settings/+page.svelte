@@ -47,7 +47,7 @@
 <div class="container mx-auto flex max-w-3xl flex-col gap-6 p-4 sm:p-6">
 	<div class="flex flex-col gap-4">
 		<div>
-			<Button variant="ghost" size="sm" href="/home" class="-ml-2 text-muted-foreground hover:text-foreground lowercase">
+			<Button variant="ghost" size="sm" href="/garage" class="-ml-2 text-muted-foreground hover:text-foreground lowercase">
 				<ArrowLeft data-icon="inline-start" />
 				{m.settings_back()}
 			</Button>

@@ -148,7 +148,7 @@
 
 				<div class="flex flex-col gap-3 sm:flex-row">
 					{#if auth.isAuthenticated}
-						<Button href="/home" size="lg">{m.landing_go_to_garage()}</Button>
+						<Button href="/garage" size="lg">{m.landing_go_to_garage()}</Button>
 						<Button href="/settings" variant="outline" size="lg">{m.landing_settings()}</Button>
 					{:else}
 						<Button href="/login" size="lg">{m.login_btn_submit()}</Button>

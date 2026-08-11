@@ -63,7 +63,7 @@
 			if (loginResp.data?.access_token) {
 				isRedirecting = true;
 				await auth.login();
-				await goto('/home');
+				await goto('/garage');
 				return;
 			}
 
@@ -94,7 +94,7 @@
 	onMount(async () => {
 		await auth.init();
 		if (auth.isAuthenticated) {
-			await goto('/home');
+			await goto('/garage');
 		}
 	});
 </script>
