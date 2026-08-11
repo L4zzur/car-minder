@@ -9,6 +9,7 @@
 	import { page } from '$app/state';
 
 	import { auth } from '$lib/auth.svelte';
+	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Empty from '$lib/components/ui/empty';
 	import * as m from '$lib/paraglide/messages.js';
@@ -42,32 +43,32 @@
 
 <main class="flex min-h-screen items-center justify-center p-6 bg-background text-foreground">
 	<div class="w-full max-w-md">
-		<Empty.Root class="rounded-2xl border bg-card p-8 shadow-sm flex flex-col items-center justify-center text-center">
-			<Empty.Header class="flex flex-col items-center gap-3">
-				<Empty.Media variant="icon" class="size-16 rounded-2xl border bg-muted/30">
+		<Empty.Root class="border bg-card p-8 shadow-sm">
+			<Empty.Header>
+				<Empty.Media variant="icon">
 					{#if status === 404}
-						<CarFront class="size-8 text-muted-foreground" />
+						<CarFront class="text-muted-foreground" />
 					{:else if status >= 500}
-						<ServerCrash class="size-8 text-destructive" />
+						<ServerCrash class="text-destructive" />
 					{:else}
-						<ShieldAlert class="size-8 text-muted-foreground" />
+						<ShieldAlert class="text-muted-foreground" />
 					{/if}
 				</Empty.Media>
 
-				<span class="text-xs font-mono font-semibold tracking-wider text-muted-foreground uppercase">
+				<Badge variant="outline" class="font-mono text-xs uppercase">
 					ERROR // {status}
-				</span>
+				</Badge>
 
-				<Empty.Title class="text-2xl font-bold tracking-tight text-balance">
+				<Empty.Title class="text-xl">
 					{heading}
 				</Empty.Title>
 
-				<Empty.Description class="text-sm text-muted-foreground leading-relaxed max-w-xs text-balance">
+				<Empty.Description>
 					{description}
 				</Empty.Description>
 			</Empty.Header>
 
-			<Empty.Content class="mt-6 flex flex-col sm:flex-row gap-3 w-full justify-center">
+			<Empty.Content class="flex-row flex-wrap justify-center sm:flex-nowrap">
 				{#if auth.isAuthenticated}
 					<Button href="/garage" class="w-full sm:w-auto">
 						<CarFront data-icon="inline-start" />
