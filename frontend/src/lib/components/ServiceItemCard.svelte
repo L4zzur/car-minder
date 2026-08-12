@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Bell, CircleAlert, CircleCheck, Clock, Trash2 } from 'lucide-svelte';
+	import { Bell, Check, CircleAlert, CircleCheck, Clock, LoaderCircle, Pencil, Trash2 } from 'lucide-svelte';
 
 	import type { CarRead, ServiceItemSummary } from '$lib/api';
 	import EditServiceDialog from '$lib/components/ui/EditServiceDialog.svelte';
@@ -80,18 +80,32 @@
 	</div>
 
 	<div class="flex items-center justify-between gap-2 border-t border-border/50 pt-3">
-		<Badge
-			variant={item.status === 'due' ? 'destructive' : item.status === 'soon' ? 'secondary' : 'outline'}
-			class="font-normal"
-		>
-			{getNextLabel()}
-		</Badge>
+		<div class="min-w-0 flex-1">
+			<Badge
+				variant={item.status === 'due' ? 'destructive' : item.status === 'soon' ? 'secondary' : 'outline'}
+				class="font-normal"
+			>
+				{getNextLabel()}
+			</Badge>
+		</div>
 
-		<div class="flex items-center gap-1">
+		<div class="flex items-center gap-1 shrink-0">
 			<Tooltip.Root>
 				<Tooltip.Trigger>
-					<Button variant="ghost" size="sm" disabled={isSaving} onclick={onMarkServiced}>
-						{isSaving ? m.service_card_btn_servicing() : m.service_card_btn_serviced()}
+					<Button
+						variant="ghost"
+						size="sm"
+						class="h-8 px-2 text-xs max-sm:size-8 max-sm:p-0"
+						disabled={isSaving}
+						onclick={onMarkServiced}
+					>
+						{#if isSaving}
+							<LoaderCircle class="size-4 animate-spin sm:hidden" />
+							<span class="hidden sm:inline">{m.service_card_btn_servicing()}</span>
+						{:else}
+							<Check class="size-4 sm:hidden" />
+							<span class="hidden sm:inline">{m.service_card_btn_serviced()}</span>
+						{/if}
 					</Button>
 				</Tooltip.Trigger>
 				<Tooltip.Content><p>{m.service_card_tooltip_mark()}</p></Tooltip.Content>
