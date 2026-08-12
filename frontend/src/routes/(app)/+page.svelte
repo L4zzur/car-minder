@@ -21,6 +21,7 @@
 	import CarCard from '$lib/components/CarCard.svelte';
 	import GitHubMark from '$lib/components/icons/GitHubMark.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import CarMinderLogo from '$lib/components/icons/CarMinderLogo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import * as m from '$lib/paraglide/messages.js';
 	import { buildServiceLines, getReminderMetrics, getReminderStatus } from '$lib/reminderStatus.js';
@@ -113,11 +114,11 @@
 	<section class="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-8">
 		<header class="flex items-center justify-between gap-4">
 			<a
-				class="flex items-center gap-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
+				class="group flex items-center gap-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
 				href="/"
 			>
-				<span class="flex size-9 items-center justify-center rounded-lg border bg-card">
-					<CarFront class="size-4" />
+				<span class="flex size-9 items-center justify-center rounded-lg border bg-card transition-colors duration-200 group-hover:border-foreground/20 group-hover:bg-accent">
+					<CarMinderLogo class="size-5" />
 				</span>
 				<span class="font-medium">car minder</span>
 			</a>
