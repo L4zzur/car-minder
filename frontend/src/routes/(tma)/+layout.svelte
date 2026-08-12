@@ -13,7 +13,7 @@
 	import Bot from '@lucide/svelte/icons/bot';
 	import ExternalLink from '@lucide/svelte/icons/external-link';
 	import Loader2 from '@lucide/svelte/icons/loader-2';
-	import CarFront from '@lucide/svelte/icons/car-front';
+	import CarMinderLogo from '$lib/components/icons/CarMinderLogo.svelte';
 	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 
 	import { Telegram } from '$lib/api';
@@ -184,7 +184,7 @@
 			<Card.Root class="w-full max-w-md">
 				<Card.Header class="flex flex-col items-center gap-4 text-center">
 					<div class="flex size-12 items-center justify-center rounded-xl border bg-card text-foreground">
-						<CarFront class="size-6" />
+						<CarMinderLogo class="size-7" />
 					</div>
 					<div class="flex flex-col gap-1.5">
 						<Card.Title class="text-xl font-semibold tracking-tight">car minder</Card.Title>
