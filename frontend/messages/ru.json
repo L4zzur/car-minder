@@ -50,6 +50,9 @@
 	"register_btn_submitting": "создаем...",
 	"register_has_account": "уже есть аккаунт?",
 	"register_link_login": "войти",
+	"register_disabled_title": "регистрация закрыта",
+	"register_disabled_heading": "регистрация отключена",
+	"register_disabled_desc": "создание новых аккаунтов временно недоступно. обратись к администратору.",
 
 	"garage_title": "твой гараж",
 	"garage_head_title": "гараж",

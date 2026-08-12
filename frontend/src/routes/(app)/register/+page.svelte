@@ -2,12 +2,14 @@
 	import { onMount } from 'svelte';
 
 	import { goto } from '$app/navigation';
+	import ShieldAlert from 'lucide-svelte/icons/shield-alert';
 
 	import { Auth, Users } from '$lib/api';
 	import { auth } from '$lib/auth.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
+	import * as Empty from '$lib/components/ui/empty';
 	import * as Field from '$lib/components/ui/field';
 	import { Input } from '$lib/components/ui/input';
 	import * as m from '$lib/paraglide/messages.js';
@@ -18,6 +20,8 @@
 	let confirmPassword = $state('');
 	let isLoading = $state(false);
 	let isRedirecting = $state(false);
+	let isCheckingConfig = $state(true);
+	let allowSignup = $state(true);
 	let error = $state('');
 
 	let passwordMismatch = $derived(
@@ -96,12 +100,24 @@
 		await auth.init();
 		if (auth.isAuthenticated) {
 			await goto('/garage');
+			return;
+		}
+
+		try {
+			const res = await Auth.getAuthConfigApiAuthConfigGet();
+			if (res.data) {
+				allowSignup = res.data.allow_signup;
+			}
+		} catch (e) {
+			console.error('failed to fetch auth config:', e);
+		} finally {
+			isCheckingConfig = false;
 		}
 	});
 </script>
 
 <svelte:head>
-	<title>{m.register_title()} // car minder</title>
+	<title>{allowSignup ? m.register_title() : m.register_disabled_title()} // car minder</title>
 </svelte:head>
 
 <div class="relative flex min-h-screen items-center justify-center p-4 py-8">
@@ -109,10 +125,32 @@
 		<LanguageSwitcher />
 	</div>
 	<Card.Root class="w-[400px]">
-		<Card.Header>
-			<Card.Title class="text-2xl">{m.register_heading()}</Card.Title>
-			<Card.Description>{m.register_description()}</Card.Description>
-		</Card.Header>
+		{#if isCheckingConfig}
+			<Card.Header>
+				<Card.Title class="text-2xl">{m.register_heading()}</Card.Title>
+			</Card.Header>
+		{:else if !allowSignup}
+			<Card.Content class="pt-6">
+				<Empty.Root>
+					<Empty.Header>
+						<Empty.Media class="text-destructive">
+							<ShieldAlert class="size-10" />
+						</Empty.Media>
+						<Empty.Title>{m.register_disabled_heading()}</Empty.Title>
+						<Empty.Description>{m.register_disabled_desc()}</Empty.Description>
+					</Empty.Header>
+					<Empty.Content>
+						<Button href="/login" class="w-full">
+							{m.register_link_login()}
+						</Button>
+					</Empty.Content>
+				</Empty.Root>
+			</Card.Content>
+		{:else}
+			<Card.Header>
+				<Card.Title class="text-2xl">{m.register_heading()}</Card.Title>
+				<Card.Description>{m.register_description()}</Card.Description>
+			</Card.Header>
 		<Card.Content>
 			<form
 				onsubmit={(e) => {
@@ -187,5 +225,6 @@
 				</Field.Group>
 			</form>
 		</Card.Content>
+		{/if}
 	</Card.Root>
 </div>

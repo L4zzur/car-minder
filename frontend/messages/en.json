@@ -50,6 +50,9 @@
 	"register_btn_submitting": "creating...",
 	"register_has_account": "already have an account?",
 	"register_link_login": "sign in",
+	"register_disabled_title": "registration closed",
+	"register_disabled_heading": "registration is disabled",
+	"register_disabled_desc": "creating new accounts is temporarily disabled. please contact the administrator.",
 
 	"garage_title": "your garage",
 	"garage_head_title": "garage",

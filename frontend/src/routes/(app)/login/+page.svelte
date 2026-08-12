@@ -16,6 +16,7 @@
 	let password = $state('');
 	let isLoading = $state(false);
 	let isRedirecting = $state(false);
+	let allowSignup = $state(true);
 	let error = $state('');
 
 	async function handleSubmit() {
@@ -57,6 +58,16 @@
 		await auth.init();
 		if (auth.isAuthenticated) {
 			await goto('/garage');
+			return;
+		}
+
+		try {
+			const res = await Auth.getAuthConfigApiAuthConfigGet();
+			if (res.data) {
+				allowSignup = res.data.allow_signup;
+			}
+		} catch (e) {
+			console.error('failed to fetch auth config:', e);
 		}
 	});
 </script>
@@ -111,10 +122,12 @@
 						<Button type="submit" class="w-full" disabled={isLoading}>
 							{isLoading ? m.login_btn_submitting() : m.login_btn_submit()}
 						</Button>
-						<Field.Description class="text-center">
-							{m.login_no_account()}
-							<a href="/register" class="text-primary hover:underline">{m.login_link_register()}</a>
-						</Field.Description>
+						{#if allowSignup}
+							<Field.Description class="text-center">
+								{m.login_no_account()}
+								<a href="/register" class="text-primary hover:underline">{m.login_link_register()}</a>
+							</Field.Description>
+						{/if}
 					</Field.Field>
 				</Field.Group>
 			</form>
