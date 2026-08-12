@@ -68,7 +68,9 @@ async def send_service_reminder_job(reminder_id: UUID | str) -> None:
                 )
                 from services.scheduler_helper import sync_reminder_job
 
-                sync_reminder_job(reminder, service_item, user_settings)
+                sync_reminder_job(
+                    reminder, service_item, user_settings, already_notified_today=True
+                )
                 return
 
         mileage_repo = MileageLogRepository(session)
@@ -156,7 +158,9 @@ async def send_service_reminder_job(reminder_id: UUID | str) -> None:
 
         from services.scheduler_helper import sync_reminder_job
 
-        sync_reminder_job(reminder, service_item, user_settings)
+        sync_reminder_job(
+            reminder, service_item, user_settings, already_notified_today=True
+        )
 
 
 async def send_mileage_prompt_job(

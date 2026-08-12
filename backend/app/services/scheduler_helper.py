@@ -52,6 +52,7 @@ def sync_reminder_job(
     reminder: Reminder,
     service_item: ServiceItem,
     user_settings: UserSettings | None,
+    already_notified_today: bool = False,
 ) -> None:
     """Register or update a reminder job in APScheduler if interval_days is set."""
     if not scheduler.running:
@@ -99,7 +100,7 @@ def sync_reminder_job(
             if (now_utc - last_notified).total_seconds() < 12 * 3600:
                 is_recently_notified = True
 
-        if is_recently_notified or is_already_future:
+        if is_recently_notified or is_already_future or already_notified_today:
             target_date = now_utc.date() + timedelta(days=1)
             local_target = datetime.combine(target_date, preferred_time, tzinfo=tz)
             run_date = local_target.astimezone(UTC)
