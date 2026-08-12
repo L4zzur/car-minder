@@ -5,6 +5,16 @@ export type ClientOptions = {
 };
 
 /**
+ * AuthConfigResponse
+ */
+export type AuthConfigResponse = {
+    /**
+     * Allow Signup
+     */
+    allow_signup: boolean;
+};
+
+/**
  * Body_login_api_auth_login_post
  */
 export type BodyLoginApiAuthLoginPost = {
@@ -663,6 +673,22 @@ export type ValidationError = {
         [key: string]: unknown;
     };
 };
+
+export type GetAuthConfigApiAuthConfigGetData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/auth/config';
+};
+
+export type GetAuthConfigApiAuthConfigGetResponses = {
+    /**
+     * Successful Response
+     */
+    200: AuthConfigResponse;
+};
+
+export type GetAuthConfigApiAuthConfigGetResponse = GetAuthConfigApiAuthConfigGetResponses[keyof GetAuthConfigApiAuthConfigGetResponses];
 
 export type LoginApiAuthLoginPostData = {
     body: BodyLoginApiAuthLoginPost;
