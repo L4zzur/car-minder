@@ -3,6 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from api.deps import get_current_user, get_user_service
+from core.config import settings
 from core.models import User
 from core.schemas import UserCreate, UserRead, UserUpdate
 from services import UserService
@@ -16,6 +17,11 @@ async def register_user(
     create_schema: UserCreate,
     service: UserService = Depends(get_user_service),
 ) -> UserRead:
+    if not settings.auth.allow_signup:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Registration is disabled",
+        )
     return await service.register_user(create_schema)
 
 

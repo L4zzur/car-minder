@@ -192,3 +192,32 @@ async def test_update_user_duplicate_email(
     )
     assert response.status_code == 409
     assert response.json()["code"] == "email_already_taken"
+
+
+@pytest.mark.asyncio
+async def test_auth_config_and_disabled_registration(client: AsyncClient):
+    from core.config import settings
+
+    resp = await client.get("/api/auth/config")
+    assert resp.status_code == 200
+    assert resp.json()["allow_signup"] is True
+
+    # Temporarily set allow_signup to False
+    settings.auth.allow_signup = False
+    try:
+        resp_disabled = await client.get("/api/auth/config")
+        assert resp_disabled.json()["allow_signup"] is False
+
+        create_resp = await client.post(
+            "/api/users",
+            json={
+                "username": "blockeduser",
+                "name": "Blocked User",
+                "password": "securepassword123",
+            },
+        )
+        assert create_resp.status_code == 403
+        assert create_resp.json()["detail"] == "Registration is disabled"
+    finally:
+        settings.auth.allow_signup = True
+

@@ -29,3 +29,7 @@ class TelegramBotInfoResponse(BaseModel):
 class ChangePasswordRequest(BaseModel):
     current_password: str
     new_password: str
+
+
+class AuthConfigResponse(BaseModel):
+    allow_signup: bool

@@ -7,11 +7,16 @@ from api.auth import ACCESS_TOKEN_COOKIE, CSRF_TOKEN_COOKIE, get_cookie_secure_f
 from api.deps import get_current_user, get_user_service
 from core.config import settings
 from core.models import User
-from core.schemas import ChangePasswordRequest, Token, UserRead
+from core.schemas import AuthConfigResponse, ChangePasswordRequest, Token, UserRead
 from core.security import create_access_token
 from services import UserService
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+
+@router.get("/config", response_model=AuthConfigResponse)
+async def get_auth_config():
+    return AuthConfigResponse(allow_signup=settings.auth.allow_signup)
 
 
 @router.post("/login", response_model=Token)

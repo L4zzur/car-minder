@@ -24,6 +24,7 @@ class AuthConfig(BaseModel):
     secret_key: str
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60 * 24 * 7  # 1 week
+    allow_signup: bool = True
 
 
 class TelegramBotConfig(BaseModel):
