@@ -1,6 +1,9 @@
 from asyncio import current_task
 from collections.abc import AsyncGenerator
 
+from core.config import settings
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -9,7 +12,14 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from core.config import settings
+
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record) -> None:
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA journal_mode=WAL;")
+    cursor.execute("PRAGMA busy_timeout=5000;")
+    cursor.execute("PRAGMA foreign_keys=ON;")
+    cursor.close()
 
 
 class DatabaseHelper:
