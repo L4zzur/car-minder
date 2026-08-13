@@ -163,9 +163,7 @@ async def send_service_reminder_job(reminder_id: UUID | str) -> None:
         )
 
 
-async def send_mileage_prompt_job(
-    car_id: UUID | str, force: bool = False
-) -> None:
+async def send_mileage_prompt_job(car_id: UUID | str, force: bool = False) -> None:
     """Executes a scheduled odometer prompt task and asks the user to update mileage."""
     if not bot:
         logger.warning(
@@ -216,9 +214,7 @@ async def send_mileage_prompt_job(
             )
             return
 
-        current_km = (
-            latest_log.odometer_km if latest_log else car.initial_odometer_km
-        )
+        current_km = latest_log.odometer_km if latest_log else car.initial_odometer_km
 
         if not i18n_core.locales:
             await i18n_core.startup()

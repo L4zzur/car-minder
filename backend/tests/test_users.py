@@ -220,4 +220,3 @@ async def test_auth_config_and_disabled_registration(client: AsyncClient):
         assert create_resp.json()["detail"] == "Registration is disabled"
     finally:
         settings.auth.allow_signup = True
-

@@ -146,6 +146,7 @@ async def on_mark_serviced_callback(
         except Exception:
             pass
 
+
 class MileagePromptState(StatesGroup):
     waiting_for_mileage = State()
 
@@ -260,9 +261,7 @@ async def on_mileage_input_message(
         return
 
     latest_log = await mileage_repo.get_latest_for_car(car_id)
-    current_odometer = (
-        latest_log.odometer_km if latest_log else car.initial_odometer_km
-    )
+    current_odometer = latest_log.odometer_km if latest_log else car.initial_odometer_km
 
     cleaned_text = message.text.replace(" ", "").replace("_", "").strip()
     try:

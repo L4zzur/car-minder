@@ -163,4 +163,3 @@ async def test_send_service_reminder_job_bot_error_handles_gracefully(
         # Should not raise exception, logs error and reschedules for tomorrow
         await send_service_reminder_job(rem_id)
         mock_bot.send_message.assert_called_once()
-

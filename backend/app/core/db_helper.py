@@ -1,7 +1,6 @@
 from asyncio import current_task
 from collections.abc import AsyncGenerator
 
-from core.config import settings
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from sqlalchemy.ext.asyncio import (
@@ -11,6 +10,8 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
+
+from core.config import settings
 
 
 @event.listens_for(Engine, "connect")
