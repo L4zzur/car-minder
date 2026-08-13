@@ -35,6 +35,13 @@
 	let isSavingMileage = $state(false);
 	let mileageError = $state('');
 
+	$effect(() => {
+		if (mileageDialogOpen && selectedCar) {
+			newMileage = selectedCar.current_odometer_km ?? selectedCar.initial_odometer_km;
+			mileageError = '';
+		}
+	});
+
 	async function handleAddMileage() {
 		if (typeof newMileage !== 'number' || newMileage <= 0) {
 			mileageError = m.mileage_form_err_invalid();
@@ -42,8 +49,8 @@
 		}
 
 		const currentOdo = selectedCar.current_odometer_km ?? selectedCar.initial_odometer_km;
-		if (newMileage < currentOdo) {
-			mileageError = m.tma_mileage_error_too_low({ km: currentOdo });
+		if (newMileage <= currentOdo) {
+			mileageError = m.mileage_form_err_must_be_greater();
 			return;
 		}
 
