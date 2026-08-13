@@ -13,6 +13,7 @@ from core.config import AppMode, settings
 from core.db_helper import db_helper
 from core.logger import logger, setup_logging
 from core.scheduler import shutdown_scheduler, start_scheduler
+from core.version import __version__
 from middleware.csrf import csrf_protect
 
 setup_logging()
@@ -69,7 +70,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Car Minder API",
-    version="0.0.1",
+    version=__version__,
     lifespan=lifespan,
 )
 
