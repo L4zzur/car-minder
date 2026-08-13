@@ -41,6 +41,12 @@ class TelegramBotConfig(BaseModel):
             return None
         return f"https://{settings.domain}{settings.api.prefix}/telegram/webhook"
 
+    @property
+    def mini_app_url(self) -> str | None:
+        if not settings.domain:
+            return None
+        return f"https://{settings.domain}/tma"
+
 
 class CorsConfig(BaseModel):
     origins: list[str] = [

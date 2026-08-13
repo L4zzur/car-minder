@@ -48,5 +48,12 @@ async def on_language_selected(
 
     with i18n.use_locale(locale):
         text = i18n.get("language_changed", language=LANGUAGE_NAMES[locale])
-    await callback.message.answer(text)
+
+    if isinstance(callback.message, Message):
+        try:
+            await callback.message.edit_text(text, reply_markup=None)
+        except Exception:
+            await callback.message.answer(text)
+    else:
+        await callback.answer(text, show_alert=True)
     await callback.answer()

@@ -5,7 +5,12 @@ from aiogram import F, Router, html
 from aiogram.filters import Command, CommandObject
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import CallbackQuery, InlineKeyboardButton, Message
+from aiogram.types import (
+    CallbackQuery,
+    InlineKeyboardButton,
+    Message,
+    WebAppInfo,
+)
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram_i18n import I18nContext
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -31,7 +36,28 @@ from services.telegram_auth import TelegramAuthService
 router = Router()
 
 
+def get_app_keyboard(i18n: I18nContext) -> InlineKeyboardBuilder:
+    builder = InlineKeyboardBuilder()
+    mini_app_url = settings.bot.mini_app_url
+    if mini_app_url:
+        builder.row(
+            InlineKeyboardButton(
+                text=i18n.get("open_app_button"),
+                web_app=WebAppInfo(url=mini_app_url),
+            )
+        )
+    if settings.domain:
+        builder.row(
+            InlineKeyboardButton(
+                text=i18n.get("site_button"),
+                url=f"https://{settings.domain}",
+            )
+        )
+    return builder
+
+
 @router.message(Command("start"))
+@router.message(Command("app"))
 async def cmd_start(
     message: Message,
     command: CommandObject,
@@ -49,12 +75,20 @@ async def cmd_start(
         try:
             result = await auth_service.link_user_by_token(token, telegram_id)
             if result:
-                await message.answer(i18n.get("start_linked_success"))
+                builder = get_app_keyboard(i18n)
+                await message.answer(
+                    i18n.get("start_linked_success"),
+                    reply_markup=builder.as_markup() if builder.as_markup().inline_keyboard else None,
+                )
             else:
                 await message.answer(i18n.get("start_invalid_token"))
 
         except TelegramAlreadyLinkedError:
-            await message.answer(i18n.get("start_already_linked"))
+            builder = get_app_keyboard(i18n)
+            await message.answer(
+                i18n.get("start_already_linked"),
+                reply_markup=builder.as_markup() if builder.as_markup().inline_keyboard else None,
+            )
         except TelegramAlreadyLinkedToAnotherError:
             await message.answer(i18n.get("start_already_linked_to_another"))
         return
@@ -62,20 +96,26 @@ async def cmd_start(
     user = await user_repo.get_by_telegram_id(telegram_id)
 
     if user:
+        builder = get_app_keyboard(i18n)
         await message.answer(
             i18n.get(
                 "start_welcome_back",
                 name=html.quote(user.name),
-            )
+            ),
+            reply_markup=builder.as_markup() if builder.as_markup().inline_keyboard else None,
         )
     else:
         builder = InlineKeyboardBuilder()
-        builder.row(
-            InlineKeyboardButton(text=i18n.get("site_button"), url=settings.domain)
-        )
+        if settings.domain:
+            builder.row(
+                InlineKeyboardButton(
+                    text=i18n.get("site_button"),
+                    url=f"https://{settings.domain}",
+                )
+            )
         await message.answer(
             i18n.get("start_hello_new", name=html.quote(message.from_user.full_name)),
-            reply_markup=builder.as_markup(),
+            reply_markup=builder.as_markup() if builder.as_markup().inline_keyboard else None,
         )
 
     return

@@ -24,7 +24,11 @@ start_hello_new =
     1. зарегистрируйся на сайте приложения.
     2. зайди в профиль и нажми <b>«привязать telegram»</b>.
 
-site_button = сайт приложения
+site_button = 🌐 сайт приложения
+open_app_button = 🚗 открыть car minder
+bot_cmd_start = перезапустить бота / открыть меню
+bot_cmd_language = сменить язык интерфейса
+bot_cmd_app = открыть mini app
 
 language_prompt = 🌐 выбери язык уведомлений и бота:
 

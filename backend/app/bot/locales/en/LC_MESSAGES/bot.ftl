@@ -24,7 +24,11 @@ start_hello_new =
     1. register on the website.
     2. open your profile and press <b>“link telegram”</b>.
 
-site_button = website
+site_button = 🌐 website
+open_app_button = 🚗 open car minder
+bot_cmd_start = restart bot / show menu
+bot_cmd_language = change interface language
+bot_cmd_app = open mini app
 
 language_prompt = 🌐 pick the language for notifications and the bot:
 

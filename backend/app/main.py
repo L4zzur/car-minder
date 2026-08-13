@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from api.errors import register_exception_handlers
 from api.router import api_router
-from bot import bot, dp, i18n_core
+from bot import bot, dp, i18n_core, setup_bot_ui
 from core.config import AppMode, settings
 from core.db_helper import db_helper
 from core.logger import logger, setup_logging
@@ -41,6 +41,8 @@ async def lifespan(app: FastAPI):
             bot_info = await bot.get_me()
             app.state.bot_username = bot_info.username
             logger.info(f"Bot started: @{bot_info.username}")
+
+            await setup_bot_ui()
         except Exception as e:
             logger.error(
                 f"Failed to initialize Telegram Bot: {e}",
