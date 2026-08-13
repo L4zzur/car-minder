@@ -5,7 +5,7 @@
 	import Wrench from '@lucide/svelte/icons/wrench';
 	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
 
-	import { Cars, ServiceItems, MileageLogs, type CarRead, type ServiceItemSummary } from '$lib/api';
+	import { Cars, ServiceItems, Reminders, MileageLogs, type CarRead, type ServiceItemSummary, type ReminderRead } from '$lib/api';
 	import CarCard from '$lib/components/CarCard.svelte';
 	import ServiceItemCard from '$lib/components/ServiceItemCard.svelte';
 	import AddCarDialog from '$lib/components/ui/AddCarDialog.svelte';
@@ -20,10 +20,12 @@
 	import TmaCarSelector from '$lib/components/tma/TmaCarSelector.svelte';
 	import TmaQuickActions from '$lib/components/tma/TmaQuickActions.svelte';
 	import * as m from '$lib/paraglide/messages.js';
+	import { buildServiceLines } from '$lib/reminderStatus.js';
 
 	let cars = $state<CarRead[]>([]);
 	let selectedCarId = $state<string | null>(null);
 	let serviceItems = $state<ServiceItemSummary[]>([]);
+	let reminders = $state<ReminderRead[]>([]);
 	let isLoadingCars = $state(true);
 	let isLoadingServices = $state(false);
 
@@ -31,6 +33,17 @@
 	let deletingItemId = $state<string | null>(null);
 
 	const selectedCar = $derived(cars.find((c) => c.id === selectedCarId) ?? cars[0] ?? null);
+
+	const serviceLines = $derived(
+		selectedCar && (reminders.length > 0 || serviceItems.length > 0)
+			? buildServiceLines(
+					reminders,
+					serviceItems,
+					selectedCar.current_odometer_km ?? selectedCar.initial_odometer_km,
+					m
+				)
+			: []
+	);
 
 	const dueItemsCount = $derived(
 		serviceItems.filter((i) => i.status === 'due' || i.status === 'soon').length
@@ -51,15 +64,21 @@
 		}
 	}
 
-	async function loadServiceItems(carId: string) {
+	async function loadCarDetails(carId: string) {
 		isLoadingServices = true;
 		try {
-			const res = await ServiceItems.listByCarApiServiceItemsGet({
-				query: { car_id: carId }
-			});
-			serviceItems = res.data ?? [];
+			const [serviceRes, remindersRes] = await Promise.all([
+				ServiceItems.listByCarApiServiceItemsGet({
+					query: { car_id: carId }
+				}),
+				Reminders.listRemindersApiRemindersGet({
+					query: { car_id: carId }
+				})
+			]);
+			serviceItems = serviceRes.data ?? [];
+			reminders = remindersRes.data ?? [];
 		} catch (e) {
-			console.error('failed to load service items:', e);
+			console.error('failed to load car details:', e);
 		} finally {
 			isLoadingServices = false;
 		}
@@ -67,9 +86,10 @@
 
 	$effect(() => {
 		if (selectedCarId) {
-			loadServiceItems(selectedCarId);
+			loadCarDetails(selectedCarId);
 		} else {
 			serviceItems = [];
+			reminders = [];
 		}
 	});
 
@@ -87,7 +107,7 @@
 
 			await loadCars();
 			if (selectedCarId) {
-				await loadServiceItems(selectedCarId);
+				await loadCarDetails(selectedCarId);
 			}
 			return true;
 		} catch (e) {
@@ -108,7 +128,7 @@
 				}
 			});
 			if (selectedCarId) {
-				await loadServiceItems(selectedCarId);
+				await loadCarDetails(selectedCarId);
 			}
 		} catch (e) {
 			console.error('failed to mark serviced:', e);
@@ -124,7 +144,7 @@
 				path: { service_item_id: itemId }
 			});
 			if (selectedCarId) {
-				await loadServiceItems(selectedCarId);
+				await loadCarDetails(selectedCarId);
 			}
 		} catch (e) {
 			console.error('failed to delete service item:', e);
@@ -182,15 +202,15 @@
 
 		<!-- Active Car Overview -->
 		{#if selectedCar}
-			<CarCard car={selectedCar} />
+			<CarCard car={selectedCar} {serviceLines} />
 
 			<!-- Quick Actions Grid -->
 			<TmaQuickActions
 				{selectedCar}
 				{serviceItems}
 				onCarAdded={loadCars}
-				onServiceAdded={() => loadServiceItems(selectedCar.id)}
-				onReminderChanged={() => loadServiceItems(selectedCar.id)}
+				onServiceAdded={() => loadCarDetails(selectedCar.id)}
+				onReminderChanged={() => loadCarDetails(selectedCar.id)}
 				onMileageAdded={handleAddMileage}
 			/>
 
@@ -203,7 +223,7 @@
 					variant="ghost"
 					size="icon"
 					class="size-8 text-muted-foreground"
-					onclick={() => loadServiceItems(selectedCar.id)}
+					onclick={() => loadCarDetails(selectedCar.id)}
 					disabled={isLoadingServices}
 				>
 					<RefreshCw class="size-3.5 {isLoadingServices ? 'animate-spin' : ''}" />
@@ -230,7 +250,7 @@
 								</Empty.Description>
 							</Empty.Header>
 							<Empty.Content class="pt-3">
-								<AddServiceDialog car={selectedCar} onServiceAdded={() => loadServiceItems(selectedCar.id)}>
+								<AddServiceDialog car={selectedCar} onServiceAdded={() => loadCarDetails(selectedCar.id)}>
 									{#snippet child({ props })}
 										<Button {...props} variant="secondary" size="sm">
 											<Plus data-icon="inline-start" />
@@ -252,8 +272,8 @@
 							isSaving={savingItemId === item.id}
 							isDeleting={deletingItemId === item.id}
 							onMarkServiced={() => handleMarkServiced(item.id)}
-							onItemUpdated={() => loadServiceItems(selectedCar.id)}
-							onReminderChanged={() => loadServiceItems(selectedCar.id)}
+							onItemUpdated={() => loadCarDetails(selectedCar.id)}
+							onReminderChanged={() => loadCarDetails(selectedCar.id)}
 							onDelete={() => handleDeleteServiceItem(item.id)}
 						/>
 					{/each}
