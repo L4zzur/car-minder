@@ -10,6 +10,7 @@
 	import { Telegram } from '$lib/api';
 	import { auth } from '$lib/auth.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
+	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as m from '$lib/paraglide/messages.js';
@@ -87,4 +88,11 @@
 			<SecurityTab />
 		</Tabs.Content>
 	</Tabs.Root>
+
+	<div class="mt-8 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+		<span class="font-medium">car minder</span>
+		<Badge variant="secondary" class="font-mono text-xs">
+			{__APP_VERSION__}
+		</Badge>
+	</div>
 </div>

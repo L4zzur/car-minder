@@ -20,6 +20,7 @@
 	import { auth } from '$lib/auth.svelte';
 	import CarCard from '$lib/components/CarCard.svelte';
 	import GitHubMark from '$lib/components/icons/GitHubMark.svelte';
+	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import CarMinderLogo from '$lib/components/icons/CarMinderLogo.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
@@ -113,15 +114,20 @@
 <main class="min-h-screen bg-background text-foreground">
 	<section class="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-8">
 		<header class="flex items-center justify-between gap-4">
-			<a
-				class="group flex items-center gap-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
-				href="/"
-			>
-				<span class="flex size-9 items-center justify-center rounded-lg border bg-card transition-colors duration-200 group-hover:border-foreground/20 group-hover:bg-accent">
-					<CarMinderLogo class="size-5" />
-				</span>
-				<span class="font-medium">car minder</span>
-			</a>
+			<div class="flex items-center gap-2.5">
+				<a
+					class="group flex items-center gap-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
+					href="/"
+				>
+					<span class="flex size-9 items-center justify-center rounded-lg border bg-card transition-colors duration-200 group-hover:border-foreground/20 group-hover:bg-accent">
+						<CarMinderLogo class="size-5" />
+					</span>
+					<span class="font-medium">car minder</span>
+				</a>
+				<Badge variant="secondary" class="font-mono text-[10px] tracking-tight">
+					{__APP_VERSION__}
+				</Badge>
+			</div>
 
 			<nav class="flex items-center gap-2" aria-label="ссылки проекта">
 				{#each links as link}
