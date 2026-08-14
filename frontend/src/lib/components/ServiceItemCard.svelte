@@ -49,26 +49,30 @@
 		});
 
 	function getNextLabel() {
-		if (!item.status || item.status === "ok") {
+		const hasReminder = item.km_until_due != null || item.days_until_due != null;
+		if (!hasReminder) {
 			return m.service_card_no_reminder();
 		}
 
-		const parts: string[] = [];
-		if (item.km_until_due != null) {
-			if (item.km_until_due <= 0) {
-				parts.push(m.service_card_due_km({ km: formatOdometer(Math.abs(item.km_until_due)) }));
-			} else {
-				parts.push(m.service_card_until_km({ km: formatOdometer(item.km_until_due) }));
+		// If due (overdue)
+		if (item.status === "due") {
+			if (item.days_until_due != null && item.days_until_due <= 0) {
+				return m.service_card_due_days({ days: Math.abs(item.days_until_due) });
+			}
+			if (item.km_until_due != null && item.km_until_due <= 0) {
+				return m.service_card_due_km({ km: formatOdometer(Math.abs(item.km_until_due)) });
 			}
 		}
-		if (item.days_until_due != null) {
-			if (item.days_until_due <= 0) {
-				parts.push(m.service_card_due_days({ days: Math.abs(item.days_until_due) }));
-			} else {
-				parts.push(m.service_card_until_days({ days: item.days_until_due }));
-			}
+
+		// If soon or ok: display remaining distance or time
+		if (item.km_until_due != null && item.km_until_due > 0) {
+			return m.service_card_until_km({ km: formatOdometer(item.km_until_due) });
 		}
-		return parts.length > 0 ? parts[0] : m.service_card_ok();
+		if (item.days_until_due != null && item.days_until_due > 0) {
+			return m.service_card_until_days({ days: item.days_until_due });
+		}
+
+		return m.service_card_ok();
 	}
 </script>
 
