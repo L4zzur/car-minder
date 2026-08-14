@@ -347,7 +347,7 @@
 					<p class="text-sm text-muted-foreground">{m.car_detail_service_items_sub()}</p>
 				</div>
 				{#if car}
-					<AddServiceDialog {car} onServiceAdded={loadCarPage}>
+					<AddServiceDialog {car} onServiceAdded={() => loadCarPage({ showLoading: false })}>
 						{#snippet child({ props })}
 							<Button {...props} variant="outline">
 								<Plus data-icon="inline-start" />
