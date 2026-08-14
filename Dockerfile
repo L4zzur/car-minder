@@ -75,11 +75,7 @@ COPY --from=frontend-builder /app/frontend/build /app/backend/static
 EXPOSE 8000
 
 HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
-  CMD curl -f http://localhost:8000/api/health || exit 1
+    CMD curl -f http://localhost:8000/api/health || exit 1
 
 # Run database migrations & start Uvicorn server (without static access log spam)
 CMD ["sh", "-c", "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000 --proxy-headers --no-access-log"]
-
-
-
-
