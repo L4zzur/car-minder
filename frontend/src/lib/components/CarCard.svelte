@@ -1,13 +1,14 @@
 <script lang="ts">
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
-	import * as Empty from '$lib/components/ui/empty';
-	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime';
-	import CarFront from '@lucide/svelte/icons/car-front';
-	import Gauge from '@lucide/svelte/icons/gauge';
-	import Wrench from '@lucide/svelte/icons/wrench';
+	import CarFront from "@lucide/svelte/icons/car-front";
+	import Gauge from "@lucide/svelte/icons/gauge";
+	import Wrench from "@lucide/svelte/icons/wrench";
+
+	import { Badge } from "$lib/components/ui/badge";
+	import { Button } from "$lib/components/ui/button";
+	import * as Card from "$lib/components/ui/card";
+	import * as Empty from "$lib/components/ui/empty";
+	import * as m from "$lib/paraglide/messages.js";
+	import { getLocale } from "$lib/paraglide/runtime";
 
 	type CarCardData = {
 		id?: string;
@@ -21,7 +22,7 @@
 	type ServiceLine = {
 		label: string;
 		meta: string;
-		status?: 'due' | 'soon' | 'ok';
+		status?: "due" | "soon" | "ok";
 	};
 
 	let {
@@ -47,7 +48,9 @@
 		<Card.Header>
 			<div class="flex items-start justify-between">
 				<div>
-					<Card.Title class="text-xl capitalize">{car.brand.toLowerCase()} {car.model.toLowerCase()}</Card.Title>
+					<Card.Title class="text-xl capitalize"
+						>{car.brand.toLowerCase()} {car.model.toLowerCase()}</Card.Title
+					>
 					<Card.Description>{car.year} {m.car_card_year_of_production()}</Card.Description>
 				</div>
 				<div
@@ -64,7 +67,10 @@
 					<Gauge class="size-3.5" />
 					<span>{m.car_card_current_odometer()}</span>
 				</div>
-				<div class="text-2xl font-semibold tracking-tight">{formatOdometer(currentOdometer)} {m.car_card_current_odometer_km()}</div>
+				<div class="text-2xl font-semibold tracking-tight">
+					{formatOdometer(currentOdometer)}
+					{m.car_card_current_odometer_km()}
+				</div>
 				<p class="mt-1 text-xs text-muted-foreground">
 					{#if hasMileageUpdates}
 						{m.car_card_start_odometer({ km: formatOdometer(car.initial_odometer_km) })}
@@ -76,14 +82,20 @@
 
 			{#if serviceLines.length}
 				<div class="flex flex-col gap-2">
-					{#each serviceLines as line}
-						<div class="flex items-center justify-between gap-3 rounded-md border border-border/50 bg-card px-3 py-2 text-sm transition-colors">
-							<div class="flex items-center gap-2.5 min-w-0">
+					{#each serviceLines as line, i (line.label + i)}
+						<div
+							class="flex items-center justify-between gap-3 rounded-md border border-border/50 bg-card px-3 py-2 text-sm transition-colors"
+						>
+							<div class="flex min-w-0 items-center gap-2.5">
 								<Wrench class="size-3.5 shrink-0 text-muted-foreground" />
 								<span class="truncate font-medium text-foreground">{line.label}</span>
 							</div>
 							<Badge
-								variant={line.status === 'due' ? 'destructive' : line.status === 'soon' ? 'secondary' : 'outline'}
+								variant={line.status === "due"
+									? "destructive"
+									: line.status === "soon"
+										? "secondary"
+										: "outline"}
 								class="shrink-0 font-normal"
 							>
 								{line.meta}

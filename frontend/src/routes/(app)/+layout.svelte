@@ -1,11 +1,11 @@
 <script lang="ts">
-	import './layout.css';
-	import '$lib/api-client';
+	import "./layout.css";
+	import "$lib/api-client";
 
-	import { ModeWatcher } from 'mode-watcher';
-	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { ModeWatcher } from "mode-watcher";
 
-	import favicon from '$lib/assets/favicon.svg';
+	import favicon from "$lib/assets/favicon.svg";
+	import * as Tooltip from "$lib/components/ui/tooltip";
 
 	let { children } = $props();
 </script>

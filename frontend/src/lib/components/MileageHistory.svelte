@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { Trash2 } from 'lucide-svelte';
+	import { Trash2 } from "lucide-svelte";
 
-	import { Button } from '$lib/components/ui/button';
-	import { ScrollArea } from '$lib/components/ui/scroll-area';
-	import * as Tooltip from '$lib/components/ui/tooltip';
-	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime';
+	import { Button } from "$lib/components/ui/button";
+	import { ScrollArea } from "$lib/components/ui/scroll-area";
+	import * as Tooltip from "$lib/components/ui/tooltip";
+	import * as m from "$lib/paraglide/messages.js";
+	import { getLocale } from "$lib/paraglide/runtime";
 
 	type Log = {
 		id: string;
@@ -25,9 +25,9 @@
 	const formatOdometer = (val: number) => val.toLocaleString(getLocale());
 	const formatDate = (str: string) =>
 		new Date(str).toLocaleDateString(getLocale(), {
-			day: 'numeric',
-			month: 'short',
-			year: 'numeric'
+			day: "numeric",
+			month: "short",
+			year: "numeric"
 		});
 	const deltas = $derived(
 		logs.map((log, i) => {
@@ -58,15 +58,21 @@
 				<div class="flex flex-col gap-1">
 					{#each logs as log, i (log.id)}
 						{@const delta = deltas[i]}
-						<div class="grid grid-cols-3 items-center gap-2 py-1.5 text-sm border-b border-border/20 last:border-0">
-							<span class="min-w-0 text-xs text-muted-foreground truncate">{formatDate(log.createdAt)}</span>
-							<span class="text-xs text-muted-foreground text-center truncate">
+						<div
+							class="grid grid-cols-3 items-center gap-2 border-b border-border/20 py-1.5 text-sm last:border-0"
+						>
+							<span class="min-w-0 truncate text-xs text-muted-foreground"
+								>{formatDate(log.createdAt)}</span
+							>
+							<span class="truncate text-center text-xs text-muted-foreground">
 								{#if delta !== null}
 									{m.mileage_history_plus_km({ km: formatOdometer(Math.abs(delta)) })}
 								{/if}
 							</span>
 							<div class="flex items-center justify-end gap-1.5 text-right">
-								<span class="font-medium whitespace-nowrap">{formatOdometer(log.odometerKm)} {m.car_card_current_odometer_km()}</span>
+								<span class="font-medium whitespace-nowrap"
+									>{formatOdometer(log.odometerKm)} {m.car_card_current_odometer_km()}</span
+								>
 								{#if i === 0}
 									<Tooltip.Root>
 										<Tooltip.Trigger>

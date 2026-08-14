@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { ArrowLeft, Bell, CarFront, Plus } from 'lucide-svelte';
-	import { onMount } from 'svelte';
+	import { ArrowLeft, CarFront, Plus } from "lucide-svelte";
+	import { onMount } from "svelte";
 
-	import { goto } from '$app/navigation';
-	import { page } from '$app/state';
+	import { goto } from "$app/navigation";
+	import { page } from "$app/state";
 
 	import {
 		Cars,
@@ -14,19 +14,19 @@
 		type MileageLogRead,
 		type ReminderRead,
 		type ServiceItemSummary
-	} from '$lib/api';
-	import CarStats from '$lib/components/CarStats.svelte';
-	import MileageForm from '$lib/components/MileageForm.svelte';
-	import MileageHistory from '$lib/components/MileageHistory.svelte';
-	import ServiceItemCard from '$lib/components/ServiceItemCard.svelte';
-	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
-	import AddServiceDialog from '$lib/components/ui/AddServiceDialog.svelte';
-	import EditCarDialog from '$lib/components/ui/EditCarDialog.svelte';
-	import RemindersDialog from '$lib/components/ui/RemindersDialog.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import * as Empty from '$lib/components/ui/empty';
-	import * as m from '$lib/paraglide/messages.js';
-	import { getReminderMetrics, getReminderStatus } from '$lib/reminderStatus.js';
+	} from "$lib/api";
+	import CarStats from "$lib/components/CarStats.svelte";
+	import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
+	import MileageForm from "$lib/components/MileageForm.svelte";
+	import MileageHistory from "$lib/components/MileageHistory.svelte";
+	import ServiceItemCard from "$lib/components/ServiceItemCard.svelte";
+	import AddServiceDialog from "$lib/components/ui/AddServiceDialog.svelte";
+	import { Button } from "$lib/components/ui/button";
+	import EditCarDialog from "$lib/components/ui/EditCarDialog.svelte";
+	import * as Empty from "$lib/components/ui/empty";
+	import RemindersDialog from "$lib/components/ui/RemindersDialog.svelte";
+	import * as m from "$lib/paraglide/messages.js";
+	import { getReminderMetrics, getReminderStatus } from "$lib/reminderStatus.js";
 
 	type MileageLogView = {
 		id: string;
@@ -37,11 +37,11 @@
 	let { data } = $props<{ data: { car?: CarRead } }>();
 
 	let car = $state<CarRead | null>(null);
-	let mileageValue = $state<number | string>('');
+	let mileageValue = $state<number | string>("");
 
 	$effect(() => {
 		car = data?.car ?? null;
-		mileageValue = data?.car?.current_odometer_km ?? '';
+		mileageValue = data?.car?.current_odometer_km ?? "";
 	});
 	let serviceItems = $state<ServiceItemSummary[]>([]);
 	let reminders = $state<ReminderRead[]>([]);
@@ -51,9 +51,9 @@
 	let deletingMileageLogId = $state<string | null>(null);
 	let deletingServiceItemId = $state<string | null>(null);
 	let savingServiceItemId = $state<string | null>(null);
-	let mileageError = $state('');
-	let serviceItemError = $state('');
-	let error = $state('');
+	let mileageError = $state("");
+	let serviceItemError = $state("");
+	let error = $state("");
 
 	const drivenKm = $derived(car ? car.current_odometer_km - car.initial_odometer_km : 0);
 	const serviceItemCount = $derived(serviceItems.length);
@@ -62,14 +62,14 @@
 		reminders.filter((r) => {
 			if (!r.is_active || !car) return false;
 			const item = serviceItems.find((s) => s.id === r.service_item_id) ?? null;
-			return getReminderStatus(r, getReminderMetrics(r, item, car.current_odometer_km)) === 'due';
+			return getReminderStatus(r, getReminderMetrics(r, item, car.current_odometer_km)) === "due";
 		}).length
 	);
 	const reminderSoonCount = $derived(
 		reminders.filter((r) => {
 			if (!r.is_active || !car) return false;
 			const item = serviceItems.find((s) => s.id === r.service_item_id) ?? null;
-			return getReminderStatus(r, getReminderMetrics(r, item, car.current_odometer_km)) === 'soon';
+			return getReminderStatus(r, getReminderMetrics(r, item, car.current_odometer_km)) === "soon";
 		}).length
 	);
 
@@ -85,7 +85,7 @@
 		if (showLoading) {
 			isLoading = true;
 		}
-		error = '';
+		error = "";
 
 		try {
 			const carResponse = await Cars.getCarApiCarsCarIdGet({ path: { car_id: carId } });
@@ -115,7 +115,7 @@
 			serviceItems = serviceResponse.data ?? [];
 			reminders = remindersResponse.data ?? [];
 		} catch (e) {
-			console.error('failed to load car page:', e);
+			console.error("failed to load car page:", e);
 			error = m.car_detail_not_found();
 			car = null;
 		} finally {
@@ -127,7 +127,7 @@
 		if (!car) return;
 
 		const odometer = Number(mileageValue);
-		mileageError = '';
+		mileageError = "";
 
 		if (!Number.isFinite(odometer)) {
 			mileageError = m.mileage_form_err_invalid();
@@ -156,7 +156,7 @@
 
 			await loadCarPage({ showLoading: false });
 		} catch (e) {
-			console.error('failed to save mileage:', e);
+			console.error("failed to save mileage:", e);
 			mileageError = m.car_detail_err_save_mileage_failed();
 		} finally {
 			isSavingMileage = false;
@@ -165,7 +165,7 @@
 
 	async function handleDeleteMileageLog(logId: string) {
 		deletingMileageLogId = logId;
-		mileageError = '';
+		mileageError = "";
 
 		try {
 			const response = await MileageLogs.deleteMileageLogApiMileageLogsMileageLogIdDelete({
@@ -179,7 +179,7 @@
 
 			await loadCarPage({ showLoading: false });
 		} catch (e) {
-			console.error('failed to delete mileage log:', e);
+			console.error("failed to delete mileage log:", e);
 			mileageError = m.car_detail_err_delete_mileage_failed();
 		} finally {
 			deletingMileageLogId = null;
@@ -188,7 +188,7 @@
 
 	async function handleDeleteServiceItem(serviceItemId: string) {
 		deletingServiceItemId = serviceItemId;
-		serviceItemError = '';
+		serviceItemError = "";
 
 		try {
 			const response = await ServiceItems.deleteServiceItemApiServiceItemsServiceItemIdDelete({
@@ -202,7 +202,7 @@
 
 			await loadCarPage({ showLoading: false });
 		} catch (e) {
-			console.error('failed to delete service item:', e);
+			console.error("failed to delete service item:", e);
 			serviceItemError = m.car_detail_err_delete_service_failed();
 		} finally {
 			deletingServiceItemId = null;
@@ -227,7 +227,7 @@
 				await loadCarPage({ showLoading: false });
 			}
 		} catch (e) {
-			console.error('failed to mark service item serviced:', e);
+			console.error("failed to mark service item serviced:", e);
 		} finally {
 			savingServiceItemId = null;
 		}
@@ -274,7 +274,20 @@
 		<div class="rounded-lg border bg-card p-6 text-sm text-muted-foreground">
 			{m.car_detail_loading()}
 		</div>
+	{:else if error}
+		<div
+			class="rounded-lg border border-destructive/20 bg-destructive/10 p-6 text-sm text-destructive"
+		>
+			{error}
+		</div>
 	{:else if car}
+		{#if serviceItemError}
+			<div
+				class="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive"
+			>
+				{serviceItemError}
+			</div>
+		{/if}
 		<div class="flex flex-col gap-4">
 			<div class="flex items-center gap-3">
 				<div class="flex size-10 items-center justify-center rounded-lg border bg-card">
@@ -286,11 +299,12 @@
 							{car.brand.toLowerCase()}
 							{car.model.toLowerCase()}
 						</h1>
-						<span class="rounded-md border px-2 py-1 text-xs text-muted-foreground">{car.year}</span>
+						<span class="rounded-md border px-2 py-1 text-xs text-muted-foreground">{car.year}</span
+						>
 						<EditCarDialog
 							{car}
 							onCarUpdated={() => loadCarPage({ showLoading: false })}
-							onCarDeleted={() => goto('/garage')}
+							onCarDeleted={() => goto("/garage")}
 						/>
 					</div>
 					<p class="text-sm text-muted-foreground">{m.car_detail_subtitle()}</p>
@@ -298,7 +312,14 @@
 			</div>
 		</div>
 
-		<CarStats {car} {drivenKm} {serviceItemCount} {reminderCount} {reminderDueCount} {reminderSoonCount} />
+		<CarStats
+			{car}
+			{drivenKm}
+			{serviceItemCount}
+			{reminderCount}
+			{reminderDueCount}
+			{reminderSoonCount}
+		/>
 
 		<div class="grid max-w-4xl grid-cols-1 gap-4 md:grid-cols-2">
 			<MileageForm
@@ -336,7 +357,7 @@
 
 			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 				{#if serviceItems.length}
-					{#each serviceItems as item}
+					{#each serviceItems as item (item.id)}
 						<ServiceItemCard
 							{item}
 							{car}

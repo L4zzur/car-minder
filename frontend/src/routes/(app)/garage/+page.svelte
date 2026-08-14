@@ -1,21 +1,29 @@
 <script lang="ts">
-	import CarFront from '@lucide/svelte/icons/car-front';
-	import Settings from '@lucide/svelte/icons/settings';
-	import { onMount } from 'svelte';
+	import CarFront from "@lucide/svelte/icons/car-front";
+	import Settings from "@lucide/svelte/icons/settings";
+	import { onMount } from "svelte";
 
-	import { goto } from '$app/navigation';
+	import { goto } from "$app/navigation";
 
-	import { Auth, Cars, Reminders, ServiceItems, type CarRead, type ReminderRead, type ServiceItemSummary } from '$lib/api';
-	import { auth } from '$lib/auth.svelte';
-	import CarCard from '$lib/components/CarCard.svelte';
-	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
-	import AddCarDialog from '$lib/components/ui/AddCarDialog.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
-	import * as Empty from '$lib/components/ui/empty';
-	import { Skeleton } from '$lib/components/ui/skeleton';
-	import * as m from '$lib/paraglide/messages.js';
-	import { buildServiceLines, getReminderMetrics, getReminderStatus } from '$lib/reminderStatus.js';
+	import {
+		Auth,
+		Cars,
+		Reminders,
+		ServiceItems,
+		type CarRead,
+		type ReminderRead,
+		type ServiceItemSummary
+	} from "$lib/api";
+	import { auth } from "$lib/auth.svelte";
+	import CarCard from "$lib/components/CarCard.svelte";
+	import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
+	import AddCarDialog from "$lib/components/ui/AddCarDialog.svelte";
+	import { Button } from "$lib/components/ui/button";
+	import * as Card from "$lib/components/ui/card";
+	import * as Empty from "$lib/components/ui/empty";
+	import { Skeleton } from "$lib/components/ui/skeleton";
+	import * as m from "$lib/paraglide/messages.js";
+	import { buildServiceLines } from "$lib/reminderStatus.js";
 
 	type CarWithDetails = CarRead & {
 		serviceItems?: ServiceItemSummary[];
@@ -50,7 +58,7 @@
 				})
 			);
 		} catch (e) {
-			console.error('failed to load cars:', e);
+			console.error("failed to load cars:", e);
 		} finally {
 			isLoading = false;
 		}
@@ -61,7 +69,7 @@
 		await auth.fetchUser();
 
 		if (!auth.isAuthenticated) {
-			await goto('/login');
+			await goto("/login");
 			return;
 		}
 
@@ -92,7 +100,7 @@
 				onclick={async () => {
 					await Auth.logoutApiAuthLogoutPost();
 					auth.logout();
-					await goto('/login');
+					await goto("/login");
 				}}
 			>
 				{m.garage_logout()}
@@ -108,7 +116,7 @@
 
 	{#if isLoading}
 		<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-			{#each Array(3) as _}
+			{#each [0, 1, 2] as i (i)}
 				<Card.Root>
 					<Card.Header class="h-32 rounded-t-lg p-0">
 						<Skeleton class="h-full w-full rounded-t-lg" />
@@ -139,10 +147,15 @@
 		</Empty.Root>
 	{:else}
 		<div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-			{#each cars as car}
+			{#each cars as car (car.id)}
 				<CarCard
 					{car}
-					serviceLines={buildServiceLines(car.reminders || [], car.serviceItems || [], car.current_odometer_km, m)}
+					serviceLines={buildServiceLines(
+						car.reminders || [],
+						car.serviceItems || [],
+						car.current_odometer_km,
+						m
+					)}
 					href={`/cars/${car.id}`}
 				/>
 			{/each}

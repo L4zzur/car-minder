@@ -1,18 +1,18 @@
 <script lang="ts">
-	import Gauge from '@lucide/svelte/icons/gauge';
-	import Wrench from '@lucide/svelte/icons/wrench';
-	import Bell from '@lucide/svelte/icons/bell';
-	import Plus from '@lucide/svelte/icons/plus';
+	import Bell from "@lucide/svelte/icons/bell";
+	import Gauge from "@lucide/svelte/icons/gauge";
+	import Plus from "@lucide/svelte/icons/plus";
+	import Wrench from "@lucide/svelte/icons/wrench";
 
-	import type { CarRead, ServiceItemSummary } from '$lib/api';
-	import AddCarDialog from '$lib/components/ui/AddCarDialog.svelte';
-	import AddServiceDialog from '$lib/components/ui/AddServiceDialog.svelte';
-	import RemindersDialog from '$lib/components/ui/RemindersDialog.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import * as Field from '$lib/components/ui/field';
-	import * as m from '$lib/paraglide/messages.js';
+	import type { CarRead, ServiceItemSummary } from "$lib/api";
+	import AddCarDialog from "$lib/components/ui/AddCarDialog.svelte";
+	import AddServiceDialog from "$lib/components/ui/AddServiceDialog.svelte";
+	import { Button } from "$lib/components/ui/button";
+	import * as Dialog from "$lib/components/ui/dialog";
+	import * as Field from "$lib/components/ui/field";
+	import { Input } from "$lib/components/ui/input";
+	import RemindersDialog from "$lib/components/ui/RemindersDialog.svelte";
+	import * as m from "$lib/paraglide/messages.js";
 
 	let {
 		selectedCar,
@@ -31,19 +31,19 @@
 	} = $props();
 
 	let mileageDialogOpen = $state(false);
-	let newMileage = $state<number | ''>('');
+	let newMileage = $state<number | "">("");
 	let isSavingMileage = $state(false);
-	let mileageError = $state('');
+	let mileageError = $state("");
 
 	$effect(() => {
 		if (mileageDialogOpen && selectedCar) {
 			newMileage = selectedCar.current_odometer_km ?? selectedCar.initial_odometer_km;
-			mileageError = '';
+			mileageError = "";
 		}
 	});
 
 	async function handleAddMileage() {
-		if (typeof newMileage !== 'number' || newMileage <= 0) {
+		if (typeof newMileage !== "number" || newMileage <= 0) {
 			mileageError = m.mileage_form_err_invalid();
 			return;
 		}
@@ -55,17 +55,17 @@
 		}
 
 		isSavingMileage = true;
-		mileageError = '';
+		mileageError = "";
 		try {
 			const success = await onMileageAdded(newMileage);
 			if (success) {
 				mileageDialogOpen = false;
-				newMileage = '';
+				newMileage = "";
 			} else {
 				mileageError = m.car_detail_err_save_mileage_failed();
 			}
 		} catch (e) {
-			console.error('failed to save mileage:', e);
+			console.error("failed to save mileage:", e);
 			mileageError = m.tma_mileage_error_save();
 		} finally {
 			isSavingMileage = false;
@@ -78,7 +78,11 @@
 	<Dialog.Root bind:open={mileageDialogOpen}>
 		<Dialog.Trigger class="w-full">
 			{#snippet child({ props })}
-				<Button {...props} variant="outline" class="w-full h-auto flex-col gap-1.5 p-3 text-left items-start justify-center">
+				<Button
+					{...props}
+					variant="outline"
+					class="h-auto w-full flex-col items-start justify-center gap-1.5 p-3 text-left"
+				>
 					<div class="flex items-center gap-1.5 text-xs text-muted-foreground">
 						<Gauge data-icon="inline-start" />
 						<span>{m.tma_quick_mileage()}</span>
@@ -91,7 +95,9 @@
 			<Dialog.Header>
 				<Dialog.Title>{m.tma_mileage_dialog_title()}</Dialog.Title>
 				<Dialog.Description>
-					{m.tma_mileage_current({ km: selectedCar.current_odometer_km ?? selectedCar.initial_odometer_km })}
+					{m.tma_mileage_current({
+						km: selectedCar.current_odometer_km ?? selectedCar.initial_odometer_km
+					})}
 				</Dialog.Description>
 			</Dialog.Header>
 			<form
@@ -108,7 +114,9 @@
 							id="odometer"
 							type="number"
 							bind:value={newMileage}
-							placeholder={(selectedCar.current_odometer_km ?? selectedCar.initial_odometer_km).toString()}
+							placeholder={(
+								selectedCar.current_odometer_km ?? selectedCar.initial_odometer_km
+							).toString()}
 							required
 						/>
 					</Field.Field>
@@ -128,7 +136,11 @@
 	<!-- Add Service Item Dialog -->
 	<AddServiceDialog car={selectedCar} {onServiceAdded}>
 		{#snippet child({ props })}
-			<Button {...props} variant="outline" class="w-full h-auto flex-col gap-1.5 p-3 text-left items-start justify-center">
+			<Button
+				{...props}
+				variant="outline"
+				class="h-auto w-full flex-col items-start justify-center gap-1.5 p-3 text-left"
+			>
 				<div class="flex items-center gap-1.5 text-xs text-muted-foreground">
 					<Wrench data-icon="inline-start" />
 					<span>{m.tma_quick_service()}</span>
@@ -141,7 +153,11 @@
 	<!-- Reminders Dialog -->
 	<RemindersDialog car={selectedCar} {serviceItems} {onReminderChanged}>
 		{#snippet child({ props })}
-			<Button {...props} variant="outline" class="w-full h-auto flex-col gap-1.5 p-3 text-left items-start justify-center">
+			<Button
+				{...props}
+				variant="outline"
+				class="h-auto w-full flex-col items-start justify-center gap-1.5 p-3 text-left"
+			>
 				<div class="flex items-center gap-1.5 text-xs text-muted-foreground">
 					<Bell data-icon="inline-start" />
 					<span>{m.reminders_dialog_btn()}</span>
@@ -154,7 +170,11 @@
 	<!-- Add New Car Dialog -->
 	<AddCarDialog {onCarAdded}>
 		{#snippet child({ props })}
-			<Button {...props} variant="outline" class="w-full h-auto flex-col gap-1.5 p-3 text-left items-start justify-center">
+			<Button
+				{...props}
+				variant="outline"
+				class="h-auto w-full flex-col items-start justify-center gap-1.5 p-3 text-left"
+			>
 				<div class="flex items-center gap-1.5 text-xs text-muted-foreground">
 					<Plus data-icon="inline-start" />
 					<span>{m.garage_head_title()}</span>

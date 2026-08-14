@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { HTMLAttributes } from 'svelte/elements';
+	import type { HTMLAttributes } from "svelte/elements";
 
 	let { class: className, ...restProps }: HTMLAttributes<HTMLSpanElement> = $props();
 
-	const iconUrl = 'https://cdn.jsdelivr.net/npm/@lobehub/icons-static-svg@latest/icons/github.svg';
+	const iconUrl = "https://cdn.jsdelivr.net/npm/@lobehub/icons-static-svg@latest/icons/github.svg";
 </script>
 
 <span

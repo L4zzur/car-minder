@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { Gauge } from 'lucide-svelte';
+	import { Gauge } from "lucide-svelte";
 
-	import { type CarRead } from '$lib/api';
-	import { Button } from '$lib/components/ui/button';
-	import * as Field from '$lib/components/ui/field';
-	import { Input } from '$lib/components/ui/input';
-	import * as m from '$lib/paraglide/messages.js';
+	import { type CarRead } from "$lib/api";
+	import { Button } from "$lib/components/ui/button";
+	import * as Field from "$lib/components/ui/field";
+	import { Input } from "$lib/components/ui/input";
+	import * as m from "$lib/paraglide/messages.js";
 
 	let {
 		car,
@@ -29,7 +29,7 @@
 
 	function handleSubmit(event: Event) {
 		event.preventDefault();
-		localError = '';
+		localError = "";
 
 		const val = Number(mileageValue);
 		if (!Number.isFinite(val)) {

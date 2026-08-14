@@ -1,4 +1,9 @@
-import { getLocale, overwriteGetLocale, setLocale as setParaglideLocale, type Locale } from '$lib/paraglide/runtime';
+import {
+	getLocale,
+	overwriteGetLocale,
+	setLocale as setParaglideLocale,
+	type Locale
+} from "$lib/paraglide/runtime";
 
 class I18nState {
 	#locale = $state<Locale>(getLocale());

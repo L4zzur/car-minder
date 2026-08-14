@@ -1,33 +1,33 @@
 <script lang="ts">
-	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
-	import CheckCircle2 from '@lucide/svelte/icons/check-circle-2';
-	import Loader2 from '@lucide/svelte/icons/loader-2';
-	import Lock from '@lucide/svelte/icons/lock';
-	import Mail from '@lucide/svelte/icons/mail';
-	import { onMount } from 'svelte';
+	import AlertTriangle from "@lucide/svelte/icons/alert-triangle";
+	import CheckCircle2 from "@lucide/svelte/icons/check-circle-2";
+	import Loader2 from "@lucide/svelte/icons/loader-2";
+	import Lock from "@lucide/svelte/icons/lock";
+	import Mail from "@lucide/svelte/icons/mail";
+	import { onMount } from "svelte";
 
-	import { Auth, Users } from '$lib/api';
-	import { auth } from '$lib/auth.svelte';
-	import * as Alert from '$lib/components/ui/alert';
-	import { Button } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
-	import * as Field from '$lib/components/ui/field';
-	import { Input } from '$lib/components/ui/input';
-	import * as m from '$lib/paraglide/messages.js';
+	import { Auth, Users } from "$lib/api";
+	import { auth } from "$lib/auth.svelte";
+	import * as Alert from "$lib/components/ui/alert";
+	import { Button } from "$lib/components/ui/button";
+	import * as Card from "$lib/components/ui/card";
+	import * as Field from "$lib/components/ui/field";
+	import { Input } from "$lib/components/ui/input";
+	import * as m from "$lib/paraglide/messages.js";
 
 	// Email state
-	let email = $state('');
+	let email = $state("");
 	let isSavingEmail = $state(false);
-	let emailSuccessMsg = $state('');
-	let emailErrorMsg = $state('');
+	let emailSuccessMsg = $state("");
+	let emailErrorMsg = $state("");
 
 	// Password state
-	let currentPassword = $state('');
-	let newPassword = $state('');
-	let confirmPassword = $state('');
+	let currentPassword = $state("");
+	let newPassword = $state("");
+	let confirmPassword = $state("");
 	let isChangingPassword = $state(false);
-	let passwordSuccessMsg = $state('');
-	let passwordErrorMsg = $state('');
+	let passwordSuccessMsg = $state("");
+	let passwordErrorMsg = $state("");
 
 	onMount(() => {
 		if (auth.user?.email) {
@@ -45,8 +45,8 @@
 		}
 
 		isSavingEmail = true;
-		emailSuccessMsg = '';
-		emailErrorMsg = '';
+		emailSuccessMsg = "";
+		emailErrorMsg = "";
 
 		try {
 			const res = await Users.updateUserApiUsersUserIdPatch({
@@ -58,7 +58,7 @@
 				const error = res.error as any;
 				const code = error?.code;
 				const detail = error?.detail;
-				if (code === 'email_already_taken') {
+				if (code === "email_already_taken") {
 					emailErrorMsg = m.settings_security_email_error_taken();
 				} else if (Array.isArray(detail)) {
 					emailErrorMsg = m.settings_security_email_error_invalid();
@@ -70,9 +70,9 @@
 
 			await auth.fetchUser();
 			emailSuccessMsg = m.settings_security_email_saved();
-			setTimeout(() => (emailSuccessMsg = ''), 3000);
+			setTimeout(() => (emailSuccessMsg = ""), 3000);
 		} catch (err: any) {
-			console.error('failed to update email:', err);
+			console.error("failed to update email:", err);
 			emailErrorMsg = m.settings_security_email_error();
 		} finally {
 			isSavingEmail = false;
@@ -93,8 +93,8 @@
 		}
 
 		isChangingPassword = true;
-		passwordSuccessMsg = '';
-		passwordErrorMsg = '';
+		passwordSuccessMsg = "";
+		passwordErrorMsg = "";
 
 		try {
 			const res = await Auth.changePasswordApiAuthChangePasswordPost({
@@ -106,7 +106,7 @@
 
 			if (res.error) {
 				const code = (res.error as any)?.code;
-				if (code === 'invalid_current_password') {
+				if (code === "invalid_current_password") {
 					passwordErrorMsg = m.settings_security_password_error_wrong();
 				} else {
 					passwordErrorMsg = m.settings_security_password_error();
@@ -115,12 +115,12 @@
 			}
 
 			passwordSuccessMsg = m.settings_security_password_saved();
-			currentPassword = '';
-			newPassword = '';
-			confirmPassword = '';
-			setTimeout(() => (passwordSuccessMsg = ''), 3000);
+			currentPassword = "";
+			newPassword = "";
+			confirmPassword = "";
+			setTimeout(() => (passwordSuccessMsg = ""), 3000);
 		} catch (err: any) {
-			console.error('failed to change password:', err);
+			console.error("failed to change password:", err);
 			passwordErrorMsg = m.settings_security_password_error();
 		} finally {
 			isChangingPassword = false;
@@ -138,10 +138,18 @@
 			<Card.Description class="lowercase">{m.settings_security_email_desc()}</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			<form onsubmit={(e) => { e.preventDefault(); updateEmail(); }} class="flex flex-col gap-4">
+			<form
+				onsubmit={(e) => {
+					e.preventDefault();
+					updateEmail();
+				}}
+				class="flex flex-col gap-4"
+			>
 				<Field.FieldGroup class="max-w-md gap-4">
 					<Field.Field>
-						<Field.FieldLabel for="user_email" class="lowercase">{m.settings_security_email_label()}</Field.FieldLabel>
+						<Field.FieldLabel for="user_email" class="lowercase"
+							>{m.settings_security_email_label()}</Field.FieldLabel
+						>
 						<Input
 							id="user_email"
 							type="email"
@@ -159,14 +167,23 @@
 				{/if}
 
 				{#if emailErrorMsg}
-					<Alert.Root variant="destructive" class="flex items-center gap-2 border-destructive/20 bg-destructive/10 text-destructive">
+					<Alert.Root
+						variant="destructive"
+						class="flex items-center gap-2 border-destructive/20 bg-destructive/10 text-destructive"
+					>
 						<AlertTriangle class="size-4 shrink-0" />
 						<span class="lowercase">{emailErrorMsg}</span>
 					</Alert.Root>
 				{/if}
 
 				<div class="flex justify-end">
-					<Button type="submit" disabled={isSavingEmail} variant="outline" size="sm" class="lowercase">
+					<Button
+						type="submit"
+						disabled={isSavingEmail}
+						variant="outline"
+						size="sm"
+						class="lowercase"
+					>
 						{#if isSavingEmail}
 							<Loader2 class="animate-spin" data-icon="inline-start" />
 							{m.settings_security_email_saving()}
@@ -189,10 +206,18 @@
 			<Card.Description class="lowercase">{m.settings_security_password_desc()}</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			<form onsubmit={(e) => { e.preventDefault(); changePassword(); }} class="flex flex-col gap-4">
+			<form
+				onsubmit={(e) => {
+					e.preventDefault();
+					changePassword();
+				}}
+				class="flex flex-col gap-4"
+			>
 				<Field.FieldGroup class="gap-4">
 					<Field.Field class="max-w-md">
-						<Field.FieldLabel for="current_password" class="lowercase">{m.settings_security_password_current()}</Field.FieldLabel>
+						<Field.FieldLabel for="current_password" class="lowercase"
+							>{m.settings_security_password_current()}</Field.FieldLabel
+						>
 						<Input
 							id="current_password"
 							type="password"
@@ -204,7 +229,9 @@
 
 					<div class="grid gap-4 sm:grid-cols-2">
 						<Field.Field>
-							<Field.FieldLabel for="new_password" class="lowercase">{m.settings_security_password_new()}</Field.FieldLabel>
+							<Field.FieldLabel for="new_password" class="lowercase"
+								>{m.settings_security_password_new()}</Field.FieldLabel
+							>
 							<Input
 								id="new_password"
 								type="password"
@@ -215,7 +242,9 @@
 						</Field.Field>
 
 						<Field.Field>
-							<Field.FieldLabel for="confirm_password" class="lowercase">{m.settings_security_password_confirm()}</Field.FieldLabel>
+							<Field.FieldLabel for="confirm_password" class="lowercase"
+								>{m.settings_security_password_confirm()}</Field.FieldLabel
+							>
 							<Input
 								id="confirm_password"
 								type="password"
@@ -235,7 +264,10 @@
 				{/if}
 
 				{#if passwordErrorMsg}
-					<Alert.Root variant="destructive" class="flex items-center gap-2 border-destructive/20 bg-destructive/10 text-destructive">
+					<Alert.Root
+						variant="destructive"
+						class="flex items-center gap-2 border-destructive/20 bg-destructive/10 text-destructive"
+					>
 						<AlertTriangle class="size-4 shrink-0" />
 						<span class="lowercase">{passwordErrorMsg}</span>
 					</Alert.Root>

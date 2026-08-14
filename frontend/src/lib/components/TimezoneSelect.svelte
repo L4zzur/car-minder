@@ -1,41 +1,43 @@
 <script lang="ts">
-	import MapPin from '@lucide/svelte/icons/map-pin';
-	import { Button } from '$lib/components/ui/button';
-	import * as Select from '$lib/components/ui/select';
-	import { Input } from '$lib/components/ui/input';
-	import * as m from '$lib/paraglide/messages.js';
+	import MapPin from "@lucide/svelte/icons/map-pin";
+
+	import { Button } from "$lib/components/ui/button";
+	import { Input } from "$lib/components/ui/input";
+	import * as Select from "$lib/components/ui/select";
+	import * as m from "$lib/paraglide/messages.js";
 
 	interface Props {
 		value: string;
 		onchange?: (value: string) => void;
 	}
 
-	let { value = $bindable('Europe/Moscow'), onchange }: Props = $props();
+	let { value = $bindable("Europe/Moscow"), onchange }: Props = $props();
 
 	let timezones = $state<Array<{ value: string; label: string; searchStr: string }>>([]);
-	let searchQuery = $state('');
+	let searchQuery = $state("");
 
 	function getTimezoneOffsetString(timeZone: string): string {
 		try {
 			const now = new Date();
-			const formatter = new Intl.DateTimeFormat('en-US', {
+			const formatter = new Intl.DateTimeFormat("en-US", {
 				timeZone,
-				timeZoneName: 'shortOffset'
+				timeZoneName: "shortOffset"
 			});
 			const parts = formatter.formatToParts(now);
-			const tzPart = parts.find((p) => p.type === 'timeZoneName');
-			return tzPart ? tzPart.value : '';
+			const tzPart = parts.find((p) => p.type === "timeZoneName");
+			return tzPart ? tzPart.value : "";
 		} catch {
-			return '';
+			return "";
 		}
 	}
 
 	$effect(() => {
 		let rawTzs: string[] = [];
-		if (typeof Intl !== 'undefined' && 'supportedValuesOf' in Intl) {
+		if (typeof Intl !== "undefined" && "supportedValuesOf" in Intl) {
 			try {
-				// @ts-ignore supportedValuesOf
-				rawTzs = Intl.supportedValuesOf('timeZone');
+				rawTzs = (
+					Intl as unknown as { supportedValuesOf: (key: string) => string[] }
+				).supportedValuesOf("timeZone");
 			} catch {
 				rawTzs = [];
 			}
@@ -43,20 +45,20 @@
 
 		if (!rawTzs.length) {
 			rawTzs = [
-				'UTC',
-				'Europe/Moscow',
-				'Europe/London',
-				'Europe/Paris',
-				'Europe/Berlin',
-				'Asia/Almaty',
-				'Asia/Tashkent',
-				'Asia/Tbilisi',
-				'Asia/Yerevan',
-				'Asia/Baku',
-				'Asia/Dubai',
-				'Asia/Bangkok',
-				'America/New_York',
-				'America/Los_Angeles'
+				"UTC",
+				"Europe/Moscow",
+				"Europe/London",
+				"Europe/Paris",
+				"Europe/Berlin",
+				"Asia/Almaty",
+				"Asia/Tashkent",
+				"Asia/Tbilisi",
+				"Asia/Yerevan",
+				"Asia/Baku",
+				"Asia/Dubai",
+				"Asia/Bangkok",
+				"America/New_York",
+				"America/Los_Angeles"
 			];
 		}
 
@@ -72,7 +74,7 @@
 	});
 
 	let filteredTimezones = $derived(
-		searchQuery.trim() === ''
+		searchQuery.trim() === ""
 			? timezones
 			: timezones.filter((t) => t.searchStr.includes(searchQuery.trim().toLowerCase()))
 	);
@@ -85,7 +87,7 @@
 				if (onchange) onchange(localTz);
 			}
 		} catch (e) {
-			console.error('Failed to detect timezone:', e);
+			console.error("Failed to detect timezone:", e);
 		}
 	}
 
@@ -98,7 +100,7 @@
 	<div class="flex-1">
 		<Select.Root
 			type="single"
-			bind:value={value}
+			bind:value
 			onValueChange={(val) => {
 				if (val && onchange) onchange(val);
 			}}
@@ -117,7 +119,9 @@
 				</div>
 				<Select.Group>
 					{#if filteredTimezones.length === 0}
-						<div class="p-3 text-center text-xs text-muted-foreground">{m.settings_timezone_empty()}</div>
+						<div class="p-3 text-center text-xs text-muted-foreground">
+							{m.settings_timezone_empty()}
+						</div>
 					{:else}
 						{#each filteredTimezones.slice(0, 100) as tz (tz.value)}
 							<Select.Item value={tz.value} label={tz.label} class="text-xs">

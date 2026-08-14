@@ -1,8 +1,12 @@
-import { error } from '@sveltejs/kit';
-import { Cars } from '$lib/api';
-import '$lib/api-client';
-import * as m from '$lib/paraglide/messages.js';
-import type { PageLoad } from './$types';
+import { error } from "@sveltejs/kit";
+
+import { Cars } from "$lib/api";
+
+import "$lib/api-client";
+
+import * as m from "$lib/paraglide/messages.js";
+
+import type { PageLoad } from "./$types";
 
 export const load: PageLoad = async ({ params }) => {
 	const carId = params.id;

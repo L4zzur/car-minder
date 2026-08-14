@@ -1,18 +1,18 @@
 <script lang="ts">
-	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
-	import CarFront from '@lucide/svelte/icons/car-front';
-	import Home from '@lucide/svelte/icons/home';
-	import ServerCrash from '@lucide/svelte/icons/server-crash';
-	import ShieldAlert from '@lucide/svelte/icons/shield-alert';
-	import { onMount } from 'svelte';
+	import ArrowLeft from "@lucide/svelte/icons/arrow-left";
+	import CarFront from "@lucide/svelte/icons/car-front";
+	import Home from "@lucide/svelte/icons/home";
+	import ServerCrash from "@lucide/svelte/icons/server-crash";
+	import ShieldAlert from "@lucide/svelte/icons/shield-alert";
+	import { onMount } from "svelte";
 
-	import { page } from '$app/state';
+	import { page } from "$app/state";
 
-	import { auth } from '$lib/auth.svelte';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import * as Empty from '$lib/components/ui/empty';
-	import * as m from '$lib/paraglide/messages.js';
+	import { auth } from "$lib/auth.svelte";
+	import { Badge } from "$lib/components/ui/badge";
+	import { Button } from "$lib/components/ui/button";
+	import * as Empty from "$lib/components/ui/empty";
+	import * as m from "$lib/paraglide/messages.js";
 
 	const status = $derived(page.status ?? 500);
 
@@ -41,7 +41,7 @@
 	<title>{status} // car minder</title>
 </svelte:head>
 
-<main class="flex min-h-screen items-center justify-center p-6 bg-background text-foreground">
+<main class="flex min-h-screen items-center justify-center bg-background p-6 text-foreground">
 	<div class="w-full max-w-md">
 		<Empty.Root class="border bg-card p-8 shadow-sm">
 			<Empty.Header>

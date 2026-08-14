@@ -1,41 +1,31 @@
 <script lang="ts">
-	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
-	import CheckCircle2 from '@lucide/svelte/icons/check-circle-2';
-	import Loader2 from '@lucide/svelte/icons/loader-2';
-	import Save from '@lucide/svelte/icons/save';
-	import { onMount } from 'svelte';
+	import AlertTriangle from "@lucide/svelte/icons/alert-triangle";
+	import CheckCircle2 from "@lucide/svelte/icons/check-circle-2";
+	import Loader2 from "@lucide/svelte/icons/loader-2";
+	import Save from "@lucide/svelte/icons/save";
+	import { onMount } from "svelte";
 
-	import { UserSettings, type UserSettingsRead } from '$lib/api';
-	import * as Alert from '$lib/components/ui/alert';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
-	import { Checkbox } from '$lib/components/ui/checkbox';
-	import * as Field from '$lib/components/ui/field';
-	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
-	import * as Select from '$lib/components/ui/select';
-	import TimezoneSelect from '$lib/components/TimezoneSelect.svelte';
-	import * as m from '$lib/paraglide/messages.js';
-
-	const languageOptions: Array<{ value: string; label: string }> = [
-		{ value: 'ru', label: 'Русский' },
-		{ value: 'en', label: 'English' }
-	];
-
-	function languageLabel(value: string): string {
-		return languageOptions.find((opt) => opt.value === value)?.label ?? value;
-	}
+	import { UserSettings, type UserSettingsRead } from "$lib/api";
+	import TimezoneSelect from "$lib/components/TimezoneSelect.svelte";
+	import * as Alert from "$lib/components/ui/alert";
+	import { Badge } from "$lib/components/ui/badge";
+	import { Button } from "$lib/components/ui/button";
+	import * as Card from "$lib/components/ui/card";
+	import { Checkbox } from "$lib/components/ui/checkbox";
+	import * as Field from "$lib/components/ui/field";
+	import { Input } from "$lib/components/ui/input";
+	import { Label } from "$lib/components/ui/label";
+	import * as m from "$lib/paraglide/messages.js";
 
 	let settings = $state<UserSettingsRead | null>(null);
 	let isLoading = $state(true);
 	let isSaving = $state(false);
-	let successMsg = $state('');
-	let errorMsg = $state('');
+	let successMsg = $state("");
+	let errorMsg = $state("");
 
 	async function loadSettings() {
 		isLoading = true;
-		errorMsg = '';
+		errorMsg = "";
 		try {
 			const res = await UserSettings.getMySettingsApiUsersMeSettingsGet();
 			if (res.data) {
@@ -44,7 +34,7 @@
 				errorMsg = m.settings_notifications_load_error();
 			}
 		} catch (err: any) {
-			console.error('failed to load settings:', err);
+			console.error("failed to load settings:", err);
 			errorMsg = m.settings_notifications_load_error();
 		} finally {
 			isLoading = false;
@@ -59,8 +49,8 @@
 		if (!settings) return;
 
 		isSaving = true;
-		successMsg = '';
-		errorMsg = '';
+		successMsg = "";
+		errorMsg = "";
 
 		try {
 			const res = await UserSettings.updateMySettingsApiUsersMeSettingsPatch({
@@ -77,12 +67,12 @@
 			if (res.data) {
 				settings = res.data;
 				successMsg = m.settings_notifications_saved();
-				setTimeout(() => (successMsg = ''), 3000);
+				setTimeout(() => (successMsg = ""), 3000);
 			} else {
 				errorMsg = m.settings_notifications_save_error();
 			}
 		} catch (err: any) {
-			console.error('failed to save settings:', err);
+			console.error("failed to save settings:", err);
 			errorMsg = err?.body?.detail || m.settings_notifications_save_error();
 		} finally {
 			isSaving = false;
@@ -93,7 +83,9 @@
 <div class="w-full">
 	<Card.Root class="w-full">
 		<Card.Header>
-			<Card.Title class="text-lg font-semibold lowercase">{m.settings_notifications_title()}</Card.Title>
+			<Card.Title class="text-lg font-semibold lowercase"
+				>{m.settings_notifications_title()}</Card.Title
+			>
 			<Card.Description class="lowercase">{m.settings_notifications_desc()}</Card.Description>
 		</Card.Header>
 		<Card.Content>
@@ -103,12 +95,20 @@
 					{m.settings_notifications_loading()}
 				</div>
 			{:else if settings}
-				<form onsubmit={(e) => { e.preventDefault(); saveSettings(); }} class="flex flex-col gap-4">
+				<form
+					onsubmit={(e) => {
+						e.preventDefault();
+						saveSettings();
+					}}
+					class="flex flex-col gap-4"
+				>
 					<Field.FieldGroup class="gap-4">
 						<!-- Tab 1: Time inputs -->
 						<div class="grid gap-4 sm:grid-cols-2">
 							<Field.Field>
-								<Field.FieldLabel for="service_reminder_time" class="lowercase">{m.settings_notifications_service_time_label()}</Field.FieldLabel>
+								<Field.FieldLabel for="service_reminder_time" class="lowercase"
+									>{m.settings_notifications_service_time_label()}</Field.FieldLabel
+								>
 								<Input
 									id="service_reminder_time"
 									type="time"
@@ -116,11 +116,15 @@
 									bind:value={settings.service_reminder_time}
 									class="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
 								/>
-								<Field.FieldDescription class="lowercase">{m.settings_notifications_service_time_desc()}</Field.FieldDescription>
+								<Field.FieldDescription class="lowercase"
+									>{m.settings_notifications_service_time_desc()}</Field.FieldDescription
+								>
 							</Field.Field>
 
 							<Field.Field>
-								<Field.FieldLabel for="mileage_reminder_time" class="lowercase">{m.settings_notifications_mileage_time_label()}</Field.FieldLabel>
+								<Field.FieldLabel for="mileage_reminder_time" class="lowercase"
+									>{m.settings_notifications_mileage_time_label()}</Field.FieldLabel
+								>
 								<Input
 									id="mileage_reminder_time"
 									type="time"
@@ -128,14 +132,18 @@
 									bind:value={settings.mileage_reminder_time}
 									class="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
 								/>
-								<Field.FieldDescription class="lowercase">{m.settings_notifications_mileage_time_desc()}</Field.FieldDescription>
+								<Field.FieldDescription class="lowercase"
+									>{m.settings_notifications_mileage_time_desc()}</Field.FieldDescription
+								>
 							</Field.Field>
 						</div>
 
 						<!-- Tab 2: Intervals and Timezone -->
 						<div class="grid gap-4 sm:grid-cols-2">
 							<Field.Field>
-								<Field.FieldLabel for="mileage_prompt_interval_days" class="lowercase">{m.settings_notifications_interval_label()}</Field.FieldLabel>
+								<Field.FieldLabel for="mileage_prompt_interval_days" class="lowercase"
+									>{m.settings_notifications_interval_label()}</Field.FieldLabel
+								>
 								<Input
 									id="mileage_prompt_interval_days"
 									type="number"
@@ -143,23 +151,31 @@
 									max="365"
 									bind:value={settings.mileage_prompt_interval_days}
 								/>
-								<Field.FieldDescription class="lowercase">{m.settings_notifications_interval_desc()}</Field.FieldDescription>
+								<Field.FieldDescription class="lowercase"
+									>{m.settings_notifications_interval_desc()}</Field.FieldDescription
+								>
 							</Field.Field>
 
 							<Field.Field>
-								<Field.FieldLabel for="timezone" class="lowercase">{m.settings_notifications_timezone_label()}</Field.FieldLabel>
+								<Field.FieldLabel for="timezone" class="lowercase"
+									>{m.settings_notifications_timezone_label()}</Field.FieldLabel
+								>
 								<TimezoneSelect bind:value={settings.timezone} />
-								<Field.FieldDescription class="lowercase">{m.settings_notifications_timezone_desc()}</Field.FieldDescription>
+								<Field.FieldDescription class="lowercase"
+									>{m.settings_notifications_timezone_desc()}</Field.FieldDescription
+								>
 							</Field.Field>
 						</div>
 
 						<!-- Tab 3: Notification Channels -->
 						<div class="flex flex-col gap-3">
-							<span class="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{m.settings_notifications_channels_heading()}</span>
+							<span class="text-xs font-semibold tracking-wider text-muted-foreground uppercase"
+								>{m.settings_notifications_channels_heading()}</span
+							>
 
 							<div class="grid gap-3 sm:grid-cols-2">
 								<Label
-									class="flex items-start gap-3 rounded-lg border p-3.5 hover:bg-accent/50 cursor-pointer has-[[aria-checked=true]]:border-primary has-[[aria-checked=true]]:bg-primary/5 transition-colors"
+									class="flex cursor-pointer items-start gap-3 rounded-lg border p-3.5 transition-colors hover:bg-accent/50 has-[[aria-checked=true]]:border-primary has-[[aria-checked=true]]:bg-primary/5"
 								>
 									<Checkbox
 										id="notify_telegram"
@@ -167,7 +183,9 @@
 										class="mt-0.5"
 									/>
 									<div class="grid gap-1 font-normal">
-										<p class="text-sm font-medium leading-none lowercase">{m.settings_notifications_telegram_title()}</p>
+										<p class="text-sm leading-none font-medium lowercase">
+											{m.settings_notifications_telegram_title()}
+										</p>
 										<p class="text-xs text-muted-foreground lowercase">
 											{m.settings_notifications_telegram_desc()}
 										</p>
@@ -175,37 +193,39 @@
 								</Label>
 
 								<Label
-									class="flex items-center justify-between rounded-lg border p-3.5 opacity-50 cursor-not-allowed transition-colors"
+									class="flex cursor-not-allowed items-center justify-between rounded-lg border p-3.5 opacity-50 transition-colors"
 								>
 									<div class="flex items-start gap-3">
-										<Checkbox
-											id="notify_email"
-											checked={false}
-											disabled
-											class="mt-0.5"
-										/>
+										<Checkbox id="notify_email" checked={false} disabled class="mt-0.5" />
 										<div class="grid gap-1 font-normal">
-											<p class="text-sm font-medium leading-none lowercase">{m.settings_notifications_email_title()}</p>
+											<p class="text-sm leading-none font-medium lowercase">
+												{m.settings_notifications_email_title()}
+											</p>
 											<p class="text-xs text-muted-foreground lowercase">
 												{m.settings_notifications_email_desc()}
 											</p>
 										</div>
 									</div>
-									<Badge variant="outline" class="text-[10px] lowercase font-mono">soon</Badge>
+									<Badge variant="outline" class="font-mono text-[10px] lowercase">soon</Badge>
 								</Label>
 							</div>
 						</div>
 					</Field.FieldGroup>
 
 					{#if successMsg}
-						<Alert.Root class="flex items-center gap-2 border-success/20 bg-success/10 text-success">
+						<Alert.Root
+							class="flex items-center gap-2 border-success/20 bg-success/10 text-success"
+						>
 							<CheckCircle2 class="size-4 shrink-0" />
 							<span class="lowercase">{successMsg}</span>
 						</Alert.Root>
 					{/if}
 
 					{#if errorMsg}
-						<Alert.Root variant="destructive" class="flex items-center gap-2 border-destructive/20 bg-destructive/10 text-destructive">
+						<Alert.Root
+							variant="destructive"
+							class="flex items-center gap-2 border-destructive/20 bg-destructive/10 text-destructive"
+						>
 							<AlertTriangle class="size-4 shrink-0" />
 							<span class="lowercase">{errorMsg}</span>
 						</Alert.Root>
@@ -224,7 +244,9 @@
 					</div>
 				</form>
 			{:else}
-				<div class="flex flex-col items-center justify-center gap-4 p-8 text-center text-sm text-muted-foreground lowercase">
+				<div
+					class="flex flex-col items-center justify-center gap-4 p-8 text-center text-sm text-muted-foreground lowercase"
+				>
 					<p>{errorMsg || m.settings_notifications_load_error()}</p>
 					<Button variant="outline" size="sm" onclick={loadSettings} class="lowercase">
 						{m.settings_notifications_retry()}

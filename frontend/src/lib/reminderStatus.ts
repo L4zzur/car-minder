@@ -1,4 +1,4 @@
-import type { ReminderRead, ServiceItemSummary } from '$lib/api';
+import type { ReminderRead, ServiceItemSummary } from "$lib/api";
 
 export type ReminderMetrics = {
 	kmLeft: number | null;
@@ -29,30 +29,33 @@ export function getReminderMetrics(
 	return { kmLeft, daysLeft };
 }
 
-export type ReminderStatus = 'due' | 'soon' | 'ok';
+export type ReminderStatus = "due" | "soon" | "ok";
 
-export function getReminderStatus(reminder: ReminderRead, metrics: ReminderMetrics | null): ReminderStatus {
+export function getReminderStatus(
+	reminder: ReminderRead,
+	metrics: ReminderMetrics | null
+): ReminderStatus {
 	if (
 		metrics &&
 		((metrics.kmLeft !== null && metrics.kmLeft <= 0) ||
 			(metrics.daysLeft !== null && metrics.daysLeft <= 0))
 	) {
-		return 'due';
+		return "due";
 	}
 	if (
 		metrics &&
 		((metrics.kmLeft !== null && metrics.kmLeft <= (reminder.notify_before_km || 500)) ||
 			(metrics.daysLeft !== null && metrics.daysLeft <= (reminder.notify_before_days || 14)))
 	) {
-		return 'soon';
+		return "soon";
 	}
-	return 'ok';
+	return "ok";
 }
 
 export type ServiceLine = {
 	label: string;
 	meta: string;
-	status: 'due' | 'soon' | 'ok';
+	status: "due" | "soon" | "ok";
 	urgencyRank: number; // Smaller means more urgent
 };
 
@@ -71,21 +74,23 @@ export function buildServiceLines(
 		const metrics = getReminderMetrics(r, item, currentOdometerKm);
 		const status = getReminderStatus(r, metrics);
 
-		let meta = m.landing_status_active?.() ?? 'активно';
+		let meta = m.landing_status_active?.() ?? "активно";
 		let urgencyRank = 999999;
 
 		if (metrics?.kmLeft !== null && metrics?.kmLeft !== undefined) {
 			urgencyRank = metrics.kmLeft;
 			meta =
 				metrics.kmLeft <= 0
-					? m.landing_status_due?.() ?? 'просрочено'
-					: m.landing_status_in_km?.({ km: metrics.kmLeft.toLocaleString() }) ?? `через ${metrics.kmLeft} км`;
+					? (m.landing_status_due?.() ?? "просрочено")
+					: (m.landing_status_in_km?.({ km: metrics.kmLeft.toLocaleString() }) ??
+						`через ${metrics.kmLeft} км`);
 		} else if (metrics?.daysLeft !== null && metrics?.daysLeft !== undefined) {
 			urgencyRank = metrics.daysLeft * 100; // approximate weighting
 			meta =
 				metrics.daysLeft <= 0
-					? m.landing_status_due?.() ?? 'просрочено'
-					: m.landing_status_in_days?.({ days: metrics.daysLeft.toString() }) ?? `через ${metrics.daysLeft} дн.`;
+					? (m.landing_status_due?.() ?? "просрочено")
+					: (m.landing_status_in_days?.({ days: metrics.daysLeft.toString() }) ??
+						`через ${metrics.daysLeft} дн.`);
 		}
 
 		lines.push({
@@ -121,8 +126,8 @@ export function buildServiceLines(
 	// Fallback if no active reminders: show up to 3 service items
 	return serviceItems.slice(0, 3).map((item) => ({
 		label: item.name,
-		meta: m.landing_status_serviced?.() ?? 'обслужено',
-		status: 'ok',
+		meta: m.landing_status_serviced?.() ?? "обслужено",
+		status: "ok",
 		urgencyRank: 999999
 	}));
 }

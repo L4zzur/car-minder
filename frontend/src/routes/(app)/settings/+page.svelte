@@ -1,23 +1,23 @@
 <script lang="ts">
-	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
-	import Bell from '@lucide/svelte/icons/bell';
-	import Shield from '@lucide/svelte/icons/shield';
-	import UserIcon from '@lucide/svelte/icons/user';
-	import { onMount } from 'svelte';
+	import ArrowLeft from "@lucide/svelte/icons/arrow-left";
+	import Bell from "@lucide/svelte/icons/bell";
+	import Shield from "@lucide/svelte/icons/shield";
+	import UserIcon from "@lucide/svelte/icons/user";
+	import { onMount } from "svelte";
 
-	import { goto } from '$app/navigation';
+	import { goto } from "$app/navigation";
 
-	import { Telegram } from '$lib/api';
-	import { auth } from '$lib/auth.svelte';
-	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import * as m from '$lib/paraglide/messages.js';
+	import { Telegram } from "$lib/api";
+	import { auth } from "$lib/auth.svelte";
+	import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
+	import { Badge } from "$lib/components/ui/badge";
+	import { Button } from "$lib/components/ui/button";
+	import * as Tabs from "$lib/components/ui/tabs";
+	import * as m from "$lib/paraglide/messages.js";
 
-	import NotificationsTab from './components/NotificationsTab.svelte';
-	import ProfileTab from './components/ProfileTab.svelte';
-	import SecurityTab from './components/SecurityTab.svelte';
+	import NotificationsTab from "./components/NotificationsTab.svelte";
+	import ProfileTab from "./components/ProfileTab.svelte";
+	import SecurityTab from "./components/SecurityTab.svelte";
 
 	let isBotDisabled = $state(false);
 
@@ -26,13 +26,13 @@
 		await auth.fetchUser();
 
 		if (!auth.isAuthenticated) {
-			await goto('/login');
+			await goto("/login");
 			return;
 		}
 
 		try {
 			const webhookRes = await Telegram.getBotWebhookApiTelegramWebhookGet();
-			if (webhookRes.data?.status === 'Telegram bot is disabled') {
+			if (webhookRes.data?.status === "Telegram bot is disabled") {
 				isBotDisabled = true;
 			}
 		} catch {
@@ -48,7 +48,12 @@
 <div class="container mx-auto flex max-w-3xl flex-col gap-6 p-4 sm:p-6">
 	<div class="flex flex-col gap-4">
 		<div>
-			<Button variant="ghost" size="sm" href="/garage" class="-ml-2 text-muted-foreground hover:text-foreground lowercase">
+			<Button
+				variant="ghost"
+				size="sm"
+				href="/garage"
+				class="-ml-2 text-muted-foreground lowercase hover:text-foreground"
+			>
 				<ArrowLeft data-icon="inline-start" />
 				{m.settings_back()}
 			</Button>
@@ -61,7 +66,7 @@
 	</div>
 
 	<Tabs.Root value="profile" class="flex w-full flex-col gap-6">
-		<Tabs.List class="grid w-full grid-cols-3 max-w-md">
+		<Tabs.List class="grid w-full max-w-md grid-cols-3">
 			<Tabs.Trigger value="profile" class="lowercase">
 				<UserIcon data-icon="inline-start" />
 				{m.settings_tabs_profile()}

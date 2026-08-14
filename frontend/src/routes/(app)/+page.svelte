@@ -1,7 +1,6 @@
 <script lang="ts">
 	import {
 		Bell,
-		CarFront,
 		CodeXml,
 		Contact,
 		Database,
@@ -13,38 +12,52 @@
 		PaintRoller,
 		Server,
 		Wrench
-	} from 'lucide-svelte';
-	import { onMount } from 'svelte';
+	} from "lucide-svelte";
+	import { onMount } from "svelte";
 
-	import { Cars, Reminders, ServiceItems, type CarRead, type ReminderRead, type ServiceItemSummary } from '$lib/api';
-	import { auth } from '$lib/auth.svelte';
-	import CarCard from '$lib/components/CarCard.svelte';
-	import GitHubMark from '$lib/components/icons/GitHubMark.svelte';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import CarMinderLogo from '$lib/components/icons/CarMinderLogo.svelte';
-	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
-	import * as m from '$lib/paraglide/messages.js';
-	import { buildServiceLines, getReminderMetrics, getReminderStatus } from '$lib/reminderStatus.js';
+	import {
+		Cars,
+		Reminders,
+		ServiceItems,
+		type ReminderRead,
+		type ServiceItemSummary
+	} from "$lib/api";
+	import { auth } from "$lib/auth.svelte";
+	import CarCard from "$lib/components/CarCard.svelte";
+	import CarMinderLogo from "$lib/components/icons/CarMinderLogo.svelte";
+	import GitHubMark from "$lib/components/icons/GitHubMark.svelte";
+	import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
+	import { Badge } from "$lib/components/ui/badge";
+	import { Button } from "$lib/components/ui/button";
+	import * as m from "$lib/paraglide/messages.js";
+	import { buildServiceLines } from "$lib/reminderStatus.js";
 
 	type ServiceLine = {
 		label: string;
 		meta: string;
-		status?: 'due' | 'soon' | 'ok';
+		status?: "due" | "soon" | "ok";
 	};
 
 	const demoCar = {
-		brand: 'Volkswagen',
-		model: 'Golf',
+		brand: "Volkswagen",
+		model: "Golf",
 		year: 2019,
 		initial_odometer_km: 50221,
 		current_odometer_km: 61107
 	};
 
 	const demoServiceLines = $derived<ServiceLine[]>([
-		{ label: m.landing_demo_engine_oil(), meta: m.landing_status_in_km({ km: '1 580' }), status: 'soon' },
-		{ label: m.landing_demo_brake_fluid(), meta: m.landing_status_in_days({ days: '18' }), status: 'ok' },
-		{ label: m.landing_demo_air_filter(), meta: m.landing_status_serviced(), status: 'ok' }
+		{
+			label: m.landing_demo_engine_oil(),
+			meta: m.landing_status_in_km({ km: "1 580" }),
+			status: "soon"
+		},
+		{
+			label: m.landing_demo_brake_fluid(),
+			meta: m.landing_status_in_days({ days: "18" }),
+			status: "ok"
+		},
+		{ label: m.landing_demo_air_filter(), meta: m.landing_status_serviced(), status: "ok" }
 	]);
 
 	let displayCar = $state<any>(demoCar);
@@ -54,7 +67,12 @@
 
 	let displayServiceLines = $derived<ServiceLine[]>(
 		userReminders.length > 0 || userServiceItems.length > 0
-			? buildServiceLines(userReminders, userServiceItems, displayCar.current_odometer_km ?? displayCar.initial_odometer_km, m)
+			? buildServiceLines(
+					userReminders,
+					userServiceItems,
+					displayCar.current_odometer_km ?? displayCar.initial_odometer_km,
+					m
+				)
 			: demoServiceLines
 	);
 
@@ -65,17 +83,17 @@
 	]);
 
 	const technologies = [
-		{ icon: Layers2, label: 'Svelte' },
-		{ icon: LayoutDashboard, label: 'shadcn' },
-		{ icon: PaintRoller, label: 'Tailwind' },
-		{ icon: Server, label: 'FastAPI' },
-		{ icon: DatabaseZap, label: 'SQLAlchemy' },
-		{ icon: Database, label: 'SQLite' }
+		{ icon: Layers2, label: "Svelte" },
+		{ icon: LayoutDashboard, label: "shadcn" },
+		{ icon: PaintRoller, label: "Tailwind" },
+		{ icon: Server, label: "FastAPI" },
+		{ icon: DatabaseZap, label: "SQLAlchemy" },
+		{ icon: Database, label: "SQLite" }
 	];
 
 	const links = $derived([
-		{ icon: Contact, label: m.landing_link_author(), href: 'https://l4zzur.top' },
-		{ icon: GitHubMark, label: m.landing_link_repo(), href: 'https://github.com/L4zzur/car-minder' }
+		{ icon: Contact, label: m.landing_link_author(), href: "https://l4zzur.top" },
+		{ icon: GitHubMark, label: m.landing_link_repo(), href: "https://github.com/L4zzur/car-minder" }
 	]);
 
 	const currentYear = 2026;
@@ -101,7 +119,7 @@
 					userReminders = remindersRes.data || [];
 				}
 			} catch (e) {
-				console.error('Failed to load user car for landing:', e);
+				console.error("Failed to load user car for landing:", e);
 			}
 		}
 	});
@@ -119,7 +137,9 @@
 					class="group flex items-center gap-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
 					href="/"
 				>
-					<span class="flex size-9 items-center justify-center rounded-lg border bg-card transition-colors duration-200 group-hover:border-foreground/20 group-hover:bg-accent">
+					<span
+						class="flex size-9 items-center justify-center rounded-lg border bg-card transition-colors duration-200 group-hover:border-foreground/20 group-hover:bg-accent"
+					>
 						<CarMinderLogo class="size-5" />
 					</span>
 					<span class="font-medium">car minder</span>
@@ -130,7 +150,7 @@
 			</div>
 
 			<nav class="flex items-center gap-2" aria-label="ссылки проекта">
-				{#each links as link}
+				{#each links as link (link.href)}
 					{@const Icon = link.icon}
 					<a
 						class="group inline-flex h-9 items-center gap-2 rounded-lg border bg-card px-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -170,7 +190,7 @@
 				</div>
 
 				<div class="grid max-w-xl gap-3 sm:grid-cols-3">
-					{#each highlights as item}
+					{#each highlights as item (item.label)}
 						{@const Icon = item.icon}
 						<div
 							class="flex min-h-10 items-center gap-2 rounded-lg border bg-card px-3 py-2 text-sm text-muted-foreground"
@@ -188,7 +208,7 @@
 					</div>
 
 					<div class="flex flex-wrap gap-2">
-						{#each technologies as technology}
+						{#each technologies as technology (technology.label)}
 							{@const Icon = technology.icon}
 							<span
 								class="inline-flex items-center gap-1.5 rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground"

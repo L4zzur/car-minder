@@ -1,11 +1,11 @@
 <script lang="ts">
-	import CarFront from '@lucide/svelte/icons/car-front';
-	import CircleAlert from '@lucide/svelte/icons/circle-alert';
-	import CircleCheck from '@lucide/svelte/icons/circle-check';
+	import CarFront from "@lucide/svelte/icons/car-front";
+	import CircleAlert from "@lucide/svelte/icons/circle-alert";
+	import CircleCheck from "@lucide/svelte/icons/circle-check";
 
-	import { auth } from '$lib/auth.svelte';
-	import { Badge } from '$lib/components/ui/badge';
-	import * as m from '$lib/paraglide/messages.js';
+	import { auth } from "$lib/auth.svelte";
+	import { Badge } from "$lib/components/ui/badge";
+	import * as m from "$lib/paraglide/messages.js";
 
 	let { dueItemsCount }: { dueItemsCount: number } = $props();
 </script>

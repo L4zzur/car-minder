@@ -1,27 +1,27 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount } from "svelte";
 
-	import { goto } from '$app/navigation';
+	import { goto } from "$app/navigation";
 
-	import { Auth } from '$lib/api';
-	import { auth } from '$lib/auth.svelte';
-	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
-	import * as Field from '$lib/components/ui/field';
-	import { Input } from '$lib/components/ui/input';
-	import * as m from '$lib/paraglide/messages.js';
+	import { Auth } from "$lib/api";
+	import { auth } from "$lib/auth.svelte";
+	import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
+	import { Button } from "$lib/components/ui/button";
+	import * as Card from "$lib/components/ui/card";
+	import * as Field from "$lib/components/ui/field";
+	import { Input } from "$lib/components/ui/input";
+	import * as m from "$lib/paraglide/messages.js";
 
-	let username = $state('');
-	let password = $state('');
+	let username = $state("");
+	let password = $state("");
 	let isLoading = $state(false);
 	let isRedirecting = $state(false);
 	let allowSignup = $state(true);
-	let error = $state('');
+	let error = $state("");
 
 	async function handleSubmit() {
 		isLoading = true;
-		error = '';
+		error = "";
 
 		try {
 			const response = await Auth.loginApiAuthLoginPost({
@@ -39,13 +39,13 @@
 			if (response.data?.access_token) {
 				isRedirecting = true;
 				await auth.login();
-				await goto('/garage');
+				await goto("/garage");
 				return;
 			}
 
 			error = m.auth_error_invalid_credentials();
 		} catch (e) {
-			console.error('login error:', e);
+			console.error("login error:", e);
 			error = m.auth_error_login_failed();
 		} finally {
 			if (!isRedirecting) {
@@ -57,7 +57,7 @@
 	onMount(async () => {
 		await auth.init();
 		if (auth.isAuthenticated) {
-			await goto('/garage');
+			await goto("/garage");
 			return;
 		}
 
@@ -67,7 +67,7 @@
 				allowSignup = res.data.allow_signup;
 			}
 		} catch (e) {
-			console.error('failed to fetch auth config:', e);
+			console.error("failed to fetch auth config:", e);
 		}
 	});
 </script>
@@ -125,7 +125,9 @@
 						{#if allowSignup}
 							<Field.Description class="text-center">
 								{m.login_no_account()}
-								<a href="/register" class="text-primary hover:underline">{m.login_link_register()}</a>
+								<a href="/register" class="text-primary hover:underline"
+									>{m.login_link_register()}</a
+								>
 							</Field.Description>
 						{/if}
 					</Field.Field>

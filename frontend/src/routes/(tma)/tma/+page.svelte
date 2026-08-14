@@ -1,26 +1,33 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import CarFront from '@lucide/svelte/icons/car-front';
-	import Plus from '@lucide/svelte/icons/plus';
-	import Wrench from '@lucide/svelte/icons/wrench';
-	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
+	import CarFront from "@lucide/svelte/icons/car-front";
+	import Plus from "@lucide/svelte/icons/plus";
+	import RefreshCw from "@lucide/svelte/icons/refresh-cw";
+	import Wrench from "@lucide/svelte/icons/wrench";
+	import { onMount } from "svelte";
 
-	import { Cars, ServiceItems, Reminders, MileageLogs, type CarRead, type ServiceItemSummary, type ReminderRead } from '$lib/api';
-	import CarCard from '$lib/components/CarCard.svelte';
-	import ServiceItemCard from '$lib/components/ServiceItemCard.svelte';
-	import AddCarDialog from '$lib/components/ui/AddCarDialog.svelte';
-	import AddServiceDialog from '$lib/components/ui/AddServiceDialog.svelte';
-	import { Button } from '$lib/components/ui/button';
-	import { Separator } from '$lib/components/ui/separator';
-	import { Skeleton } from '$lib/components/ui/skeleton';
-	import * as Card from '$lib/components/ui/card';
-	import * as Empty from '$lib/components/ui/empty';
-
-	import TmaHeader from '$lib/components/tma/TmaHeader.svelte';
-	import TmaCarSelector from '$lib/components/tma/TmaCarSelector.svelte';
-	import TmaQuickActions from '$lib/components/tma/TmaQuickActions.svelte';
-	import * as m from '$lib/paraglide/messages.js';
-	import { buildServiceLines } from '$lib/reminderStatus.js';
+	import {
+		Cars,
+		MileageLogs,
+		Reminders,
+		ServiceItems,
+		type CarRead,
+		type ReminderRead,
+		type ServiceItemSummary
+	} from "$lib/api";
+	import CarCard from "$lib/components/CarCard.svelte";
+	import ServiceItemCard from "$lib/components/ServiceItemCard.svelte";
+	import TmaCarSelector from "$lib/components/tma/TmaCarSelector.svelte";
+	import TmaHeader from "$lib/components/tma/TmaHeader.svelte";
+	import TmaQuickActions from "$lib/components/tma/TmaQuickActions.svelte";
+	import AddCarDialog from "$lib/components/ui/AddCarDialog.svelte";
+	import AddServiceDialog from "$lib/components/ui/AddServiceDialog.svelte";
+	import { Button } from "$lib/components/ui/button";
+	import * as Card from "$lib/components/ui/card";
+	import * as Empty from "$lib/components/ui/empty";
+	import { Separator } from "$lib/components/ui/separator";
+	import { Skeleton } from "$lib/components/ui/skeleton";
+	import * as m from "$lib/paraglide/messages.js";
+	import { buildServiceLines } from "$lib/reminderStatus.js";
 
 	let cars = $state<CarRead[]>([]);
 	let selectedCarId = $state<string | null>(null);
@@ -46,7 +53,7 @@
 	);
 
 	const dueItemsCount = $derived(
-		serviceItems.filter((i) => i.status === 'due' || i.status === 'soon').length
+		serviceItems.filter((i) => i.status === "due" || i.status === "soon").length
 	);
 
 	async function loadCars() {
@@ -58,7 +65,7 @@
 				selectedCarId = cars[0].id;
 			}
 		} catch (e) {
-			console.error('failed to load cars:', e);
+			console.error("failed to load cars:", e);
 		} finally {
 			isLoadingCars = false;
 		}
@@ -78,7 +85,7 @@
 			serviceItems = serviceRes.data ?? [];
 			reminders = remindersRes.data ?? [];
 		} catch (e) {
-			console.error('failed to load car details:', e);
+			console.error("failed to load car details:", e);
 		} finally {
 			isLoadingServices = false;
 		}
@@ -111,7 +118,7 @@
 			}
 			return true;
 		} catch (e) {
-			console.error('failed to save mileage:', e);
+			console.error("failed to save mileage:", e);
 			return false;
 		}
 	}
@@ -131,7 +138,7 @@
 				await loadCarDetails(selectedCarId);
 			}
 		} catch (e) {
-			console.error('failed to mark serviced:', e);
+			console.error("failed to mark serviced:", e);
 		} finally {
 			savingItemId = null;
 		}
@@ -147,7 +154,7 @@
 				await loadCarDetails(selectedCarId);
 			}
 		} catch (e) {
-			console.error('failed to delete service item:', e);
+			console.error("failed to delete service item:", e);
 		} finally {
 			deletingItemId = null;
 		}
@@ -250,7 +257,10 @@
 								</Empty.Description>
 							</Empty.Header>
 							<Empty.Content class="pt-3">
-								<AddServiceDialog car={selectedCar} onServiceAdded={() => loadCarDetails(selectedCar.id)}>
+								<AddServiceDialog
+									car={selectedCar}
+									onServiceAdded={() => loadCarDetails(selectedCar.id)}
+								>
 									{#snippet child({ props })}
 										<Button {...props} variant="secondary" size="sm">
 											<Plus data-icon="inline-start" />

@@ -1,27 +1,27 @@
 <script lang="ts">
-	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
-	import CheckCircle2 from '@lucide/svelte/icons/check-circle-2';
-	import ExternalLink from '@lucide/svelte/icons/external-link';
-	import Loader2 from '@lucide/svelte/icons/loader-2';
-	import Send from '@lucide/svelte/icons/send';
-	import Unlink from '@lucide/svelte/icons/unlink';
+	import AlertTriangle from "@lucide/svelte/icons/alert-triangle";
+	import CheckCircle2 from "@lucide/svelte/icons/check-circle-2";
+	import ExternalLink from "@lucide/svelte/icons/external-link";
+	import Loader2 from "@lucide/svelte/icons/loader-2";
+	import Send from "@lucide/svelte/icons/send";
+	import Unlink from "@lucide/svelte/icons/unlink";
 
-	import { Telegram } from '$lib/api';
-	import { auth } from '$lib/auth.svelte';
-	import * as Alert from '$lib/components/ui/alert';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
-	import * as m from '$lib/paraglide/messages.js';
+	import { Telegram } from "$lib/api";
+	import { auth } from "$lib/auth.svelte";
+	import * as Alert from "$lib/components/ui/alert";
+	import { Badge } from "$lib/components/ui/badge";
+	import { Button } from "$lib/components/ui/button";
+	import * as Card from "$lib/components/ui/card";
+	import * as m from "$lib/paraglide/messages.js";
 
 	let { isBotDisabled = false }: { isBotDisabled?: boolean } = $props();
 
 	let isLoading = $state(false);
 	let isUnlinking = $state(false);
-	let errorMsg = $state('');
+	let errorMsg = $state("");
 
 	async function linkTelegram() {
-		errorMsg = '';
+		errorMsg = "";
 		try {
 			isLoading = true;
 			const res = await Telegram.getLinkTokenApiTelegramLinkTokenPost();
@@ -37,7 +37,7 @@
 				return;
 			}
 			const url = `https://t.me/${bot_username}?start=${token}`;
-			window.open(url, '_blank');
+			window.open(url, "_blank");
 
 			const checkInterval = setInterval(async () => {
 				await auth.fetchUser();
@@ -48,7 +48,7 @@
 
 			setTimeout(() => clearInterval(checkInterval), 60000);
 		} catch (err: any) {
-			console.error('failed to create telegram link token:', err);
+			console.error("failed to create telegram link token:", err);
 			errorMsg = m.settings_telegram_link_error();
 		} finally {
 			isLoading = false;
@@ -56,7 +56,7 @@
 	}
 
 	async function unlinkTelegram() {
-		errorMsg = '';
+		errorMsg = "";
 		try {
 			isUnlinking = true;
 			const res = await Telegram.unlinkTelegramApiTelegramLinkDelete();
@@ -68,7 +68,7 @@
 
 			await auth.fetchUser();
 		} catch (err) {
-			console.error('failed to unlink telegram:', err);
+			console.error("failed to unlink telegram:", err);
 			errorMsg = m.settings_telegram_unlink_error();
 		} finally {
 			isUnlinking = false;
@@ -79,17 +79,21 @@
 <div class="flex flex-col gap-6">
 	<Card.Root class="w-full">
 		<Card.Header>
-			<Card.Title class="text-lg font-semibold lowercase">{m.settings_profile_main_info()}</Card.Title>
+			<Card.Title class="text-lg font-semibold lowercase"
+				>{m.settings_profile_main_info()}</Card.Title
+			>
 		</Card.Header>
 		<Card.Content>
 			<div class="grid gap-4 sm:grid-cols-2">
 				<div class="flex flex-col gap-1">
 					<span class="text-xs text-muted-foreground lowercase">{m.settings_profile_name()}</span>
-					<p class="font-medium">{auth.user?.name ?? '—'}</p>
+					<p class="font-medium">{auth.user?.name ?? "—"}</p>
 				</div>
 				<div class="flex flex-col gap-1">
-					<span class="text-xs text-muted-foreground lowercase">{m.settings_profile_username()}</span>
-					<p class="font-medium">{auth.user?.username ?? '—'}</p>
+					<span class="text-xs text-muted-foreground lowercase"
+						>{m.settings_profile_username()}</span
+					>
+					<p class="font-medium">{auth.user?.username ?? "—"}</p>
 				</div>
 			</div>
 		</Card.Content>
@@ -113,7 +117,10 @@
 					{m.settings_telegram_linked()}
 				</Badge>
 			{:else if isBotDisabled}
-				<Badge variant="outline" class="border-destructive/20 bg-destructive/10 text-destructive lowercase">
+				<Badge
+					variant="outline"
+					class="border-destructive/20 bg-destructive/10 text-destructive lowercase"
+				>
 					{m.settings_telegram_disabled()}
 				</Badge>
 			{:else}
@@ -125,7 +132,10 @@
 
 		<Card.Content class="border-t pt-4">
 			{#if errorMsg}
-				<Alert.Root variant="destructive" class="mb-4 flex items-center gap-2 border-destructive/20 bg-destructive/10 text-destructive">
+				<Alert.Root
+					variant="destructive"
+					class="mb-4 flex items-center gap-2 border-destructive/20 bg-destructive/10 text-destructive"
+				>
 					<AlertTriangle class="size-4 shrink-0" />
 					<span class="lowercase">{errorMsg}</span>
 				</Alert.Root>
@@ -134,10 +144,19 @@
 			{#if auth.user?.telegram_id}
 				<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 					<div class="text-sm text-muted-foreground lowercase">
-						telegram ID: <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground">{auth.user.telegram_id}</code>
+						telegram ID: <code
+							class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground"
+							>{auth.user.telegram_id}</code
+						>
 					</div>
 
-					<Button onclick={unlinkTelegram} disabled={isUnlinking} variant="outline" size="sm" class="text-destructive hover:text-destructive lowercase">
+					<Button
+						onclick={unlinkTelegram}
+						disabled={isUnlinking}
+						variant="outline"
+						size="sm"
+						class="text-destructive lowercase hover:text-destructive"
+					>
 						{#if isUnlinking}
 							<Loader2 data-icon="inline-start" class="animate-spin" />
 							{m.settings_telegram_unlinking()}
@@ -148,13 +167,18 @@
 					</Button>
 				</div>
 			{:else if isBotDisabled}
-				<Alert.Root class="flex-col gap-2 rounded-lg border-warning/30 bg-warning/10 p-4 text-warning">
+				<Alert.Root
+					class="flex-col gap-2 rounded-lg border-warning/30 bg-warning/10 p-4 text-warning"
+				>
 					<div class="flex items-center gap-2 font-medium lowercase">
 						<AlertTriangle class="size-4 shrink-0" />
 						{m.settings_telegram_bot_disabled()}
 					</div>
-					<p class="text-xs text-muted-foreground leading-relaxed lowercase">
-						для привязки аккаунта необходимо сначала задать токен бота в конфигурации приложения (<code class="rounded bg-muted px-1 py-0.5 font-mono text-[11px] text-foreground">APP__BOT__TOKEN</code>) согласно документации
+					<p class="text-xs leading-relaxed text-muted-foreground lowercase">
+						для привязки аккаунта необходимо сначала задать токен бота в конфигурации приложения (<code
+							class="rounded bg-muted px-1 py-0.5 font-mono text-[11px] text-foreground"
+							>APP__BOT__TOKEN</code
+						>) согласно документации
 					</p>
 				</Alert.Root>
 			{:else}

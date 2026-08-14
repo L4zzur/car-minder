@@ -1,12 +1,12 @@
 <script lang="ts">
-	let { class: className = 'size-5' }: { class?: string } = $props();
+	let { class: className = "size-5" }: { class?: string } = $props();
 </script>
 
 <svg
-   class={className}
-   viewBox="0 0 174.99997 126.51629"
-   version="1.1"
-   xmlns="http://www.w3.org/2000/svg"
+	class={className}
+	viewBox="0 0 174.99997 126.51629"
+	version="1.1"
+	xmlns="http://www.w3.org/2000/svg"
 >
 	<g transform="matrix(-1.4730448,0,0,1.4730448,232.61419,-267.04961)">
 		<path

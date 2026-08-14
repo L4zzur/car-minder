@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { Bell, CarFront, Gauge, Wrench } from 'lucide-svelte';
+	import { Bell, CarFront, Gauge, Wrench } from "lucide-svelte";
 
-	import type { CarRead } from '$lib/api';
-	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime';
+	import type { CarRead } from "$lib/api";
+	import * as m from "$lib/paraglide/messages.js";
+	import { getLocale } from "$lib/paraglide/runtime";
 
 	let {
 		car,
@@ -30,7 +30,10 @@
 			<Gauge class="size-4" />
 			<span>{m.car_stats_mileage()}</span>
 		</div>
-		<div class="text-2xl font-semibold">{formatOdometer(car.current_odometer_km)} {m.car_card_current_odometer_km()}</div>
+		<div class="text-2xl font-semibold">
+			{formatOdometer(car.current_odometer_km)}
+			{m.car_card_current_odometer_km()}
+		</div>
 		<p class="mt-1 text-xs text-muted-foreground">
 			{m.car_stats_driven_since_added({ km: formatOdometer(drivenKm) })}
 		</p>
@@ -41,7 +44,10 @@
 			<CarFront class="size-4" />
 			<span>{m.car_stats_start_odometer()}</span>
 		</div>
-		<div class="text-2xl font-semibold">{formatOdometer(car.initial_odometer_km)} {m.car_card_current_odometer_km()}</div>
+		<div class="text-2xl font-semibold">
+			{formatOdometer(car.initial_odometer_km)}
+			{m.car_card_current_odometer_km()}
+		</div>
 		<p class="mt-1 text-xs text-muted-foreground">{m.car_stats_at_addition()}</p>
 	</div>
 

@@ -1,14 +1,22 @@
 <script lang="ts">
-	import { Bell, Check, CircleAlert, CircleCheck, Clock, LoaderCircle, Pencil, Trash2 } from 'lucide-svelte';
+	import {
+		Bell,
+		Check,
+		CircleAlert,
+		CircleCheck,
+		Clock,
+		LoaderCircle,
+		Trash2
+	} from "lucide-svelte";
 
-	import type { CarRead, ServiceItemSummary } from '$lib/api';
-	import EditServiceDialog from '$lib/components/ui/EditServiceDialog.svelte';
-	import RemindersDialog from '$lib/components/ui/RemindersDialog.svelte';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import * as Tooltip from '$lib/components/ui/tooltip';
-	import * as m from '$lib/paraglide/messages.js';
-	import { getLocale } from '$lib/paraglide/runtime';
+	import type { CarRead, ServiceItemSummary } from "$lib/api";
+	import { Badge } from "$lib/components/ui/badge";
+	import { Button } from "$lib/components/ui/button";
+	import EditServiceDialog from "$lib/components/ui/EditServiceDialog.svelte";
+	import RemindersDialog from "$lib/components/ui/RemindersDialog.svelte";
+	import * as Tooltip from "$lib/components/ui/tooltip";
+	import * as m from "$lib/paraglide/messages.js";
+	import { getLocale } from "$lib/paraglide/runtime";
 
 	let {
 		item,
@@ -34,10 +42,14 @@
 
 	const formatOdometer = (val: number) => val.toLocaleString(getLocale());
 	const formatDate = (str: string) =>
-		new Date(str).toLocaleDateString(getLocale(), { day: 'numeric', month: 'short', year: 'numeric' });
+		new Date(str).toLocaleDateString(getLocale(), {
+			day: "numeric",
+			month: "short",
+			year: "numeric"
+		});
 
 	function getNextLabel() {
-		if (!item.status || item.status === 'ok') {
+		if (!item.status || item.status === "ok") {
 			return m.service_card_no_reminder();
 		}
 
@@ -62,19 +74,21 @@
 
 <div class="flex flex-col gap-3 rounded-lg border bg-card p-4">
 	<div class="flex items-start gap-3">
-		{#if item.status === 'due'}
-			<CircleAlert class="mt-0.5 size-5 text-destructive shrink-0" />
-		{:else if item.status === 'soon'}
-			<Clock class="mt-0.5 size-5 text-warning shrink-0" />
+		{#if item.status === "due"}
+			<CircleAlert class="mt-0.5 size-5 shrink-0 text-destructive" />
+		{:else if item.status === "soon"}
+			<Clock class="mt-0.5 size-5 shrink-0 text-warning" />
 		{:else}
-			<CircleCheck class="mt-0.5 size-5 text-muted-foreground shrink-0" />
+			<CircleCheck class="mt-0.5 size-5 shrink-0 text-muted-foreground" />
 		{/if}
 		<div class="flex min-w-0 flex-1 flex-col gap-1">
-			<h3 class="font-medium text-sm sm:text-base truncate">{item.name}</h3>
+			<h3 class="truncate text-sm font-medium sm:text-base">{item.name}</h3>
 			<div class="flex flex-wrap gap-x-1 text-xs text-muted-foreground">
 				<span>{m.service_card_serviced_at({ date: formatDate(item.last_service_at) })}</span>
 				<span>//</span>
-				<span>{formatOdometer(item.last_service_odometer_km)} {m.car_card_current_odometer_km()}</span>
+				<span
+					>{formatOdometer(item.last_service_odometer_km)} {m.car_card_current_odometer_km()}</span
+				>
 			</div>
 		</div>
 	</div>
@@ -82,14 +96,18 @@
 	<div class="flex items-center justify-between gap-2 border-t border-border/50 pt-3">
 		<div class="min-w-0 flex-1">
 			<Badge
-				variant={item.status === 'due' ? 'destructive' : item.status === 'soon' ? 'secondary' : 'outline'}
+				variant={item.status === "due"
+					? "destructive"
+					: item.status === "soon"
+						? "secondary"
+						: "outline"}
 				class="font-normal"
 			>
 				{getNextLabel()}
 			</Badge>
 		</div>
 
-		<div class="flex items-center gap-1 shrink-0">
+		<div class="flex shrink-0 items-center gap-1">
 			<Tooltip.Root>
 				<Tooltip.Trigger>
 					<Button
@@ -116,7 +134,12 @@
 					<Tooltip.Trigger>
 						<RemindersDialog {car} {serviceItems} targetServiceItemId={item.id} {onReminderChanged}>
 							{#snippet child({ props })}
-								<Button {...props} variant="ghost" size="icon" class="text-muted-foreground hover:text-foreground">
+								<Button
+									{...props}
+									variant="ghost"
+									size="icon"
+									class="text-muted-foreground hover:text-foreground"
+								>
 									<Bell />
 								</Button>
 							{/snippet}
@@ -137,7 +160,13 @@
 
 			<Tooltip.Root>
 				<Tooltip.Trigger>
-					<Button variant="ghost" size="icon" disabled={isDeleting} onclick={onDelete} class="text-muted-foreground hover:text-destructive">
+					<Button
+						variant="ghost"
+						size="icon"
+						disabled={isDeleting}
+						onclick={onDelete}
+						class="text-muted-foreground hover:text-destructive"
+					>
 						<Trash2 />
 					</Button>
 				</Tooltip.Trigger>

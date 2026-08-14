@@ -1,5 +1,6 @@
-import { Auth } from './api';
-import './api-client';
+import { Auth } from "./api";
+
+import "./api-client";
 
 class AuthStore {
 	user = $state<any>(null);
@@ -27,7 +28,7 @@ class AuthStore {
 			const response = await Auth.getMeApiAuthMeGet();
 			this.user = response.data;
 		} catch (error) {
-			console.error('Failed to fetch user data:', error);
+			console.error("Failed to fetch user data:", error);
 			this.logout();
 		}
 	}
