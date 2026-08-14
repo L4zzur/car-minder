@@ -45,14 +45,21 @@
 </script>
 
 <div class="flex flex-col gap-3 rounded-lg border bg-card p-4">
-	<h3 class="min-h-5 text-sm font-medium">{m.mileage_form_title()}</h3>
+	<div class="flex min-h-5 items-center justify-between gap-3">
+		<h3 class="text-sm font-medium">{m.mileage_form_title()}</h3>
+		{#if localError}
+			<span class="text-right text-xs text-destructive">{localError}</span>
+		{/if}
+	</div>
 	<form class="flex flex-col gap-3" onsubmit={handleSubmit} novalidate>
-		<Field.Field>
+		<Field.Field data-invalid={localError ? true : undefined}>
 			<Field.Label for="odometer">{m.mileage_form_label()}</Field.Label>
-			<Input id="odometer" type="number" bind:value={mileageValue} />
-			{#if localError}
-				<Field.Error>{localError}</Field.Error>
-			{/if}
+			<Input
+				id="odometer"
+				type="number"
+				bind:value={mileageValue}
+				aria-invalid={localError ? true : undefined}
+			/>
 		</Field.Field>
 		<Button type="submit" class="w-full" disabled={isSaving}>
 			<Gauge data-icon="inline-start" />
