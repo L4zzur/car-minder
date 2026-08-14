@@ -48,7 +48,7 @@
 		<Card.Header>
 			<div class="flex items-start justify-between">
 				<div>
-					<Card.Title class="text-xl capitalize"
+					<Card.Title class="text-xl"
 						>{car.brand.toLowerCase()} {car.model.toLowerCase()}</Card.Title
 					>
 					<Card.Description>{car.year} {m.car_card_year_of_production()}</Card.Description>

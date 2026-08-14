@@ -239,7 +239,10 @@
 </script>
 
 <svelte:head>
-	<title>{car ? `${car.brand} ${car.model}` : m.add_car_dialog_title()} // car minder</title>
+	<title
+		>{car ? `${car.brand.toLowerCase()} ${car.model.toLowerCase()}` : m.add_car_dialog_title()} // car
+		minder</title
+	>
 </svelte:head>
 
 <div class="container mx-auto flex flex-col gap-6 p-4 sm:p-6">
