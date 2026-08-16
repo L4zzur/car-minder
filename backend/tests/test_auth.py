@@ -20,6 +20,22 @@ async def test_login_success(client: AsyncClient, test_user: dict, user_password
 
 
 @pytest.mark.asyncio
+async def test_login_case_insensitive(client: AsyncClient, test_user: dict, user_password: str):
+    # test_user["username"] in uppercase / mixed case
+    mixed_username = test_user["username"].upper()
+    response = await client.post(
+        "/api/auth/login",
+        data={
+            "username": mixed_username,
+            "password": user_password,
+        },
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert "access_token" in data
+
+
+@pytest.mark.asyncio
 async def test_login_failure(client: AsyncClient, test_user: dict):
     response = await client.post(
         "/api/auth/login",
