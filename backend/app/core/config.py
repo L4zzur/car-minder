@@ -96,6 +96,7 @@ class Settings(BaseSettings):
         env_prefix="APP__",
     )
     mode: AppMode = AppMode.prod
+    docs: bool | None = None
     run: UvicornConfig = UvicornConfig()
     api: ApiPrefix = ApiPrefix()
     cors: CorsConfig = CorsConfig()
@@ -103,6 +104,18 @@ class Settings(BaseSettings):
     db: DatabaseConfig
     bot: TelegramBotConfig
     domain: str | None = None
+
+    @property
+    def docs_url(self) -> str | None:
+        if self.docs is not None:
+            return "/docs" if self.docs else None
+        return "/docs" if self.mode == AppMode.dev else None
+
+    @property
+    def openapi_url(self) -> str | None:
+        if self.docs is not None:
+            return "/openapi.json" if self.docs else None
+        return "/openapi.json" if self.mode == AppMode.dev else None
 
 
 settings = Settings()

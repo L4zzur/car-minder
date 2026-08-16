@@ -73,6 +73,9 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Car Minder API",
     version=__version__,
+    docs_url=settings.docs_url,
+    openapi_url=settings.openapi_url,
+    redoc_url=None,
     lifespan=lifespan,
 )
 
