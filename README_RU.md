@@ -6,8 +6,8 @@
 
 <img height="100px" src="docs/assets/logo.svg" alt="car minder logo" align="right" />
 
-**Гараж, пробег и сервисное обслуживание.**  
-Open-source, self-hosted и создан, чтобы ваши автомобили всегда были в порядке.
+**гараж, пробег и сервисное обслуживание**  
+open-source, self-hosted и создан, чтобы ваши автомобили всегда были в порядке
 
 [English](README.md) • **Русский**
 
