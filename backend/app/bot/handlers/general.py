@@ -78,7 +78,9 @@ async def cmd_start(
                 builder = get_app_keyboard(i18n)
                 await message.answer(
                     i18n.get("start_linked_success"),
-                    reply_markup=builder.as_markup() if builder.as_markup().inline_keyboard else None,
+                    reply_markup=builder.as_markup()
+                    if builder.as_markup().inline_keyboard
+                    else None,
                 )
             else:
                 await message.answer(i18n.get("start_invalid_token"))
@@ -87,7 +89,9 @@ async def cmd_start(
             builder = get_app_keyboard(i18n)
             await message.answer(
                 i18n.get("start_already_linked"),
-                reply_markup=builder.as_markup() if builder.as_markup().inline_keyboard else None,
+                reply_markup=builder.as_markup()
+                if builder.as_markup().inline_keyboard
+                else None,
             )
         except TelegramAlreadyLinkedToAnotherError:
             await message.answer(i18n.get("start_already_linked_to_another"))
@@ -102,7 +106,9 @@ async def cmd_start(
                 "start_welcome_back",
                 name=html.quote(user.name),
             ),
-            reply_markup=builder.as_markup() if builder.as_markup().inline_keyboard else None,
+            reply_markup=builder.as_markup()
+            if builder.as_markup().inline_keyboard
+            else None,
         )
     else:
         builder = InlineKeyboardBuilder()
@@ -115,7 +121,9 @@ async def cmd_start(
             )
         await message.answer(
             i18n.get("start_hello_new", name=html.quote(message.from_user.full_name)),
-            reply_markup=builder.as_markup() if builder.as_markup().inline_keyboard else None,
+            reply_markup=builder.as_markup()
+            if builder.as_markup().inline_keyboard
+            else None,
         )
 
     return

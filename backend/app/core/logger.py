@@ -9,11 +9,11 @@ class CustomFormatter(logging.Formatter):
     """Custom formatter that colors ONLY the log level badge in dev mode."""
 
     COLOR_CODES: ClassVar[dict[int, str]] = {
-        logging.DEBUG: "\x1b[38;20m",     # Grey
-        logging.INFO: "\x1b[34;20m",      # Blue
-        logging.WARNING: "\x1b[33;20m",   # Yellow
-        logging.ERROR: "\x1b[31;20m",     # Red
-        logging.CRITICAL: "\x1b[31;1m",   # Bold Red
+        logging.DEBUG: "\x1b[38;20m",  # Grey
+        logging.INFO: "\x1b[34;20m",  # Blue
+        logging.WARNING: "\x1b[33;20m",  # Yellow
+        logging.ERROR: "\x1b[31;20m",  # Red
+        logging.CRITICAL: "\x1b[31;1m",  # Bold Red
     }
     RESET: ClassVar[str] = "\x1b[0m"
 

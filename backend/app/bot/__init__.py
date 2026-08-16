@@ -64,12 +64,16 @@ async def setup_bot_ui() -> None:
     commands_ru = [
         BotCommand(command="start", description=i18n_core.get("bot_cmd_start", "ru")),
         BotCommand(command="app", description=i18n_core.get("bot_cmd_app", "ru")),
-        BotCommand(command="language", description=i18n_core.get("bot_cmd_language", "ru")),
+        BotCommand(
+            command="language", description=i18n_core.get("bot_cmd_language", "ru")
+        ),
     ]
     commands_en = [
         BotCommand(command="start", description=i18n_core.get("bot_cmd_start", "en")),
         BotCommand(command="app", description=i18n_core.get("bot_cmd_app", "en")),
-        BotCommand(command="language", description=i18n_core.get("bot_cmd_language", "en")),
+        BotCommand(
+            command="language", description=i18n_core.get("bot_cmd_language", "en")
+        ),
     ]
 
     try:
