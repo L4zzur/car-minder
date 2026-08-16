@@ -47,7 +47,7 @@
 			}, 2000);
 
 			setTimeout(() => clearInterval(checkInterval), 60000);
-		} catch (err: any) {
+		} catch (err: unknown) {
 			console.error("failed to create telegram link token:", err);
 			errorMsg = m.settings_telegram_link_error();
 		} finally {

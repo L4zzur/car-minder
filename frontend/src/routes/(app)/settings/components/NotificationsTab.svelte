@@ -33,7 +33,7 @@
 			} else if (res.error) {
 				errorMsg = m.settings_notifications_load_error();
 			}
-		} catch (err: any) {
+		} catch (err: unknown) {
 			console.error("failed to load settings:", err);
 			errorMsg = m.settings_notifications_load_error();
 		} finally {
@@ -71,9 +71,10 @@
 			} else {
 				errorMsg = m.settings_notifications_save_error();
 			}
-		} catch (err: any) {
+		} catch (err: unknown) {
 			console.error("failed to save settings:", err);
-			errorMsg = err?.body?.detail || m.settings_notifications_save_error();
+			const detail = (err as { body?: { detail?: string } })?.body?.detail;
+			errorMsg = detail || m.settings_notifications_save_error();
 		} finally {
 			isSaving = false;
 		}

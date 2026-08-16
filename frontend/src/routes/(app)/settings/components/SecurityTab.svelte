@@ -55,9 +55,9 @@
 			});
 
 			if (res.error) {
-				const error = res.error as any;
-				const code = error?.code;
-				const detail = error?.detail;
+				const errBody = res.error as { code?: string; detail?: unknown };
+				const code = errBody?.code;
+				const detail = errBody?.detail;
 				if (code === "email_already_taken") {
 					emailErrorMsg = m.settings_security_email_error_taken();
 				} else if (Array.isArray(detail)) {
@@ -71,7 +71,7 @@
 			await auth.fetchUser();
 			emailSuccessMsg = m.settings_security_email_saved();
 			setTimeout(() => (emailSuccessMsg = ""), 3000);
-		} catch (err: any) {
+		} catch (err: unknown) {
 			console.error("failed to update email:", err);
 			emailErrorMsg = m.settings_security_email_error();
 		} finally {
@@ -105,7 +105,8 @@
 			});
 
 			if (res.error) {
-				const code = (res.error as any)?.code;
+				const errBody = res.error as { code?: string };
+				const code = errBody?.code;
 				if (code === "invalid_current_password") {
 					passwordErrorMsg = m.settings_security_password_error_wrong();
 				} else {
@@ -119,7 +120,7 @@
 			newPassword = "";
 			confirmPassword = "";
 			setTimeout(() => (passwordSuccessMsg = ""), 3000);
-		} catch (err: any) {
+		} catch (err: unknown) {
 			console.error("failed to change password:", err);
 			passwordErrorMsg = m.settings_security_password_error();
 		} finally {

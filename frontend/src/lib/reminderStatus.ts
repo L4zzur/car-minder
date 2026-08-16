@@ -63,7 +63,7 @@ export function buildServiceLines(
 	reminders: ReminderRead[],
 	serviceItems: ServiceItemSummary[],
 	currentOdometerKm: number,
-	m: Record<string, any>
+	m: Record<string, ((...args: never[]) => string) | undefined>
 ): ServiceLine[] {
 	const lines: ServiceLine[] = [];
 

@@ -22,8 +22,12 @@ export const load: PageLoad = async ({ params }) => {
 		return {
 			car: res.data
 		};
-	} catch (e: any) {
-		if (e?.status === 404 || e?.body?.message) {
+	} catch (e: unknown) {
+		if (
+			typeof e === "object" &&
+			e !== null &&
+			("status" in e || ("body" in e && typeof (e as { body: unknown }).body === "object"))
+		) {
 			throw e;
 		}
 		throw error(404, m.car_detail_not_found());

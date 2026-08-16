@@ -60,7 +60,7 @@
 		{ label: m.landing_demo_air_filter(), meta: m.landing_status_serviced(), status: "ok" }
 	]);
 
-	let displayCar = $state<any>(demoCar);
+	let displayCar = $state<CarRead | typeof demoCar>(demoCar);
 	let userServiceItems = $state<ServiceItemSummary[]>([]);
 	let userReminders = $state<ReminderRead[]>([]);
 	let displayHref = $state<string | undefined>(undefined);

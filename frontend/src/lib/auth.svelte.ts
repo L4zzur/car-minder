@@ -1,9 +1,9 @@
-import { Auth } from "./api";
+import { Auth, type UserRead } from "./api";
 
 import "./api-client";
 
 class AuthStore {
-	user = $state<any>(null);
+	user = $state<UserRead | null>(null);
 	isReady = $state(false);
 
 	get isAuthenticated() {
