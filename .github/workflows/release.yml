@@ -140,6 +140,20 @@ jobs:
                 commits = list.data;
               }
 
+              // If standard generateReleaseNotes returned empty or no bullet points, build fallback from commit messages
+              if (!releaseNotesBody || !releaseNotesBody.includes('- ')) {
+                const commitLines = commits
+                  .filter(c => {
+                    const msg = c.commit?.message?.split('\n')[0] || '';
+                    return !msg.startsWith('Bump version') && !msg.startsWith('Merge branch');
+                  })
+                  .map(c => {
+                    const firstLine = c.commit?.message?.split('\n')[0] || '';
+                    const shortSha = c.sha.substring(0, 7);
+                    return `- ${firstLine} in ${shortSha}`;
+                  });
+              }
+
               const contributorsMap = new Map();
               for (const c of commits) {
                 const login = c.author?.login;
@@ -159,9 +173,10 @@ jobs:
               }
 
               // Append formatted Full Changelog with book emoji at the very bottom
-              if (compareUrl) {
+              if (compareUrl || baseTag) {
+                const targetUrl = compareUrl || `https://github.com/${context.repo.owner}/${context.repo.repo}/compare/${baseTag}...${currentTag}`;
                 const label = baseTag ? `Changes ${baseTag} → ${currentTag}` : `Changes in ${currentTag}`;
-                body += `\n\n---\n📖 [${label}](${compareUrl})\n`;
+                body += `\n\n---\n📖 [${label}](${targetUrl})\n`;
               }
             } catch (err) {
               core.warning(`Could not format release notes: ${err.message}`);
