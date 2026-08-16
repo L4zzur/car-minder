@@ -23,3 +23,8 @@ frontend/.svelte-kit/
 .DS_Store
 .idea/
 .vscode/
+
+# Other
+*.bat
+repomix*
+.repomixignore
