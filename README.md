@@ -37,13 +37,14 @@ open-source, self-hosted, and built to keep your cars in check
 
 ## Quick Start
 
-A ready-to-use `docker-compose.yml` is already included in the repository.
+### 1. Docker Compose (Recommended)
 
-### 1. Clone and configure
+You don't need to clone the repository to run car minder. Create a directory on your server and grab the configuration files:
 
 ```bash
-git clone https://github.com/L4zzur/car-minder.git
-cd car-minder
+mkdir car-minder && cd car-minder
+curl -O https://raw.githubusercontent.com/L4zzur/car-minder/main/docker-compose.yml
+curl -O https://raw.githubusercontent.com/L4zzur/car-minder/main/.env.template
 cp .env.template .env
 ```
 
@@ -58,18 +59,25 @@ openssl rand -hex 32
 **Option B (Python):**
 
 ```bash
-python -c "import secrets; print(secrets.token_hex(32))"
+python3 -c "import secrets; print(secrets.token_hex(32))"
 ```
 
-### 2. Run with Docker Compose
-
-Start the application with Docker Compose:
+Start the application:
 
 ```bash
-docker compose up -d --build
+docker compose up -d
 ```
 
-The web application will be available at [http://localhost:8000](http://localhost:8000).
+The web application will be available at [http://localhost:8000](http://localhost:8000). Your SQLite database and files are stored in the `./data` directory next to `docker-compose.yml`.
+
+### 2. Updating
+
+To pull the latest release:
+
+```bash
+docker compose pull
+docker compose up -d
+```
 
 ## Configuration
 

@@ -37,13 +37,14 @@ open-source, self-hosted и создан, чтобы ваши автомобил
 
 ## Быстрый старт
 
-Готовый файл `docker-compose.yml` уже находится в корне репозитория.
+### 1. Запуск через Docker Compose (Рекомендуется)
 
-### 1. Клонирование и настройка
+Для запуска car minder не обязательно клонировать репозиторий с исходным кодом. Создайте папку на сервере и скачайте конфигурационные файлы:
 
 ```bash
-git clone https://github.com/L4zzur/car-minder.git
-cd car-minder
+mkdir car-minder && cd car-minder
+curl -O https://raw.githubusercontent.com/L4zzur/car-minder/main/docker-compose.yml
+curl -O https://raw.githubusercontent.com/L4zzur/car-minder/main/.env.template
 cp .env.template .env
 ```
 
@@ -58,18 +59,25 @@ openssl rand -hex 32
 **Вариант B (Python):**
 
 ```bash
-python -c "import secrets; print(secrets.token_hex(32))"
+python3 -c "import secrets; print(secrets.token_hex(32))"
 ```
 
-### 2. Запуск через Docker Compose
-
-Запустите приложение командой:
+Запустите контейнер:
 
 ```bash
-docker compose up -d --build
+docker compose up -d
 ```
 
-Веб-интерфейс будет доступен по адресу [http://localhost:8000](http://localhost:8000).
+Веб-интерфейс будет доступен по адресу [http://localhost:8000](http://localhost:8000). База данных SQLite и данные приложения сохраняются в локальную папку `./data` рядом с файлом `docker-compose.yml`.
+
+### 2. Обновление
+
+Для обновления до последней версии достаточно выполнить:
+
+```bash
+docker compose pull
+docker compose up -d
+```
 
 ## Конфигурация
 
