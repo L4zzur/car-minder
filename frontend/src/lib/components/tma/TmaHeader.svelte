@@ -4,6 +4,7 @@
 	import CircleCheck from "@lucide/svelte/icons/circle-check";
 
 	import { auth } from "$lib/auth.svelte";
+	import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
 	import { Badge } from "$lib/components/ui/badge";
 	import * as m from "$lib/paraglide/messages.js";
 
@@ -25,15 +26,18 @@
 		</div>
 	</div>
 
-	{#if dueItemsCount > 0}
-		<Badge variant="destructive" class="flex items-center gap-1.5 px-2.5 py-1 text-xs">
-			<CircleAlert class="size-3.5" />
-			<span>{m.tma_header_attention({ count: dueItemsCount })}</span>
-		</Badge>
-	{:else}
-		<Badge variant="secondary" class="flex items-center gap-1.5 px-2.5 py-1 text-xs">
-			<CircleCheck class="size-3.5 text-success" />
-			<span>{m.tma_header_all_good()}</span>
-		</Badge>
-	{/if}
+	<div class="flex items-center gap-2">
+		{#if dueItemsCount > 0}
+			<Badge variant="destructive" class="flex items-center gap-1.5 px-2.5 py-1 text-xs">
+				<CircleAlert class="size-3.5" />
+				<span>{m.tma_header_attention({ count: dueItemsCount })}</span>
+			</Badge>
+		{:else}
+			<Badge variant="secondary" class="flex items-center gap-1.5 px-2.5 py-1 text-xs">
+				<CircleCheck class="size-3.5 text-success" />
+				<span>{m.tma_header_all_good()}</span>
+			</Badge>
+		{/if}
+		<LanguageSwitcher />
+	</div>
 </header>

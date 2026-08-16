@@ -16,14 +16,16 @@
 
 	import { browser } from "$app/environment";
 
-	import { Telegram } from "$lib/api";
+	import { Telegram, UserSettings } from "$lib/api";
 	import favicon from "$lib/assets/favicon.svg";
 	import { auth } from "$lib/auth.svelte";
 	import CarMinderLogo from "$lib/components/icons/CarMinderLogo.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import * as Card from "$lib/components/ui/card";
 	import * as Tooltip from "$lib/components/ui/tooltip";
+	import { i18n } from "$lib/i18n.svelte";
 	import * as m from "$lib/paraglide/messages.js";
+	import { locales, type Locale } from "$lib/paraglide/runtime";
 
 	import "../(app)/layout.css";
 
@@ -36,6 +38,14 @@
 	let isBotDisabled = $state(false);
 
 	const botLink = $derived(botUsername ? `https://t.me/${botUsername}` : null);
+
+	function setLocaleIfSupported(code?: string | null) {
+		if (!code) return;
+		const lang = code.slice(0, 2).toLowerCase() as Locale;
+		if ((locales as readonly string[]).includes(lang)) {
+			i18n.lang = lang;
+		}
+	}
 
 	async function fetchBotInfo() {
 		try {
@@ -154,9 +164,22 @@
 		}
 	}
 
+	async function syncUserLanguage() {
+		try {
+			const res = await UserSettings.getMySettingsApiUsersMeSettingsGet();
+			if (res.data?.language) {
+				setLocaleIfSupported(res.data.language);
+			}
+		} catch (e) {
+			console.error("Failed to sync user settings language:", e);
+		}
+	}
+
 	onMount(async () => {
 		setupTelegramSDK();
 		await fetchBotInfo();
+
+		setLocaleIfSupported(initData.user()?.language_code);
 
 		const initDataRaw = await findInitDataWithRetry();
 
@@ -167,6 +190,11 @@
 		}
 
 		await authenticateTelegram(initDataRaw);
+
+		if (auth.isAuthenticated) {
+			await syncUserLanguage();
+		}
+
 		isLoading = false;
 	});
 </script>
