@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-checks:
+    name: Backend (ruff, ty, pytest)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.13
+
+      - name: Install backend dependencies
+        run: uv sync --frozen
+
+      - name: Run Ruff Linter
+        run: uv run ruff check .
+
+      - name: Run Ruff Format Check
+        run: uv run ruff format --check .
+
+      - name: Run Ty Type Checker
+        run: uv run ty check
+
+      - name: Run Pytest
+        run: uv run pytest
+
+  frontend-checks:
+    name: Frontend (pnpm check, lint, format)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.13.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Paraglide compile & Svelte-Kit sync
+        run: pnpm prepare
+
+      - name: Run Svelte Check (TypeScript / Runes)
+        run: pnpm check
+
+      - name: Run ESLint & Prettier
+        run: pnpm lint
