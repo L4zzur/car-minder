@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import User
@@ -23,7 +23,7 @@ class UserRepository:
 
     async def get_by_username(self, username: str) -> User | None:
         stmt = select(User).where(
-            User.username == username,
+            func.lower(User.username) == username.strip().lower(),
         )
         result = await self.session.execute(stmt)
         return result.scalars().first()
@@ -34,6 +34,6 @@ class UserRepository:
         return result.scalars().first()
 
     async def get_by_email(self, email: str) -> User | None:
-        stmt = select(User).where(User.email == email)
+        stmt = select(User).where(func.lower(User.email) == email.strip().lower())
         result = await self.session.execute(stmt)
         return result.scalars().first()

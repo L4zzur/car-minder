@@ -5,24 +5,40 @@ changelog:
       labels:
         - "feature"
         - "enhancement"
-      prefix: "feat"
+      prefixes:
+        - "feat"
+        - "feat:"
     - title: "🩺 Fixes"
       labels:
         - "fix"
         - "bug"
-      prefix: "fix"
+      prefixes:
+        - "fix"
+        - "fix:"
     - title: "🏎️ Performance"
       labels:
         - "perf"
-      prefix: "perf"
+      prefixes:
+        - "perf"
+        - "perf:"
     - title: "🧪 Refactor"
       labels:
         - "refactor"
-      prefix: "refactor"
-    - title: "🔧 Chore"
+      prefixes:
+        - "refactor"
+        - "refactor:"
+    - title: "🔧 Maintenance"
       labels:
         - "chore"
-      prefix: "chore"
+        - "maintenance"
+      prefixes:
+        - "chore"
+        - "chore:"
+    - title: "🚀 Other Changes"
+      labels:
+        - "*"
+      prefixes:
+        - "*"
 
   exclude:
     labels:
