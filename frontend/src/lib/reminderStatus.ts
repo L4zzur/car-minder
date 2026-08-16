@@ -59,11 +59,13 @@ export type ServiceLine = {
 	urgencyRank: number; // Smaller means more urgent
 };
 
+type MessagesModule = typeof import("$lib/paraglide/messages.js");
+
 export function buildServiceLines(
 	reminders: ReminderRead[],
 	serviceItems: ServiceItemSummary[],
 	currentOdometerKm: number,
-	m: Record<string, ((...args: never[]) => string) | undefined>
+	m: MessagesModule
 ): ServiceLine[] {
 	const lines: ServiceLine[] = [];
 

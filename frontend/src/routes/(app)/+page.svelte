@@ -19,6 +19,7 @@
 		Cars,
 		Reminders,
 		ServiceItems,
+		type CarRead,
 		type ReminderRead,
 		type ServiceItemSummary
 	} from "$lib/api";

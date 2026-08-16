@@ -26,7 +26,7 @@ class AuthStore {
 	async fetchUser() {
 		try {
 			const response = await Auth.getMeApiAuthMeGet();
-			this.user = response.data;
+			this.user = response.data ?? null;
 		} catch (error) {
 			console.error("Failed to fetch user data:", error);
 			this.logout();
