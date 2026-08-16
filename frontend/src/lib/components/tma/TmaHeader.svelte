@@ -1,9 +1,9 @@
 <script lang="ts">
-	import CarFront from "@lucide/svelte/icons/car-front";
 	import CircleAlert from "@lucide/svelte/icons/circle-alert";
 	import CircleCheck from "@lucide/svelte/icons/circle-check";
 
 	import { auth } from "$lib/auth.svelte";
+	import CarMinderLogo from "$lib/components/icons/CarMinderLogo.svelte";
 	import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
 	import { Badge } from "$lib/components/ui/badge";
 	import * as m from "$lib/paraglide/messages.js";
@@ -14,7 +14,7 @@
 <header class="flex items-center justify-between border-b pb-3">
 	<div class="flex items-center gap-2.5">
 		<span class="flex size-9 items-center justify-center rounded-lg border bg-card text-foreground">
-			<CarFront class="size-4" />
+			<CarMinderLogo class="size-5" />
 		</span>
 		<div class="flex flex-col">
 			<span class="text-sm font-semibold tracking-tight">car minder</span>
