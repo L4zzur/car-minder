@@ -23,10 +23,7 @@ RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
 # Copy frontend source code
 COPY frontend/ ./
 
-# Precompile paraglide messages so the vite plugin skips recompilation during the build
-RUN pnpm exec paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide --strategy cookie preferredLanguage baseLocale
-
-# Build static bundle (outputs to /app/frontend/build)
+# Build static bundle (Paraglide compiles automatically via Vite plugin)
 RUN pnpm build
 
 # ==========================================
