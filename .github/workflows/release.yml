@@ -1,0 +1,186 @@
+name: Release & Publish Container
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Release tag version to test (e.g. v0.1.0)"
+        required: true
+        default: "v0.1.0"
+      dry_run:
+        description: "Dry run (test build & changelog only, do NOT push to GHCR or publish release)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    name: Create GitHub Release & Push Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve Effective Tag & Mode
+        id: config
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.tag_name }}"
+            DRY_RUN="${{ inputs.dry_run }}"
+          else
+            TAG="${{ github.ref_name }}"
+            DRY_RUN="false"
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "dry_run=$DRY_RUN" >> $GITHUB_OUTPUT
+          echo "Running for tag: $TAG (dry_run: $DRY_RUN)"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up QEMU (for multi-arch builds)
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        if: steps.config.outputs.dry_run != 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}},value=${{ steps.config.outputs.tag }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ steps.config.outputs.tag }}
+            type=raw,value=latest,enable=${{ steps.config.outputs.dry_run != 'true' && !contains(steps.config.outputs.tag, 'rc') && !contains(steps.config.outputs.tag, 'beta') }}
+
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: ${{ steps.config.outputs.dry_run != 'true' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Generate Changelog Notes
+        id: changelog
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const currentTag = '${{ steps.config.outputs.tag }}';
+            let releaseNotesBody = '';
+
+            try {
+              const { data: releaseNotes } = await github.rest.repos.generateReleaseNotes({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag_name: currentTag,
+              });
+              releaseNotesBody = releaseNotes.body || '';
+            } catch (err) {
+              core.warning(`Standard generateReleaseNotes note: ${err.message}`);
+              releaseNotesBody = `### Changes in ${currentTag}\n\n- Initial release updates`;
+            }
+
+            let body = releaseNotesBody;
+
+            // Extract default "Full Changelog" URL if present and remove it from the middle
+            let compareUrl = '';
+            const fullChangelogMatch = body.match(/\*\*Full Changelog\*\*:\s*(\S+)/);
+            if (fullChangelogMatch) {
+              compareUrl = fullChangelogMatch[1];
+              body = body.replace(/\*\*Full Changelog\*\*:\s*\S+\s*/, '').trim();
+            }
+
+            // Fetch authors of commits in this tag range
+            try {
+              const tagsRes = await github.rest.repos.listTags({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                per_page: 20
+              });
+              const tags = tagsRes.data;
+              const currentIndex = tags.findIndex(t => t.name === currentTag);
+              const baseTag = (currentIndex !== -1 && currentIndex + 1 < tags.length)
+                ? tags[currentIndex + 1].name
+                : null;
+
+              let commits = [];
+              if (baseTag) {
+                const comp = await github.rest.repos.compareCommits({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  base: baseTag,
+                  head: currentTag
+                });
+                commits = comp.data.commits;
+              } else {
+                const list = await github.rest.repos.listCommits({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  sha: (context.sha || 'HEAD'),
+                  per_page: 100
+                });
+                commits = list.data;
+              }
+
+              const contributorsMap = new Map();
+              for (const c of commits) {
+                const login = c.author?.login;
+                const name = c.commit?.author?.name;
+                if (!login || login.includes('[bot]') || login === 'github-actions') continue;
+                if (!contributorsMap.has(login)) {
+                  contributorsMap.set(login, name || login);
+                }
+              }
+
+              if (contributorsMap.size > 0) {
+                const listStr = Array.from(contributorsMap.entries())
+                  .map(([login, name]) => `${name} ([@${login}](https://github.com/${login}))`)
+                  .join(' · ');
+
+                body += `\n\n### 💜 Contributors\n${listStr}`;
+              }
+
+              // Append formatted Full Changelog with book emoji at the very bottom
+              if (compareUrl) {
+                const label = baseTag ? `Changes ${baseTag} → ${currentTag}` : `Changes in ${currentTag}`;
+                body += `\n\n---\n📖 [${label}](${compareUrl})\n`;
+              }
+            } catch (err) {
+              core.warning(`Could not format release notes: ${err.message}`);
+            }
+
+            core.setOutput('body', body.trim());
+
+      - name: Preview Changelog in Job Log
+        run: |
+          echo "================ PREVIEW CHANGELOG ================"
+          echo "${{ steps.changelog.outputs.body }}"
+          echo "==================================================="
+
+      - name: Create GitHub Release
+        if: steps.config.outputs.dry_run != 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.config.outputs.tag }}
+          body: ${{ steps.changelog.outputs.body }}
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
