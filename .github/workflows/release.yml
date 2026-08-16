@@ -100,6 +100,35 @@ jobs:
 
             let body = releaseNotesBody;
 
+            // Clean up titles: turn "feat(auth): message" -> "**auth:** message", "fix: message" -> "message"
+            // and replace generic "by @user in #123" with cleaner "in #123"
+            body = body
+              .split('\n')
+              .map(line => {
+                // Check if it's a bullet point item
+                if (/^[\*\-]\s+/.test(line)) {
+                  let cleaned = line.replace(/^[\*\-]\s+/, '- ');
+                  
+                  // Match conventional commit prefixes: feat(scope): or feat:
+                  const convMatch = cleaned.match(/^- (?:feat|fix|perf|refactor|chore|docs|test|ci|style)(?:\(([^)]+)\))?:\s*(.+)$/i);
+                  if (convMatch) {
+                    const scope = convMatch[1];
+                    const rest = convMatch[2];
+                    if (scope) {
+                      cleaned = `- **${scope}:** ${rest}`;
+                    } else {
+                      cleaned = `- ${rest}`;
+                    }
+                  }
+
+                  // Strip "by @username" before "in #123" since we have a dedicated Contributors section
+                  cleaned = cleaned.replace(/\s+by\s+@[\w\-\[\]]+\s+in\s+/i, ' in ');
+                  return cleaned;
+                }
+                return line;
+              })
+              .join('\n');
+
             // Extract default "Full Changelog" URL if present and remove it from the middle
             let compareUrl = '';
             const fullChangelogMatch = body.match(/\*\*Full Changelog\*\*:\s*(\S+)/);
