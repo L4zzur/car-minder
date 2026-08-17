@@ -9,12 +9,17 @@
 	import { Input } from '$lib/components/ui/input';
 	import * as m from '$lib/paraglide/messages.js';
 
-	let { onCarAdded, child } = $props<{
+	let {
+		onCarAdded,
+		child,
+		open = $bindable(false),
+		showTrigger = true
+	} = $props<{
 		onCarAdded: () => void;
 		child?: (opts: { props: Record<string, unknown> }) => import('svelte').Snippet;
+		open?: boolean;
+		showTrigger?: boolean;
 	}>();
-
-	let open = $state(false);
 	let brand = $state('');
 	let model = $state('');
 	let year = $state<number>(getCurrentYear());
@@ -83,15 +88,17 @@
 </script>
 
 <Dialog.Root bind:open>
-	<Dialog.Trigger>
-		{#if child}
-			{@render child({ props: {} })}
-		{:else}
-			<Button variant="outline">
-				<Plus data-icon="inline-start" /> {m.add_car_btn()}
-			</Button>
-		{/if}
-	</Dialog.Trigger>
+	{#if showTrigger}
+		<Dialog.Trigger>
+			{#if child}
+				{@render child({ props: {} })}
+			{:else}
+				<Button variant="outline">
+					<Plus data-icon="inline-start" /> {m.add_car_btn()}
+				</Button>
+			{/if}
+		</Dialog.Trigger>
+	{/if}
 	<Dialog.Content class="sm:max-w-[425px]">
 		<Dialog.Header>
 			<Dialog.Title>{m.add_car_dialog_title()}</Dialog.Title>

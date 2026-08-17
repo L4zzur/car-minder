@@ -346,5 +346,20 @@
 	"tma_service_items_heading": "обслуживание и расходники",
 	"tma_service_items_empty_title": "нет регламентных работ",
 	"tma_service_items_empty_desc": "добавь замену масла, фильтров или тормозной жидкости, чтобы следить за ресурсом",
-	"tma_service_items_add_first": "добавить первую работу"
+	"tma_service_items_add_first": "добавить первую работу",
+
+	"command_palette_title": "командная строка",
+	"command_palette_desc": "быстрый поиск команд, страниц или автомобилей...",
+	"command_palette_placeholder": "введи команду или название...",
+	"command_palette_empty": "ничего не найдено.",
+	"command_group_navigation": "навигация",
+	"command_group_actions": "действия",
+	"command_group_cars": "автомобили",
+	"command_group_preferences": "настройки и система",
+	"command_nav_garage": "гараж",
+	"command_nav_settings": "настройки",
+	"command_action_add_car": "добавить автомобиль",
+	"command_pref_theme": "переключить тему",
+	"command_pref_lang": "сменить язык (RU / EN)",
+	"command_pref_logout": "выйти из аккаунта"
 }

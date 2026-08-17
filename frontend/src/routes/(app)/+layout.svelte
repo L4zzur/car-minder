@@ -5,6 +5,7 @@
 	import { ModeWatcher } from "mode-watcher";
 
 	import favicon from "$lib/assets/favicon.svg";
+	import CommandPalette from "$lib/components/CommandPalette.svelte";
 	import * as Tooltip from "$lib/components/ui/tooltip";
 
 	let { children } = $props();
@@ -14,4 +15,5 @@
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 <Tooltip.Provider>
 	{@render children()}
+	<CommandPalette />
 </Tooltip.Provider>
