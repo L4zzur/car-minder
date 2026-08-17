@@ -5,12 +5,7 @@
 
 	import { goto } from "$app/navigation";
 
-	import {
-		Auth,
-		type CarRead,
-		type ReminderRead,
-		type ServiceItemSummary
-	} from "$lib/api";
+	import { Auth } from "$lib/api";
 	import { auth } from "$lib/auth.svelte";
 	import CarCard from "$lib/components/CarCard.svelte";
 	import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
