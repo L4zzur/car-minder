@@ -117,6 +117,7 @@
 						m
 					)}
 					href={`/cars/${car.id}`}
+					onMileageUpdated={() => garageStore.invalidate()}
 				/>
 			{/each}
 		</div>

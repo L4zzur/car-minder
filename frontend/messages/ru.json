@@ -69,6 +69,7 @@
 	"car_card_initial_odometer": "пока равен начальному",
 	"car_card_detailed": "подробнее",
 	"car_card_no_service_items": "нет активных расходников или напоминаний",
+	"car_card_quick_mileage_tooltip": "внести пробег",
 
 	"landing_go_to_garage": "перейти в гараж",
 	"landing_settings": "настройки",
