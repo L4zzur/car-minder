@@ -143,6 +143,9 @@
 	"mileage_history_plus_km": "+{km} км",
 	"mileage_history_delete_btn": "удалить запись",
 	"mileage_history_delete_aria": "удалить последнюю запись пробега",
+	"mileage_history_delete_confirm_title": "удалить запись пробега?",
+	"mileage_history_delete_confirm_desc": "это действие навсегда удалит запись одометра ({km} км). текущий пробег авто пересчитается автоматически.",
+	"mileage_history_delete_confirm_action": "удалить запись",
 	"mileage_history_empty": "записей пробега пока нет",
 
 	"service_card_no_reminder": "без напоминания",
@@ -156,6 +159,9 @@
 	"service_card_btn_servicing": "сохраняем...",
 	"service_card_tooltip_mark": "отметить обслуживание",
 	"service_card_tooltip_delete": "удалить расходник",
+	"service_card_delete_confirm_title": "удалить расходник?",
+	"service_card_delete_confirm_desc": "это действие навсегда удалит «{name}» и все привязанные интервалы напоминаний.",
+	"service_card_delete_confirm_action": "удалить расходник",
 
 	"add_service_btn": "расходник",
 	"add_service_title": "новый расходник",

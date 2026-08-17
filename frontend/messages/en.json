@@ -143,6 +143,9 @@
 	"mileage_history_plus_km": "+{km} km",
 	"mileage_history_delete_btn": "delete entry",
 	"mileage_history_delete_aria": "delete last mileage entry",
+	"mileage_history_delete_confirm_title": "delete mileage entry?",
+	"mileage_history_delete_confirm_desc": "this will permanently remove the recorded odometer entry ({km} km). current mileage will be recalculated.",
+	"mileage_history_delete_confirm_action": "delete entry",
 	"mileage_history_empty": "no mileage entries yet",
 
 	"service_card_no_reminder": "no reminder",
@@ -156,6 +159,9 @@
 	"service_card_btn_servicing": "saving...",
 	"service_card_tooltip_mark": "mark as serviced",
 	"service_card_tooltip_delete": "delete service item",
+	"service_card_delete_confirm_title": "delete service item?",
+	"service_card_delete_confirm_desc": "this will permanently remove “{name}” and all its interval settings.",
+	"service_card_delete_confirm_action": "delete service item",
 
 	"add_service_btn": "service item",
 	"add_service_title": "new service item",
