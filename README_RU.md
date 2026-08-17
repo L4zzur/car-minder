@@ -102,10 +102,10 @@ docker compose up -d
 ## Стек технологий
 
 - **Бэкенд**: [FastAPI](https://fastapi.tiangolo.com/) (Python 3.13), [SQLAlchemy 2.0](https://www.sqlalchemy.org/) Async, [SQLite](https://www.sqlite.org/) (`aiosqlite`), [APScheduler](https://apscheduler.readthedocs.io/)
-  - _Инструменты_: [uv](https://docs.astral.sh/uv/), [Ruff](https://docs.astral.sh/ruff/), [ty](https://github.com/bndr/ty), [Alembic](https://alembic.sqlalchemy.org/), [Pytest](https://pytest.org/)
+  - _Инструменты_: [uv](https://docs.astral.sh/uv/), [Ruff](https://docs.astral.sh/ruff/), [ty](https://docs.astral.sh/ty/), [Alembic](https://alembic.sqlalchemy.org/), [Pytest](https://pytest.org/)
 - **Фронтенд**: [Svelte 5](https://svelte.dev/) (Runes), [SvelteKit](https://kit.svelte.dev/), [Tailwind CSS v4](https://tailwindcss.com/), [shadcn-svelte](https://shadcn-svelte.com/)
   - _Инструменты_: [pnpm](https://pnpm.io/), [Vite](https://vite.dev/), [ESLint](https://eslint.org/), [Prettier](https://prettier.io/)
-- **Telegram**: [aiogram 3](https://aiogram.dev/) (Webhook-бот), [@tma.js/sdk-svelte](https://github.com/Telegram-Mini-Apps/tma.js) (Telegram Mini App)
+- **Telegram**: [aiogram 3](https://aiogram.dev/) (Webhook bot), [@tma.js/sdk-svelte](https://docs.telegram-mini-apps.com/) (Telegram Mini App)
 - **Деплой**: [Docker](https://www.docker.com/), Docker Compose
 
 ## Разработка
