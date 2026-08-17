@@ -361,5 +361,6 @@
 	"command_action_add_car": "добавить автомобиль",
 	"command_pref_theme": "переключить тему",
 	"command_pref_lang": "сменить язык (RU / EN)",
-	"command_pref_logout": "выйти из аккаунта"
+	"command_pref_logout": "выйти из аккаунта",
+	"command_palette_search": "поиск..."
 }

@@ -9,6 +9,7 @@
 	import { auth } from "$lib/auth.svelte";
 	import CarCard from "$lib/components/CarCard.svelte";
 	import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
+	import SearchButton from "$lib/components/SearchButton.svelte";
 	import AddCarDialog from "$lib/components/ui/AddCarDialog.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import * as Card from "$lib/components/ui/card";
@@ -36,7 +37,7 @@
 </svelte:head>
 
 <div class="container mx-auto flex flex-col gap-6 p-6">
-	<div class="flex items-center justify-between">
+	<div class="flex items-center justify-between gap-4">
 		<div class="flex items-center gap-3">
 			{#if auth.user}
 				<span class="text-sm font-medium">
@@ -59,7 +60,10 @@
 			>
 				{m.garage_logout()}
 			</Button>
+		</div>
 
+		<div class="flex items-center gap-2.5">
+			<SearchButton />
 			<LanguageSwitcher />
 		</div>
 	</div>

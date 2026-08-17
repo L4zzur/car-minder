@@ -361,5 +361,6 @@
 	"command_action_add_car": "add car",
 	"command_pref_theme": "toggle theme",
 	"command_pref_lang": "switch language (EN / RU)",
-	"command_pref_logout": "log out"
+	"command_pref_logout": "log out",
+	"command_palette_search": "search..."
 }

@@ -32,7 +32,7 @@
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger>
 		{#snippet child({ props })}
-			<Button {...props} variant="outline" size="sm" class="gap-1.5">
+			<Button {...props} variant="outline" class="gap-1.5">
 				<Languages data-icon="inline-start" class="text-muted-foreground" />
 				<span class="text-xs font-medium tracking-normal uppercase">{i18n.lang}</span>
 			</Button>

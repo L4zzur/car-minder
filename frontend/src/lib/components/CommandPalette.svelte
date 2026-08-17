@@ -14,6 +14,7 @@
 
 	import { Auth, UserSettings } from "$lib/api";
 	import { auth } from "$lib/auth.svelte";
+	import { commandStore } from "$lib/commandStore.svelte";
 	import AddCarDialog from "$lib/components/ui/AddCarDialog.svelte";
 	import * as Command from "$lib/components/ui/command";
 	import { garageStore } from "$lib/garageStore.svelte";
@@ -21,16 +22,10 @@
 	import * as m from "$lib/paraglide/messages.js";
 	import { type Locale } from "$lib/paraglide/runtime";
 
-	let {
-		open = $bindable(false)
-	}: {
-		open?: boolean;
-	} = $props();
-
 	let isAddCarOpen = $state(false);
 
 	$effect(() => {
-		if (open && auth.isAuthenticated && !garageStore.isInitialized) {
+		if (commandStore.open && auth.isAuthenticated && !garageStore.isInitialized) {
 			garageStore.load();
 		}
 	});
@@ -38,7 +33,7 @@
 	function handleKeydown(e: KeyboardEvent) {
 		if ((e.key === "k" || e.key === "K") && (e.metaKey || e.ctrlKey)) {
 			e.preventDefault();
-			open = !open;
+			commandStore.toggle();
 		}
 	}
 
@@ -50,7 +45,7 @@
 	});
 
 	function runCommand(action: () => void | Promise<void>) {
-		open = false;
+		commandStore.hide();
 		action();
 	}
 
@@ -87,7 +82,11 @@
 	}
 </script>
 
-<Command.Dialog bind:open title={m.command_palette_title()} description={m.command_palette_desc()}>
+<Command.Dialog
+	bind:open={commandStore.open}
+	title={m.command_palette_title()}
+	description={m.command_palette_desc()}
+>
 	<Command.Input placeholder={m.command_palette_placeholder()} />
 	<Command.List>
 		<Command.Empty>{m.command_palette_empty()}</Command.Empty>
