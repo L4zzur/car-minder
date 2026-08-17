@@ -7,6 +7,7 @@
 	import { Button } from "$lib/components/ui/button";
 	import * as Card from "$lib/components/ui/card";
 	import * as Empty from "$lib/components/ui/empty";
+	import QuickAddMileageDialog from "$lib/components/ui/QuickAddMileageDialog.svelte";
 	import * as m from "$lib/paraglide/messages.js";
 	import { getLocale } from "$lib/paraglide/runtime";
 
@@ -29,12 +30,14 @@
 		car,
 		href,
 		serviceLines = [],
-		actionLabel
+		actionLabel,
+		onMileageUpdated
 	}: {
 		car: CarCardData;
 		href?: string;
 		serviceLines?: ServiceLine[];
 		actionLabel?: string;
+		onMileageUpdated?: () => void;
 	} = $props();
 
 	const formatOdometer = (value: number) => value.toLocaleString(getLocale());
@@ -62,10 +65,22 @@
 		</Card.Header>
 
 		<Card.Content class="flex flex-1 flex-col justify-between gap-5">
-			<div class="rounded-lg border bg-muted/30 p-3.5">
-				<div class="mb-1.5 flex items-center gap-2 text-xs font-medium text-muted-foreground">
-					<Gauge class="size-3.5" />
-					<span>{m.car_card_current_odometer()}</span>
+			<div class="relative rounded-lg border bg-muted/30 p-3.5">
+				<div class="mb-1.5 flex h-4 items-center justify-between gap-2">
+					<div class="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+						<Gauge class="size-3.5" />
+						<span>{m.car_card_current_odometer()}</span>
+					</div>
+					{#if car.id && onMileageUpdated}
+						<div class="absolute top-2.5 right-2.5">
+							<QuickAddMileageDialog
+								carId={car.id}
+								carTitle={`${car.brand} ${car.model}`}
+								currentOdometerKm={currentOdometer}
+								{onMileageUpdated}
+							/>
+						</div>
+					{/if}
 				</div>
 				<div class="text-2xl font-semibold tracking-tight">
 					{formatOdometer(currentOdometer)}

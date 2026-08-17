@@ -69,6 +69,7 @@
 	"car_card_initial_odometer": "currently initial",
 	"car_card_detailed": "details",
 	"car_card_no_service_items": "no active service items or reminders",
+	"car_card_quick_mileage_tooltip": "log mileage",
 
 	"landing_go_to_garage": "go to garage",
 	"landing_settings": "settings",
