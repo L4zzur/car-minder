@@ -40,14 +40,32 @@ graph LR
 
 ### Шаг 1. Разработка фичи
 ```bash
+# 1. Всегда начинаем от чистого актуального main
 git checkout main
-git pull
+git pull --ff-only
+
+# 2. Создаем ветку под задачу
 git checkout -b feat/my-new-feature
 
-# Работаем, коммитим...
+# 3. Работаем, коммитим...
 git push -u origin feat/my-new-feature
 ```
 Создай Pull Request в GitHub и влей в `main` через **Squash and merge**.
+
+После слияния PR на GitHub:
+```bash
+# Синхронизируем локальный main и удаляем смердженную ветку
+git checkout main
+git pull --ff-only
+git branch -d feat/my-new-feature
+```
+
+> ⚠️ **Что делать, если локальный `main` разошелся с GitHub (появился лишний Merge commit):**
+> Не делай `git pull` с созданием мержа. Просто сбрось локальный `main` в состояние origin:
+> ```bash
+> git fetch origin
+> git reset --hard origin/main
+> ```
 
 ### Шаг 2. Выпуск релиза
 Когда накопились нужные изменения в `main` и пора выкатить обновление:
