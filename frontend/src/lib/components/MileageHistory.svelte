@@ -113,10 +113,7 @@
 												<AlertDialog.Cancel>
 													{m.common_cancel()}
 												</AlertDialog.Cancel>
-												<AlertDialog.Action
-													variant="destructive"
-													onclick={() => onDelete(log.id)}
-												>
+												<AlertDialog.Action variant="destructive" onclick={() => onDelete(log.id)}>
 													{m.mileage_history_delete_confirm_action()}
 												</AlertDialog.Action>
 											</AlertDialog.Footer>
