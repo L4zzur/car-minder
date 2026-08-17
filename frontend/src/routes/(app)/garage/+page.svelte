@@ -5,15 +5,7 @@
 
 	import { goto } from "$app/navigation";
 
-	import {
-		Auth,
-		Cars,
-		Reminders,
-		ServiceItems,
-		type CarRead,
-		type ReminderRead,
-		type ServiceItemSummary
-	} from "$lib/api";
+	import { Auth } from "$lib/api";
 	import { auth } from "$lib/auth.svelte";
 	import CarCard from "$lib/components/CarCard.svelte";
 	import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
@@ -22,47 +14,9 @@
 	import * as Card from "$lib/components/ui/card";
 	import * as Empty from "$lib/components/ui/empty";
 	import { Skeleton } from "$lib/components/ui/skeleton";
+	import { garageStore } from "$lib/garageStore.svelte";
 	import * as m from "$lib/paraglide/messages.js";
 	import { buildServiceLines } from "$lib/reminderStatus.js";
-
-	type CarWithDetails = CarRead & {
-		serviceItems?: ServiceItemSummary[];
-		reminders?: ReminderRead[];
-	};
-
-	let cars = $state<CarWithDetails[]>([]);
-	let isLoading = $state(true);
-
-	async function loadCars() {
-		isLoading = true;
-		try {
-			const response = await Cars.listUserCarsApiCarsGet();
-			const rawCars = response.data || [];
-
-			cars = await Promise.all(
-				rawCars.map(async (car) => {
-					try {
-						const [serviceRes, remindersRes] = await Promise.all([
-							ServiceItems.listByCarApiServiceItemsGet({ query: { car_id: car.id } }),
-							Reminders.listRemindersApiRemindersGet({ query: { car_id: car.id } })
-						]);
-
-						return {
-							...car,
-							serviceItems: serviceRes.data || [],
-							reminders: remindersRes.data || []
-						};
-					} catch {
-						return car;
-					}
-				})
-			);
-		} catch (e) {
-			console.error("failed to load cars:", e);
-		} finally {
-			isLoading = false;
-		}
-	}
 
 	onMount(async () => {
 		auth.init();
@@ -73,7 +27,7 @@
 			return;
 		}
 
-		await loadCars();
+		await garageStore.load();
 	});
 </script>
 
@@ -111,10 +65,10 @@
 	</div>
 	<div class="flex items-center justify-between">
 		<h1 class="text-4xl font-bold tracking-tight">{m.garage_title()}</h1>
-		<AddCarDialog onCarAdded={loadCars} />
+		<AddCarDialog onCarAdded={() => garageStore.invalidate()} />
 	</div>
 
-	{#if isLoading}
+	{#if garageStore.isLoading}
 		<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
 			{#each [0, 1, 2] as i (i)}
 				<Card.Root>
@@ -128,7 +82,7 @@
 				</Card.Root>
 			{/each}
 		</div>
-	{:else if cars.length === 0}
+	{:else if garageStore.cars.length === 0}
 		<Empty.Root class="rounded-lg border-2 border-dashed p-12">
 			<Empty.Header>
 				<Empty.Media variant="icon">
@@ -138,7 +92,7 @@
 				<Empty.Description>{m.garage_has_no_car_desc()}</Empty.Description>
 			</Empty.Header>
 			<Empty.Content>
-				<AddCarDialog onCarAdded={loadCars}>
+				<AddCarDialog onCarAdded={() => garageStore.invalidate()}>
 					{#snippet child({ props })}
 						<Button {...props}>{m.garage_add_first_car()}</Button>
 					{/snippet}
@@ -147,7 +101,7 @@
 		</Empty.Root>
 	{:else}
 		<div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-			{#each cars as car (car.id)}
+			{#each garageStore.cars as car (car.id)}
 				<CarCard
 					{car}
 					serviceLines={buildServiceLines(

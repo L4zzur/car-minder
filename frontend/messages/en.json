@@ -346,5 +346,20 @@
 	"tma_service_items_heading": "maintenance and service items",
 	"tma_service_items_empty_title": "no scheduled maintenance",
 	"tma_service_items_empty_desc": "add an oil, filter, or brake fluid change to keep track of their lifetime",
-	"tma_service_items_add_first": "add first service"
+	"tma_service_items_add_first": "add first service",
+
+	"command_palette_title": "command palette",
+	"command_palette_desc": "search for a command, page, or car...",
+	"command_palette_placeholder": "type a command or search...",
+	"command_palette_empty": "no results found.",
+	"command_group_navigation": "navigation",
+	"command_group_actions": "actions",
+	"command_group_cars": "cars",
+	"command_group_preferences": "preferences",
+	"command_nav_garage": "garage",
+	"command_nav_settings": "settings",
+	"command_action_add_car": "add car",
+	"command_pref_theme": "toggle theme",
+	"command_pref_lang": "switch language (EN / RU)",
+	"command_pref_logout": "log out"
 }
