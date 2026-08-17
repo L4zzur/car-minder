@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Trash2 } from "lucide-svelte";
 
+	import * as AlertDialog from "$lib/components/ui/alert-dialog";
 	import { Button } from "$lib/components/ui/button";
 	import { ScrollArea } from "$lib/components/ui/scroll-area";
 	import * as Tooltip from "$lib/components/ui/tooltip";
@@ -74,23 +75,53 @@
 									>{formatOdometer(log.odometerKm)} {m.car_card_current_odometer_km()}</span
 								>
 								{#if i === 0}
-									<Tooltip.Root>
-										<Tooltip.Trigger>
-											<Button
-												variant="ghost"
-												size="icon-xs"
-												aria-label={m.mileage_history_delete_aria()}
-												disabled={deletingId === log.id}
-												onclick={() => onDelete(log.id)}
-												class="text-muted-foreground hover:text-destructive"
-											>
-												<Trash2 />
-											</Button>
-										</Tooltip.Trigger>
-										<Tooltip.Content>
-											<p>{m.mileage_history_delete_btn()}</p>
-										</Tooltip.Content>
-									</Tooltip.Root>
+									<AlertDialog.Root>
+										<Tooltip.Root>
+											<Tooltip.Trigger>
+												<AlertDialog.Trigger>
+													{#snippet child({ props })}
+														<Button
+															{...props}
+															variant="ghost"
+															size="icon-xs"
+															aria-label={m.mileage_history_delete_aria()}
+															disabled={deletingId === log.id}
+															class="text-muted-foreground hover:text-destructive"
+														>
+															<Trash2 />
+														</Button>
+													{/snippet}
+												</AlertDialog.Trigger>
+											</Tooltip.Trigger>
+											<Tooltip.Content>
+												<p>{m.mileage_history_delete_btn()}</p>
+											</Tooltip.Content>
+										</Tooltip.Root>
+
+										<AlertDialog.Content>
+											<AlertDialog.Header>
+												<AlertDialog.Title>
+													{m.mileage_history_delete_confirm_title()}
+												</AlertDialog.Title>
+												<AlertDialog.Description>
+													{m.mileage_history_delete_confirm_desc({
+														km: formatOdometer(log.odometerKm)
+													})}
+												</AlertDialog.Description>
+											</AlertDialog.Header>
+											<AlertDialog.Footer>
+												<AlertDialog.Cancel>
+													{m.common_cancel()}
+												</AlertDialog.Cancel>
+												<AlertDialog.Action
+													variant="destructive"
+													onclick={() => onDelete(log.id)}
+												>
+													{m.mileage_history_delete_confirm_action()}
+												</AlertDialog.Action>
+											</AlertDialog.Footer>
+										</AlertDialog.Content>
+									</AlertDialog.Root>
 								{:else}
 									<span class="size-6 shrink-0" aria-hidden="true"></span>
 								{/if}

@@ -10,6 +10,7 @@
 	} from "lucide-svelte";
 
 	import type { CarRead, ServiceItemSummary } from "$lib/api";
+	import * as AlertDialog from "$lib/components/ui/alert-dialog";
 	import { Badge } from "$lib/components/ui/badge";
 	import { Button } from "$lib/components/ui/button";
 	import EditServiceDialog from "$lib/components/ui/EditServiceDialog.svelte";
@@ -162,20 +163,45 @@
 				</Tooltip.Root>
 			{/if}
 
-			<Tooltip.Root>
-				<Tooltip.Trigger>
-					<Button
-						variant="ghost"
-						size="icon"
-						disabled={isDeleting}
-						onclick={onDelete}
-						class="text-muted-foreground hover:text-destructive"
-					>
-						<Trash2 />
-					</Button>
-				</Tooltip.Trigger>
-				<Tooltip.Content><p>{m.service_card_tooltip_delete()}</p></Tooltip.Content>
-			</Tooltip.Root>
+			<AlertDialog.Root>
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						<AlertDialog.Trigger>
+							{#snippet child({ props })}
+								<Button
+									{...props}
+									variant="ghost"
+									size="icon"
+									disabled={isDeleting}
+									class="text-muted-foreground hover:text-destructive"
+								>
+									<Trash2 />
+								</Button>
+							{/snippet}
+						</AlertDialog.Trigger>
+					</Tooltip.Trigger>
+					<Tooltip.Content><p>{m.service_card_tooltip_delete()}</p></Tooltip.Content>
+				</Tooltip.Root>
+
+				<AlertDialog.Content>
+					<AlertDialog.Header>
+						<AlertDialog.Title>
+							{m.service_card_delete_confirm_title()}
+						</AlertDialog.Title>
+						<AlertDialog.Description>
+							{m.service_card_delete_confirm_desc({ name: item.name })}
+						</AlertDialog.Description>
+					</AlertDialog.Header>
+					<AlertDialog.Footer>
+						<AlertDialog.Cancel>
+							{m.common_cancel()}
+						</AlertDialog.Cancel>
+						<AlertDialog.Action variant="destructive" onclick={onDelete}>
+							{m.service_card_delete_confirm_action()}
+						</AlertDialog.Action>
+					</AlertDialog.Footer>
+				</AlertDialog.Content>
+			</AlertDialog.Root>
 		</div>
 	</div>
 </div>
