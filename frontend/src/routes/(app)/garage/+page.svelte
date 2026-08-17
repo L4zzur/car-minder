@@ -10,6 +10,7 @@
 	import CarCard from "$lib/components/CarCard.svelte";
 	import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
 	import SearchButton from "$lib/components/SearchButton.svelte";
+	import ThemeToggle from "$lib/components/ThemeToggle.svelte";
 	import AddCarDialog from "$lib/components/ui/AddCarDialog.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import * as Card from "$lib/components/ui/card";
@@ -62,9 +63,10 @@
 			</Button>
 		</div>
 
-		<div class="flex items-center gap-2.5">
+		<div class="flex items-center gap-2">
 			<SearchButton />
 			<LanguageSwitcher />
+			<ThemeToggle />
 		</div>
 	</div>
 	<div class="flex items-center justify-between">
