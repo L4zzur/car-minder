@@ -6,7 +6,7 @@
 	import Plus from "@lucide/svelte/icons/plus";
 	import Settings from "@lucide/svelte/icons/settings";
 	import SunMoon from "@lucide/svelte/icons/sun-moon";
-	import { mode, resetMode, setMode } from "mode-watcher";
+	import { mode, setMode } from "mode-watcher";
 	import { onMount } from "svelte";
 
 	import { goto } from "$app/navigation";
@@ -19,7 +19,7 @@
 	import { garageStore } from "$lib/garageStore.svelte";
 	import { i18n } from "$lib/i18n.svelte";
 	import * as m from "$lib/paraglide/messages.js";
-	import { locales, type Locale } from "$lib/paraglide/runtime";
+	import { type Locale } from "$lib/paraglide/runtime";
 
 	let {
 		open = $bindable(false)
