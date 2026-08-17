@@ -21,6 +21,7 @@
 	import MileageHistory from "$lib/components/MileageHistory.svelte";
 	import SearchButton from "$lib/components/SearchButton.svelte";
 	import ServiceItemCard from "$lib/components/ServiceItemCard.svelte";
+	import ThemeToggle from "$lib/components/ThemeToggle.svelte";
 	import AddServiceDialog from "$lib/components/ui/AddServiceDialog.svelte";
 	import { Button } from "$lib/components/ui/button";
 	import EditCarDialog from "$lib/components/ui/EditCarDialog.svelte";
@@ -271,6 +272,7 @@
 				/>
 				<SearchButton />
 				<LanguageSwitcher />
+				<ThemeToggle />
 			{/if}
 		</div>
 	</header>

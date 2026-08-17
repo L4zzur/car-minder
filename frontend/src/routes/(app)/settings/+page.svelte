@@ -10,6 +10,8 @@
 	import { Telegram } from "$lib/api";
 	import { auth } from "$lib/auth.svelte";
 	import LanguageSwitcher from "$lib/components/LanguageSwitcher.svelte";
+	import SearchButton from "$lib/components/SearchButton.svelte";
+	import ThemeToggle from "$lib/components/ThemeToggle.svelte";
 	import { Badge } from "$lib/components/ui/badge";
 	import { Button } from "$lib/components/ui/button";
 	import * as Tabs from "$lib/components/ui/tabs";
@@ -61,7 +63,11 @@
 
 		<div class="flex items-center justify-between">
 			<h1 class="text-3xl font-bold tracking-tight lowercase">{m.settings_title()}</h1>
-			<LanguageSwitcher />
+			<div class="flex items-center gap-2">
+				<SearchButton />
+				<LanguageSwitcher />
+				<ThemeToggle />
+			</div>
 		</div>
 	</div>
 

@@ -362,5 +362,6 @@
 	"command_pref_theme": "toggle theme",
 	"command_pref_lang": "switch language (EN / RU)",
 	"command_pref_logout": "log out",
-	"command_palette_search": "search..."
+	"command_palette_search": "search...",
+	"theme_toggle": "toggle theme"
 }
