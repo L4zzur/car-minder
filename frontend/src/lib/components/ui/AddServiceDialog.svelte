@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Loader2 from '@lucide/svelte/icons/loader-2';
 	import Wrench from '@lucide/svelte/icons/wrench';
 
 	import { ServiceItems, type CarRead } from '$lib/api';
@@ -118,7 +119,12 @@
 				{/if}
 				<Dialog.Footer>
 					<Button type="submit" class="w-full" disabled={isLoading}>
-						{isLoading ? m.add_service_btn_submitting() : m.add_service_btn_submit()}
+						{#if isLoading}
+							<Loader2 class="animate-spin" data-icon="inline-start" />
+							{m.add_service_btn_submitting()}
+						{:else}
+							{m.add_service_btn_submit()}
+						{/if}
 					</Button>
 				</Dialog.Footer>
 			</Field.Group>

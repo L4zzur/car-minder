@@ -83,7 +83,12 @@
 		{#if child}
 			{@render child({ props: {} })}
 		{:else}
-			<Button variant="ghost" size="icon" class="text-muted-foreground hover:text-foreground">
+			<Button
+				variant="ghost"
+				size="icon"
+				class="text-muted-foreground hover:text-foreground"
+				aria-label={m.edit_service_edit_btn()}
+			>
 				<Pencil />
 			</Button>
 		{/if}

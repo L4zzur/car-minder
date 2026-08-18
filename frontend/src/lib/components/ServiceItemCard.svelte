@@ -143,6 +143,7 @@
 									{...props}
 									variant="ghost"
 									size="icon"
+									aria-label={m.reminders_dialog_tooltip_manage()}
 									class="text-muted-foreground hover:text-foreground"
 								>
 									<Bell />
@@ -173,6 +174,7 @@
 									variant="ghost"
 									size="icon"
 									disabled={isDeleting}
+									aria-label={m.service_card_tooltip_delete()}
 									class="text-muted-foreground hover:text-destructive"
 								>
 									<Trash2 />
