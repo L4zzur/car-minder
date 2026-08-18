@@ -42,8 +42,8 @@
 			return;
 		}
 
-		if (numericMileage < currentOdometerKm) {
-			error = m.tma_mileage_error_too_low({ km: currentOdometerKm.toLocaleString(getLocale()) });
+		if (numericMileage <= currentOdometerKm) {
+			error = m.mileage_form_err_must_be_greater();
 			return;
 		}
 
@@ -114,7 +114,7 @@
 						id="quick-mileage-input"
 						type="number"
 						bind:value={newMileage}
-						min={currentOdometerKm}
+						min={currentOdometerKm + 1}
 						placeholder={currentOdometerKm.toString()}
 						required
 						autofocus
