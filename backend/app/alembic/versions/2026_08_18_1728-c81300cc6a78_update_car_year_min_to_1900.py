@@ -20,9 +20,9 @@ depends_on: str | Sequence[str] | None = None
 def upgrade() -> None:
     """Upgrade schema."""
     with op.batch_alter_table("cars", schema=None) as batch_op:
-        batch_op.drop_constraint("ck_cars_car_year_valid", type_="check")
+        batch_op.drop_constraint(op.f("ck_cars_car_year_valid"), type_="check")
         batch_op.create_check_constraint(
-            "ck_cars_car_year_valid",
+            op.f("ck_cars_car_year_valid"),
             "year >= 1900",
         )
 
@@ -30,8 +30,8 @@ def upgrade() -> None:
 def downgrade() -> None:
     """Downgrade schema."""
     with op.batch_alter_table("cars", schema=None) as batch_op:
-        batch_op.drop_constraint("ck_cars_car_year_valid", type_="check")
+        batch_op.drop_constraint(op.f("ck_cars_car_year_valid"), type_="check")
         batch_op.create_check_constraint(
-            "ck_cars_car_year_valid",
+            op.f("ck_cars_car_year_valid"),
             "year >= 1930",
         )
