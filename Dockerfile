@@ -3,7 +3,7 @@ ARG PYTHON_VERSION=3.13
 # ==========================================
 # Stage 1: Build Svelte 5 Frontend
 # ==========================================
-FROM node:22-alpine AS frontend-builder
+FROM --platform=$BUILDPLATFORM node:22-alpine AS frontend-builder
 WORKDIR /app/frontend
 
 ENV CI=true
