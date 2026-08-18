@@ -49,8 +49,11 @@ git checkout -b feat/my-new-feature
 
 # 3. Работаем, коммитим...
 git push -u origin feat/my-new-feature
+
+# 4. Создаем PR через GitHub CLI (или через браузер):
+gh pr create --fill
 ```
-Создай Pull Request в GitHub и влей в `main` через **Squash and merge**.
+Создай Pull Request в GitHub и влей в `main` через **Squash and merge** (или одной командой `gh pr merge --squash --delete-branch`). Полная шпаргалка: [docs/GITHUB_CLI.md](file:///f:/repos/car-minder/docs/GITHUB_CLI.md).
 
 После слияния PR на GitHub:
 ```bash
