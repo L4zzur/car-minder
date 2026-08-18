@@ -3,7 +3,7 @@ from typing import Literal
 from uuid import UUID
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from .base import ORMReadSchema
 
@@ -25,6 +25,8 @@ class UserSettingsRead(ORMReadSchema):
 
 
 class UserSettingsUpdate(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     service_reminder_time: time | None = None
     mileage_reminder_time: time | None = None
     mileage_prompt_interval_days: int | None = Field(None, ge=1, le=365)

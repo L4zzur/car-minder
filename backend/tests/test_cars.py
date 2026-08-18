@@ -162,3 +162,62 @@ async def test_add_car_future_year(auth_client: AsyncClient):
         },
     )
     assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_add_car_year_1900(auth_client: AsyncClient):
+    response = await auth_client.post(
+        "/api/cars",
+        json={
+            "brand": "Ford",
+            "model": "Model T",
+            "year": 1908,
+            "initial_odometer_km": 0,
+        },
+    )
+    assert response.status_code == 201
+    assert response.json()["year"] == 1908
+
+
+@pytest.mark.asyncio
+async def test_add_car_year_too_old(auth_client: AsyncClient):
+    response = await auth_client.post(
+        "/api/cars",
+        json={
+            "brand": "Benz",
+            "model": "Patent-Motorwagen",
+            "year": 1886,
+            "initial_odometer_km": 0,
+        },
+    )
+    assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_add_car_whitespace_handling(auth_client: AsyncClient):
+    # Pure whitespace should fail validation (min_length=1)
+    response = await auth_client.post(
+        "/api/cars",
+        json={
+            "brand": "   ",
+            "model": "Golf",
+            "year": 2020,
+            "initial_odometer_km": 0,
+        },
+    )
+    assert response.status_code == 422
+
+    # Leading/trailing whitespace should be trimmed
+    response = await auth_client.post(
+        "/api/cars",
+        json={
+            "brand": "  Audi  ",
+            "model": "  A4  ",
+            "year": 2020,
+            "initial_odometer_km": 0,
+        },
+    )
+    assert response.status_code == 201
+    data = response.json()
+    assert data["brand"] == "Audi"
+    assert data["model"] == "A4"

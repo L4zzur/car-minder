@@ -1,15 +1,17 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from .base import ORMReadSchema
 
 
 class CarCreate(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     brand: str = Field(..., min_length=1, max_length=30)
     model: str = Field(..., min_length=1, max_length=50)
-    year: int = Field(..., ge=1930)
+    year: int = Field(..., ge=1900)
     initial_odometer_km: int = Field(..., ge=0)
 
     @field_validator("year")
@@ -22,9 +24,11 @@ class CarCreate(BaseModel):
 
 
 class CarUpdate(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     brand: str | None = Field(None, min_length=1, max_length=30)
     model: str | None = Field(None, min_length=1, max_length=50)
-    year: int | None = Field(None, ge=1930, le=datetime.now().year)
+    year: int | None = Field(None, ge=1900, le=datetime.now().year)
 
     @field_validator("year")
     @classmethod
