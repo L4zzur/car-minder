@@ -1,5 +1,5 @@
 [tool.bumpversion]
-current_version = "0.1.2"
+current_version = "0.2.0"
 parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
 serialize = ["{major}.{minor}.{patch}"]
 commit = true
@@ -16,3 +16,14 @@ replace = 'version = "{new_version}"'
 filename = "frontend/package.json"
 search = '"version": "{current_version}"'
 replace = '"version": "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "backend/uv.lock"
+search = '''
+[[package]]
+name = "backend"
+version = "{current_version}"'''
+replace = '''
+[[package]]
+name = "backend"
+version = "{new_version}"'''
