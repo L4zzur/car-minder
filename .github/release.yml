@@ -8,6 +8,7 @@ changelog:
       prefixes:
         - "feat"
         - "feat:"
+        - "feat("
     - title: "🩺 Fixes"
       labels:
         - "fix"
@@ -15,18 +16,21 @@ changelog:
       prefixes:
         - "fix"
         - "fix:"
+        - "fix("
     - title: "🏎️ Performance"
       labels:
         - "perf"
       prefixes:
         - "perf"
         - "perf:"
+        - "perf("
     - title: "🧪 Refactor"
       labels:
         - "refactor"
       prefixes:
         - "refactor"
         - "refactor:"
+        - "refactor("
     - title: "🔧 Maintenance"
       labels:
         - "chore"
@@ -34,6 +38,7 @@ changelog:
       prefixes:
         - "chore"
         - "chore:"
+        - "chore("
     - title: "🚀 Other Changes"
       labels:
         - "*"
