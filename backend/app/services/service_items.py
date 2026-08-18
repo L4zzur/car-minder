@@ -150,35 +150,21 @@ class ServiceItemService:
                             _status = ServiceItemStatus.SOON
                         computed_reminders.append((_status, None, days_left))
 
+                km_values = [r[1] for r in computed_reminders if r[1] is not None]
+                days_values = [r[2] for r in computed_reminders if r[2] is not None]
+                if km_values:
+                    km_until_due = min(km_values)
+                if days_values:
+                    days_until_due = min(days_values)
+
                 if any(rem[0] == ServiceItemStatus.DUE for rem in computed_reminders):
                     status = ServiceItemStatus.DUE
-                    due_reminder = next(
-                        r for r in computed_reminders if r[0] == ServiceItemStatus.DUE
-                    )
-                    km_until_due = due_reminder[1]
-                    days_until_due = due_reminder[2]
                 elif any(
                     rem[0] == ServiceItemStatus.SOON for rem in computed_reminders
                 ):
                     status = ServiceItemStatus.SOON
-                    soon_reminder = next(
-                        r for r in computed_reminders if r[0] == ServiceItemStatus.SOON
-                    )
-                    km_until_due = soon_reminder[1]
-                    days_until_due = soon_reminder[2]
                 else:
-                    valid = [
-                        r
-                        for r in computed_reminders
-                        if r[1] is not None or r[2] is not None
-                    ]
-                    if valid:
-                        km_until_due = min(
-                            (r[1] for r in valid if r[1] is not None), default=None
-                        )
-                        days_until_due = min(
-                            (r[2] for r in valid if r[2] is not None), default=None
-                        )
+                    status = ServiceItemStatus.OK
 
             results.append(
                 ServiceItemSummary(

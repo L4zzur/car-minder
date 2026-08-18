@@ -330,3 +330,84 @@ async def test_service_item_not_found(auth_client: AsyncClient):
 
     resp = await auth_client.delete(f"/api/service-items/{fake_id}")
     assert resp.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_service_item_whitespace_handling(
+    auth_client: AsyncClient, test_car: dict
+):
+    car_id = test_car["id"]
+    now = datetime.now(UTC).isoformat()
+
+    # Pure whitespace should fail
+    resp = await auth_client.post(
+        "/api/service-items",
+        json={
+            "car_id": car_id,
+            "name": "   ",
+            "last_service_at": now,
+            "last_service_odometer_km": 1000,
+        },
+    )
+    assert resp.status_code == 422
+
+    # Leading/trailing whitespace should be stripped
+    resp = await auth_client.post(
+        "/api/service-items",
+        json={
+            "car_id": car_id,
+            "name": "  Brake Fluid  ",
+            "last_service_at": now,
+            "last_service_odometer_km": 1000,
+        },
+    )
+    assert resp.status_code == 201
+    assert resp.json()["name"] == "Brake Fluid"
+
+
+@pytest.mark.asyncio
+async def test_status_dual_metrics_preserved(auth_client: AsyncClient, test_car: dict):
+    # If one reminder is due (days) and another is ok (km), BOTH metrics should be present in summary
+    car_id = test_car["id"]
+    two_days_ago = (datetime.now(UTC) - timedelta(days=2)).isoformat()
+
+    create_resp = await auth_client.post(
+        "/api/service-items",
+        json={
+            "car_id": car_id,
+            "name": "Dual Metrics Item",
+            "last_service_at": two_days_ago,
+            "last_service_odometer_km": 1000,
+        },
+    )
+    item_id = create_resp.json()["id"]
+
+    # km reminder: interval 10000 km, notify 1000 km -> due at 11000 km
+    await auth_client.post(
+        "/api/reminders",
+        json={
+            "service_item_id": item_id,
+            "interval_km": 10000,
+            "notify_before_km": 1000,
+        },
+    )
+
+    # day reminder: interval 1 day (due 1 day after service, i.e. yesterday)
+    await auth_client.post(
+        "/api/reminders",
+        json={
+            "service_item_id": item_id,
+            "interval_days": 1,
+            "notify_before_days": 0,
+        },
+    )
+
+    response = await auth_client.get(f"/api/service-items?car_id={car_id}")
+    items = response.json()
+    item = next(i for i in items if i["name"] == "Dual Metrics Item")
+
+    assert item["status"] == "due"
+    # km metric is preserved even though days is due
+    assert item["km_until_due"] == 10000
+    assert item["days_until_due"] is not None
+    assert item["days_until_due"] <= 0

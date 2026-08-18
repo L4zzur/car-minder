@@ -9,8 +9,8 @@ __pycache__/
 .venv/
 .pytest_cache/
 .ruff_cache/
-*.sqlite
-*.db
+*.sqlite*
+*.db*
 
 # Node / Frontend
 node_modules/

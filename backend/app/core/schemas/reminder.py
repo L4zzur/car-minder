@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from core.validators import ReminderIntervalData, validate_reminder_intervals
 
@@ -15,6 +15,8 @@ def validate_reminder_fields(data: ReminderIntervalData) -> ReminderIntervalData
 
 
 class ReminderCreate(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     service_item_id: UUID
     is_active: bool = True
     interval_km: int | None = Field(None, gt=0)
@@ -37,6 +39,8 @@ class ReminderCreate(BaseModel):
 
 
 class ReminderUpdate(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     is_active: bool | None = None
     interval_km: int | None = Field(None, gt=0)
     interval_days: int | None = Field(None, gt=0)
